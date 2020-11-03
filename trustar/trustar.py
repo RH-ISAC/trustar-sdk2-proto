@@ -1,14 +1,6 @@
-
-from future import standard_library
 from six import string_types
 
-# external imports
-import configparser
-import os
-import yaml
-
 # package imports
-from .api_client import ApiClient
 from .log import get_logger
 from .api_client import SearchIndicator
 
@@ -77,9 +69,12 @@ class TruStar:
 
     def search_indicators(self):
         # TODO add condig
-        return SearchIndicator()
+        return SearchIndicator(self)
 
 
 if __name__ == "main":
     config = {}
-    indicators = TruStar(config).search_indicators().setQueryTerm().setStart().setTo().fetch()
+    indicators = TruStar(config).search_indicators().set_query_term()\
+        .set_start().set_to().query()
+    for n in indicators:
+        print(n)
