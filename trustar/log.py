@@ -8,7 +8,7 @@ import sys
 
 import json_log_formatter
 
-from .config import LOGGING_ENV_VAR
+from config import LOGGING_ENV_VAR
 
 
 class TrustarJSONFormatter(json_log_formatter.JSONFormatter):
