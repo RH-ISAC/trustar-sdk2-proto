@@ -19,6 +19,8 @@ class Methods(AutoNumber):
 
 class Param:
 
+    __slots__ = '__key', 'value'
+
     def __init__(self, key, value):
         self.__key = key
         self.value = value
