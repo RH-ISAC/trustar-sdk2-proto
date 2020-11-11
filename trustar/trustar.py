@@ -1,3 +1,5 @@
+import json
+
 from six import string_types
 
 # package imports
@@ -21,14 +23,25 @@ class TruStar:
         'user_api_secret': 'api_secret'
     }
 
-    def __init__(self, auth, api_key, secret):
-        self.auth = auth
+    def __init__(self, api_key, api_secret, client_metatag, **kwargs):
         self.api_key = api_key
-        self.secret = secret
+        self.api_secret = api_secret
+        self.client_metatag = client_metatag
 
-    @staticmethod
-    def config_from_file(config_file_path, config_role):
-        raise NotImplemented
+    @classmethod
+    def config_from_file(cls, config_file_path, config_role):
+        with open(config_file_path, "r") as f:
+            config_file = json.load(f)
+
+        config = config_file.get(config_role)
+        if not config:
+            raise AttributeError("{} role was not found in {} file".format(
+                config_role, config_file_path
+            ))
+
+        trustar = cls(**config)
+        return trustar
+
 
     def indicators(self):
         # TODO add condig
@@ -40,3 +53,4 @@ indicators = TruStar(auth="",
                      secret="").indicators().query()
 for n in indicators:
     print(n)
+

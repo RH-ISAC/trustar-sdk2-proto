@@ -2,12 +2,13 @@ from api_client import ApiClient
 
 
 class Query:
-    endpoint = None
     method = None
     serializer = None
     trustar = None
 
-    def __init__(self):
+    def __init__(self, endpoint, params):
+        self.endpoint = endpoint
+        self.params = params
         self.iter = 0
 
     def __iter__(self):
