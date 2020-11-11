@@ -29,7 +29,6 @@ def test_set_from(search_indicator, from_date):
 
     search_indicator.set_from(from_date)
     values = [param.value for param in search_indicator.params]
-    print values, from_date
     assert len(search_indicator.params) == 1
     assert values[0] == timestamp
 
