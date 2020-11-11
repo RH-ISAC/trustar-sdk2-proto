@@ -19,18 +19,18 @@ class Methods(AutoNumber):
 
 class Param:
 
-    __slots__ = '__key', 'value'
+    __slots__ = 'key', 'value'
 
     def __init__(self, key, value):
-        self.__key = key
+        self.key = key
         self.value = value
 
     def __hash__(self):
-        return hash(self.__key)
+        return hash(self.key)
 
     def __eq__(self, other):
-        return isinstance(other, type(self)) and self.__key == other.__key
+        return isinstance(other, type(self)) and self.key == other.key
 
     def __str__(self):
         # TODO html escape here
-        return "{}={}".format(self.__key, self.value)
+        return "{}={}".format(self.key, self.value)

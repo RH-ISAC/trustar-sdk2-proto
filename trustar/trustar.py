@@ -35,9 +35,8 @@ class TruStar:
         return SearchIndicator(self)
 
 
-print("Hello")
-indicators = TruStar(auth="https://staging.trustar.co/oauth/token",
+indicators = TruStar(auth="",
                      api_key="",
-                     secret="").indicators().set_query_term("181.").query()
+                     secret="").indicators().query()
 for n in indicators:
     print(n)

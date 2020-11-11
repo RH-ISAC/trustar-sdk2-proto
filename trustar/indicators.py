@@ -33,9 +33,10 @@ class SearchIndicator:
     def query(self):
         # TODO check that the both the start and to are set
         q = Query()
-        bottom = str("&".join(str(p) for p in self.params))
-        q.endpoint = self.endpoint + bottom
+        q.endpoint = self.endpoint
+        q.params = self.params
         q.method = Methods.POST
+        q.trustar = self.trustar
         q.serializer = None
         print(q.endpoint)
         return q
