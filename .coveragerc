@@ -1,0 +1,6 @@
+[run]
+omit =
+    */.benchmarks/*
+    */.circleci/*
+    tests/*
+    setup.py
