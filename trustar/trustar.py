@@ -6,27 +6,33 @@ from six import string_types
 from log import get_logger
 from indicators import SearchIndicator
 
+from version import __version__, __api_version__
+
 logger = get_logger(__name__)
 
 
 class TruStar:
 
-    # raise exception if any of these config keys are missing
-    REQUIRED_KEYS = ('api_key', 'api_secret', 'client_metatag')
-
-    # allow configs to use different key names for config values
-    REMAPPED_KEYS = {
-        'auth_endpoint': 'auth',
-        'api_endpoint': 'base',
-        'station_base_url': 'station',
-        'user_api_key': 'api_key',
-        'user_api_secret': 'api_secret'
+    DEFAULTS = {
+        'auth_endpoint': 'https://api.trustar.co/oauth/token',
+        'api_endpoint': 'https://api.trustar.co/api/2.0',
+        'station': "https://station.trustar.co",
+        'client_type': 'PYTHON_SDK',
+        'client_version': __version__,
+        'verify': True,
+        'retry': True,
+        'max_wait_time': 60,
+        'http_proxy': None,
+        'https_proxy': None
     }
 
     def __init__(self, api_key, api_secret, client_metatag, **kwargs):
         self.api_key = api_key
         self.api_secret = api_secret
         self.client_metatag = client_metatag
+        self.request_details = self.DEFAULTS.copy()
+        self.request_details.update(kwargs)
+
 
     @classmethod
     def config_from_file(cls, config_file_path, config_role):
@@ -48,9 +54,8 @@ class TruStar:
         return SearchIndicator(self)
 
 
-indicators = TruStar(auth="",
-                     api_key="",
-                     secret="").indicators().query()
+indicators = TruStar.config_from_file("trustar_config.json",
+                                      "staging").indicators().query()
 for n in indicators:
-    print(n)
+    print(n.json())
 

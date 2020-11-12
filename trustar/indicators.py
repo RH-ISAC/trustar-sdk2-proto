@@ -6,7 +6,7 @@ from trustar_enums import ObservableTypes, SortColumns, AttributeTypes
 
 
 class SearchIndicator:
-    endpoint = "https://staging.trustar.co/api/2.0/indicators/?"
+    endpoint = "/indicators"
 
     def __init__(self, config):
         self.trustar = config
@@ -113,11 +113,8 @@ class SearchIndicator:
         # TODO check that the both the start and to are set
         if not self._valid_dates():
             raise AttributeError("Polling window should end after the start of it.")
-        q = Query(self.endpoint, self.params)
-        q.endpoint = self.endpoint
-        q.params = self.params
+        q = Query(self.trustar, self.endpoint, self.params)
         q.method = Methods.POST
-        q.trustar = self.trustar
         q.serializer = None
         return q
 

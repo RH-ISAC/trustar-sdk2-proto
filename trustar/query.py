@@ -4,10 +4,10 @@ from api_client import ApiClient
 class Query:
     method = None
     serializer = None
-    trustar = None
 
-    def __init__(self, endpoint, params):
-        self.endpoint = endpoint
+    def __init__(self, trustar, path, params):
+        self.trustar = trustar
+        self.endpoint = self.trustar.request_details.get("api_endpoint") + path
         self.params = params
         self.iter = 0
 
