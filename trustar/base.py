@@ -1,5 +1,8 @@
-from enum import Enum
 from collections import MutableSet
+import functools
+import inspect
+
+from enum import Enum
 
 
 class AutoNumber(Enum):
@@ -16,6 +19,23 @@ class Methods(AutoNumber):
     DELETE = ()
     UPDATE = ()
     PUT = ()
+
+
+def chained(method):
+    """Method decorator to allow chaining."""
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        result = method(self, *args, **kwargs)
+        return self if result is None else result
+    return wrapper
+
+
+def fluent(cls):
+    """Class decorator to allow method chaining."""
+    for name, member in cls.__dict__.iteritems():
+        if inspect.isfunction(member) and name.startsWith("set_"):
+            setattr(cls, name, chained(member))
+    return cls
 
 
 class Param:

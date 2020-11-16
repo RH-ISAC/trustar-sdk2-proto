@@ -54,8 +54,4 @@ class TruStar:
 
 
 indicators = TruStar.config_from_file("trustar_config.json",
-                                      "staging").indicators().query()
-import json
-for n in indicators:
-    print(json.dumps(n.json()))
-
+                                      "staging").indicators().set_enclave_ids("").query()
