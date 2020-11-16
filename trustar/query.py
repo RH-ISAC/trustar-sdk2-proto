@@ -23,11 +23,7 @@ class Query:
     def _update_params_from_response(self, response):
         if response["responseMetadata"]["nextCursor"] != "":
             cursor = Param("cursor", response["responseMetadata"]["nextCursor"])
-            if cursor not in self.params:
-                self.params.add(cursor)
-            else:
-                self.params.remove(cursor)
-                self.params.add(cursor)
+            self.params.add(cursor)
         else:
             self.stop = True
 

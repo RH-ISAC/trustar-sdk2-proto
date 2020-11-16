@@ -1,8 +1,14 @@
 import dateparser
 
-from base import Methods, Param
+from base import Methods, Params, Param
 from query import Query
 from trustar_enums import ObservableTypes, SortColumns, AttributeTypes
+
+
+class SearchIndicatorParamSerializer(Params):
+
+    def serialize(self):
+        return {n.key: n.value for n in self.map}
 
 
 class SearchIndicator:
@@ -10,7 +16,7 @@ class SearchIndicator:
 
     def __init__(self, config):
         self.trustar = config
-        self.params = set()
+        self.params = SearchIndicatorParamSerializer()
         self.from_date = None
         self.to_date = None
         self.page_size = 1
@@ -122,7 +128,6 @@ class SearchIndicator:
             raise AttributeError("Polling window should end after the start of it.")
         q = Query(self.trustar, self.endpoint, self.params)
         q.method = Methods.POST
-        q.serializer = None
         return q
 
 
