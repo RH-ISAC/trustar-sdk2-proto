@@ -6,8 +6,8 @@ class Query:
     serializer = None
 
     def __init__(self, trustar, path, params):
-        self.trustar = trustar
-        self.endpoint = self.trustar.request_details.get("api_endpoint") + path
+        self.config = trustar
+        self.endpoint = self.config.request_details.get("api_endpoint") + path
         self.params = params
         self.iter = 0
 
@@ -18,8 +18,8 @@ class Query:
         return self.next()
 
     def next(self):
-        api = ApiClient(self.trustar)
-        api.auth()
+        api = ApiClient(self.config)
+        # api.auth()
         result = api.fetch(self)
         if self.iter < 2:
             self.iter += 1
