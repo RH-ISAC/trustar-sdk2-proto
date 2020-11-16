@@ -18,7 +18,6 @@ class ApiClient(object):
     
     def __init__(self, config):
         self.config = config
-        self.strategies = {Methods.POST: self._post}
         self.token = None
 
     def __new__(cls, *args, **kwargs):
@@ -39,6 +38,14 @@ class ApiClient(object):
         response.raise_for_status()
         self.token = response.json()["access_token"]
         return self.token
+
+    def _token_is_expired(self, response):
+        if response.status_code != 400:
+            return False
+        
+        body = response.json()
+        return str(body.get('error_description')) in self.INVALID_TOKEN_MESSAGES:
+
 
     def _get_headers(self, method):
         headers = {
@@ -120,4 +127,4 @@ class ApiClient(object):
         pass
 
     def fetch(self, query):
-        return self.strategies[query.method](query)
+        return self._post(query)
