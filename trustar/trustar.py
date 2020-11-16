@@ -14,9 +14,9 @@ logger = get_logger(__name__)
 class TruStar:
 
     DEFAULTS = {
-        'auth_endpoint': 'https://api.trustar.co/oauth/token',
-        'api_endpoint': 'https://api.trustar.co/api/2.0',
-        'station': "https://station.trustar.co",
+        'auth_endpoint': 'https://staging.trustar.co/oauth/token',
+        'api_endpoint': 'https://staging.trustar.co/api/2.0',
+        'station': "https://staging.trustar.co",
         'client_type': 'PYTHON_SDK',
         'client_version': __version__,
         'verify': True,
@@ -48,7 +48,6 @@ class TruStar:
         trustar = cls(**config)
         return trustar
 
-
     def indicators(self):
         # TODO add condig
         return SearchIndicator(self)
@@ -56,6 +55,7 @@ class TruStar:
 
 indicators = TruStar.config_from_file("trustar_config.json",
                                       "staging").indicators().query()
+import json
 for n in indicators:
-    print(n.json())
+    print(json.dumps(n.json()))
 

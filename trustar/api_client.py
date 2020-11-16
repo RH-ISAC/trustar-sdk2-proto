@@ -20,6 +20,7 @@ class ApiClient:
         client_auth = requests.auth.HTTPBasicAuth(self.trustar.api_key, self.trustar.api_secret)
         # make request
         post_data = {"grant_type": "client_credentials"}
+        print(self.trustar.request_details.get("auth_endpoint"))
         response = requests.post(self.trustar.request_details.get("auth_endpoint"), auth=client_auth, data=post_data, verify=True)
         self.last_response = response
         self.token = response.json()["access_token"]
@@ -27,7 +28,6 @@ class ApiClient:
     def _post(self, query):
         logger.debug("Posting to endpoint {}, with params {}".format(query.endpoint,
                                                                      query.params))
-        # import pdb;pdb.set_trace()
         payload = {n.key: n.value for n in query.params}
         headers = {"Authorization": "Bearer " + self.token, "Content-type": "application/json"}
         return requests.post(url=query.endpoint, headers=headers, json=payload)

@@ -6,27 +6,34 @@ from trustar_enums import ObservableTypes, SortColumns, AttributeTypes
 
 
 class SearchIndicator:
-    endpoint = "/indicators"
+    url = "/indicators"
 
     def __init__(self, config):
         self.trustar = config
         self.params = set()
         self.from_date = None
         self.to_date = None
+        self.page_size = 1
+
+    @property
+    def endpoint(self):
+        return self.trustar.request_details.get("api_endpoint") + self.url + "?pageSize=" + str(self.page_size)
+
+    def set_page_size(self, size):
+        self.page_size = size
+        return self
 
     def _set_param(self, param):
         self.params.add(param)  # Receives a Param object
         return self
 
-    def _get_timestamp(self, date):
+    @staticmethod
+    def _get_timestamp(date):
         dt_obj = dateparser.parse(date)
         return int(dt_obj.strftime("%s"))
 
     def _valid_dates(self):
-        if self.from_date and self.to_date and self.to_date < self.from_date:
-            return False
-
-        return True
+        return not (self.from_date and self.to_date and self.to_date < self.from_date)
 
     def set_query_term(self, query):
         self.params.add(Param("queryTerm", query))
