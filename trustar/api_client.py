@@ -103,24 +103,22 @@ class ApiClient(object):
         attempted = False
         while not attempted or retry: 
             headers = self._get_headers(method)
-            try:
-                response = requests.request(method=method, url=endpoint, headers=headers, json=payload)
-                response.raise_for_status()
+            response = requests.request(method=method, url=endpoint, headers=headers, json=payload)
+            if response == requests.codes.ok:
                 return response
 
-            except (ConnectionError, HTTPError) as ex:
-                if self._token_is_expired(response):
-                    self._refresh_token()
+            if self._token_is_expired(response):
+                self._refresh_token()
 
-                elif retry and response.status_code == 429:
-                    retry = self._sleep(response)
+            elif retry and response.status_code == requests.codes.too_many:
+                retry = self._sleep(response)
 
-                else: 
-                    message = "{} {} Error (Trace-Id: {}): {}".format(response.status_code,
-                                                              "Client" if response.status_code < 500 else "Server",
-                                                              self._get_trace_id(response),
-                                                              reason)
-                    raise HTTPError(message=message, response=response)
+            else: 
+                message = "{} {} Error (Trace-Id: {}): {}".format(response.status_code,
+                                                            "Client" if response.status_code < 500 else "Server",
+                                                            self._get_trace_id(response),
+                                                            reason)
+                raise HTTPError(message=message, response=response)
 
     def _sleep(self, response):
         """
@@ -130,7 +128,7 @@ class ApiClient(object):
         :returns: True or False indicating if it is necessary to keep trying. 
         """
         wait_time = ceil(response.json().get('waitTime') / 1000)
-        logger.debug("Waiting %d seconds until next request allowed." % wait_time)
+        logger.debug("Waiting {} seconds until next request allowed.".format(wait_time))
         keep_trying = wait_time <= self.config.request_details.get("max_wait_time")
         if keep_trying:
             time.sleep(wait_time)
@@ -148,22 +146,5 @@ class ApiClient(object):
         return trace_id if trace_id is not None else None
 
 
-    def _post(self, query):
-        """
-        """
-        logger.debug("Posting to endpoint {}, with params {}".format(query.endpoint,
-                                                                     query.params))
-        payload = {n.key: n.value for n in query.params}
-        return self._request("POST", query.endpoint, payload=payload)
-
-    def _put(self, ): # params missing
-        pass
-
-    def _delete(self, ): # params missing
-        pass
-
-    def _get(self, ): # params missing
-        pass
-
     def fetch(self, query):
-        return self._post(query)
+        return self._request(query.method, query.endpoint, query.params.serialize())
