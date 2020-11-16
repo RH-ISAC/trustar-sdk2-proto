@@ -27,19 +27,34 @@ class ApiClient(object):
         return cls._instance
 
     def _refresh_token(self):
+        """
+        Refreshes oauth token.
+        """
         logger.debug("Authenticating")
-        if self.token is not None:
-            return self.token
-
         client_auth = requests.auth.HTTPBasicAuth(self.config.api_key, self.config.api_secret)
         post_data = {"grant_type": "client_credentials"}
         endpoint = self.config.request_details.get("auth_endpoint")
         response = requests.post(endpoint, auth=client_auth, data=post_data, verify=True)
         response.raise_for_status()
         self.token = response.json()["access_token"]
+
+    def _get_token(self):
+        """
+        Retrieves token.
+        :returns: oauth token.
+        """
+        if self.token is None:
+            self._refresh_token()
+        
         return self.token
 
     def _token_is_expired(self, response):
+        """
+        Checks if an HTTP response failed due to a expired oauth token.
+
+        :param response: HTTP response object.
+        :returns: True or False indicating if the response failed.
+        """
         if response.status_code != 400:
             return False
         
@@ -48,8 +63,14 @@ class ApiClient(object):
 
 
     def _get_headers(self, method):
+        """
+        Forms the HTTP headers according to user's config and method. 
+
+        :param method: HTTP method. 
+        :returns: HTTP headers as dict.
+        """
         headers = {
-            "Authorization": "Bearer " + self._refresh_token(),
+            "Authorization": "Bearer " + self._get_token(),
             "Client-Metatag": self.config.client_metatag    
         }
         
@@ -69,6 +90,14 @@ class ApiClient(object):
 
     def _request(self, method, endpoint, payload=None, params=None):
         """
+        Generic request method to handle diffent HTTP requests. 
+
+        :param method: HTTP request method.
+        :param endpoint: URL to be requested.
+        :param payload: payload to include in the request.
+        :param params: params to include in the request. 
+
+        :returns: response object. 
         """
         retry = self.config.request_details.get("retry")
         attempted = False
@@ -95,6 +124,10 @@ class ApiClient(object):
 
     def _sleep(self, response):
         """
+        Sleeps if response is a 429 and wait time is lower the max_wait_time in config.
+
+        :param response: HTTP response object.
+        :returns: True or False indicating if it is necessary to keep trying. 
         """
         wait_time = ceil(response.json().get('waitTime') / 1000)
         logger.debug("Waiting %d seconds until next request allowed." % wait_time)
@@ -106,12 +139,18 @@ class ApiClient(object):
 
     def _get_trace_id(response):
         """
+        Fetches the trace id from the HTTP response header.
+
+        :param response: HTTP response object. 
+        :returns: TruSTAR Trace-Id if found.
         """
         trace_id = response.headers.get('Trace-Id')
         return trace_id if trace_id is not None else None
 
 
     def _post(self, query):
+        """
+        """
         logger.debug("Posting to endpoint {}, with params {}".format(query.endpoint,
                                                                      query.params))
         payload = {n.key: n.value for n in query.params}
