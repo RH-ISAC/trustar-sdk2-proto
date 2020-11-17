@@ -6,9 +6,9 @@ class Query:
     method = None
     serializer = None
 
-    def __init__(self, trustar, endpoint, params):
-        self.trustar = trustar
-        self.endpoint = endpoint
+    def __init__(self, trustar, path, params):
+        self.config = trustar
+        self.endpoint = self.config.request_details.get("api_endpoint") + path
         self.params = params
         self.stop = False
         self.api = ApiClient(self.trustar)
