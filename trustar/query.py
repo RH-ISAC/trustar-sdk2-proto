@@ -6,13 +6,12 @@ class Query:
     method = None
     serializer = None
 
-    def __init__(self, trustar, path, params):
-        self.config = trustar
-        self.endpoint = self.config.request_details.get("api_endpoint") + path
+    def __init__(self, config, path, params):
+        self.config = config
+        self.endpoint = path
         self.params = params
         self.stop = False
-        self.api = ApiClient(self.trustar)
-        self.api.auth()
+        self.api = ApiClient(self.config)
 
     def __iter__(self):
         return self

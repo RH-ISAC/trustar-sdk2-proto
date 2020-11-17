@@ -5,20 +5,12 @@ import inspect
 from enum import Enum
 
 
-class AutoNumber(Enum):
-    def __new__(cls):
-        value = len(cls.__members__) + 1
-        obj = object.__new__(cls)
-        obj._value_ = value
-        return obj
-
-
-class Methods(AutoNumber):
-    POST = ()
-    GET = ()
-    DELETE = ()
-    UPDATE = ()
-    PUT = ()
+class Methods(Enum):
+    POST = 1
+    GET = 2
+    DELETE = 3
+    UPDATE = 4
+    PUT = 5
 
 
 def chained(method):
@@ -33,7 +25,7 @@ def chained(method):
 def fluent(cls):
     """Class decorator to allow method chaining."""
     for name, member in cls.__dict__.iteritems():
-        if inspect.isfunction(member) and name.startsWith("set_"):
+        if inspect.isfunction(member) and name.startswith("set_"):
             setattr(cls, name, chained(member))
     return cls
 

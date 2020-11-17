@@ -102,10 +102,11 @@ class ApiClient(object):
         """
         retry = self.config.request_details.get("retry")
         attempted = False
+
         while not attempted or retry: 
             headers = self._get_headers(method)
             response = requests.request(method=method, url=endpoint, headers=headers, json=payload)
-            if response == requests.codes.ok:
+            if response.status_code == requests.codes.ok:
                 return response
 
             if self._token_is_expired(response):
@@ -118,7 +119,7 @@ class ApiClient(object):
                 message = "{} {} Error (Trace-Id: {})".format(response.status_code,
                                                             "Client" if response.status_code < 500 else "Server",
                                                             self._get_trace_id(response))
-                raise HTTPError(message=message, response=response)
+                raise HTTPError(request=message, response=response)
 
     def _sleep(self, response):
         """
@@ -147,4 +148,4 @@ class ApiClient(object):
         return trace_id if trace_id is not None else None
 
     def fetch(self, query):
-        return self._request(query.method, query.endpoint, query.params.serialize())
+        return self._request(query.method.name, query.endpoint, query.params.serialize())
