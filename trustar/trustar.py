@@ -14,9 +14,9 @@ logger = get_logger(__name__)
 class TruStar:
 
     DEFAULTS = {
-        'auth_endpoint': 'https://staging.trustar.co/oauth/token',
-        'api_endpoint': 'https://staging.trustar.co/api/2.0',
-        'station': "https://staging.trustar.co",
+        'auth_endpoint': 'https://api.trustar.co/oauth/token',
+        'api_endpoint': 'https://api.trustar.co/api/2.0',
+        'station': "https://station.trustar.co",
         'client_type': 'PYTHON_SDK',
         'client_version': __version__,
         'verify': True,
