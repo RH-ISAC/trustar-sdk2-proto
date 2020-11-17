@@ -1,4 +1,5 @@
 from api_client import ApiClient
+from base import Param
 
 
 class Query:
@@ -9,7 +10,9 @@ class Query:
         self.config = trustar
         self.endpoint = self.config.request_details.get("api_endpoint") + path
         self.params = params
-        self.iter = 0
+        self.stop = False
+        self.api = ApiClient(self.trustar)
+        self.api.auth()
 
     def __iter__(self):
         return self
@@ -17,14 +20,17 @@ class Query:
     def __next__(self):
         return self.next()
 
+    def _update_params_from_response(self, response):
+        if response["responseMetadata"]["nextCursor"] != "":
+            cursor = Param("cursor", response["responseMetadata"]["nextCursor"])
+            self.params.add(cursor)
+        else:
+            self.stop = True
+
     def next(self):
-        api = ApiClient(self.config)
-        # api.auth()
-        result = api.fetch(self)
-        if self.iter < 2:
-            self.iter += 1
+        if not self.stop:
+            result = self.api.fetch(self)
+            self._update_params_from_response(result.json())
             return result
         else:
-            raise StopIteration()
-            # update params here, use serializer class?
-
+            raise StopIteration

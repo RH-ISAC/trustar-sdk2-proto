@@ -1,8 +1,10 @@
-# local imports
-import requests
-from base import Methods
 from log import get_logger
-from requests.exceptions import HTTPError, ConnectionError
+from math import ceil
+import time
+
+import requests
+from requests.exceptions import HTTPError
+
 
 logger = get_logger(__name__)
 
@@ -59,8 +61,7 @@ class ApiClient(object):
             return False
         
         body = response.json()
-        return str(body.get('error_description')) in self.INVALID_TOKEN_MESSAGES:
-
+        return str(body.get('error_description')) in self.INVALID_TOKEN_MESSAGES
 
     def _get_headers(self, method):
         """
@@ -114,10 +115,9 @@ class ApiClient(object):
                 retry = self._sleep(response)
 
             else: 
-                message = "{} {} Error (Trace-Id: {}): {}".format(response.status_code,
+                message = "{} {} Error (Trace-Id: {})".format(response.status_code,
                                                             "Client" if response.status_code < 500 else "Server",
-                                                            self._get_trace_id(response),
-                                                            reason)
+                                                            self._get_trace_id(response))
                 raise HTTPError(message=message, response=response)
 
     def _sleep(self, response):
@@ -135,6 +135,7 @@ class ApiClient(object):
         
         return keep_trying
 
+    @staticmethod
     def _get_trace_id(response):
         """
         Fetches the trace id from the HTTP response header.
@@ -144,7 +145,6 @@ class ApiClient(object):
         """
         trace_id = response.headers.get('Trace-Id')
         return trace_id if trace_id is not None else None
-
 
     def fetch(self, query):
         return self._request(query.method, query.endpoint, query.params.serialize())

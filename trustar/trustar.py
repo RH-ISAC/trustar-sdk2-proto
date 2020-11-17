@@ -33,7 +33,6 @@ class TruStar:
         self.request_details = self.DEFAULTS.copy()
         self.request_details.update(kwargs)
 
-
     @classmethod
     def config_from_file(cls, config_file_path, config_role):
         with open(config_file_path, "r") as f:
@@ -45,9 +44,7 @@ class TruStar:
                 config_role, config_file_path
             ))
 
-        trustar = cls(**config)
-        return trustar
-
+        return cls(**config)
 
     def indicators(self):
         # TODO add condig
@@ -55,7 +52,4 @@ class TruStar:
 
 
 indicators = TruStar.config_from_file("trustar_config.json",
-                                      "staging").indicators().query()
-for n in indicators:
-    print(n.json())
-
+                                      "staging").indicators().set_enclave_ids("").query()
