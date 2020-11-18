@@ -1,15 +1,17 @@
 from api_client import ApiClient
-from base import Param
+from base import Param, fluent
 
 
 class Query:
     method = None
     serializer = None
 
-    def __init__(self, config, path, params):
+    def __init__(self, config, endpoint, method, params=None, payload=None):
         self.config = config
-        self.endpoint = path
+        self.endpoint = endpoint
+        self.method = method
         self.params = params
+        self.payload = payload
         self.stop = False
         self.api = ApiClient(self.config)
 
@@ -33,3 +35,6 @@ class Query:
             return result
         else:
             raise StopIteration
+
+    def fetch_one(self):
+        return self.api.fetch(self)
