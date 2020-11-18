@@ -5,6 +5,7 @@ from six import string_types
 # package imports
 from log import get_logger
 from indicators import SearchIndicator
+from submission import Submission
 
 from version import __version__, __api_version__
 
@@ -50,6 +51,9 @@ class TruStar:
         # TODO add condig
         return SearchIndicator(self)
 
+    def submission(self):
+        return Submission(self)
+
 
 indicators = TruStar.config_from_file("trustar_config.json",
-                                      "staging").indicators().set_enclave_ids("").query()
+                                      "staging").submission()
