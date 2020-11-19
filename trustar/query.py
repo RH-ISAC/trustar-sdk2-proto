@@ -6,12 +6,12 @@ class Query:
     method = None
     serializer = None
 
-    def __init__(self, config, endpoint, method, params=None, payload=None):
+    def __init__(self, config, endpoint, method, params=None, query_string=None):
         self.config = config
         self.endpoint = endpoint
         self.method = method
         self.params = params
-        self.payload = payload
+        self.query_string = query_string
         self.stop = False
         self.api = ApiClient(self.config)
 
@@ -38,4 +38,3 @@ class Query:
 
     def fetch_one(self):
         return self.api.fetch(self)
-
