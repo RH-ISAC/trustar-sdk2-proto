@@ -18,13 +18,22 @@ class SearchIndicator:
     def __init__(self, config):
         self.trustar = config
         self.params = SearchIndicatorParamSerializer()
+        self.tags = None
         self.from_date = None
         self.to_date = None
-        self.page_size = 1
+        self.page_size = 25
+        self.indicator_id = None
 
     @property
     def endpoint(self):
-        return self.trustar.request_details.get("api_endpoint") + self.url + "?pageSize=" + str(self.page_size)
+        return self.trustar.request_details.get("api_endpoint") + self.url
+
+    @property
+    def tag_endpoint(self):
+        return self.endpoint + "/{}/tags".format(self.indicator_id)
+
+    def set_tag(self, tag):
+        self.tags.add(tag)
 
     def set_page_size(self, size):
         self.page_size = size
@@ -114,10 +123,22 @@ class SearchIndicator:
 
         self.set_custom_param(Param("relatedObservables", observables))
 
+    def set_indicator_id(self, indicator_id):
+        self.indicator_id = indicator_id
+
     def query(self):
         # TODO check that the both the start and to are set
         if not self._valid_dates():
             raise AttributeError("Polling window should end after the start of it.")
-        q = Query(self.trustar, self.endpoint, self.params)
-        q.method = Methods.POST
-        return q
+        return Query(self.trustar, self.endpoint, Methods.POST, params=self.params,
+                     query_string=("pageSize", str(self.page_size)))
+
+    def create_tag(self):
+        if not "tag" and "tag_id" in self.params:
+            raise AttributeError("Indicator id and a tag are required for creating a new user tag")
+        return Query(self.trustar, self.endpoint, Methods.POST, query_string=self.tag_endpoint).fetch_one()
+
+    def delete_tag(self):
+        if not self.indicator_id:
+            raise AttributeError("Indicator id and a tag required for deleting a user tag")
+        return Query(self.trustar, self.endpoint, Methods.DELETE, query_string=self.tag_endpoint).fetch_one()

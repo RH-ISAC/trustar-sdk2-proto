@@ -117,7 +117,7 @@ def test_set_duplicated_query_terms(search_indicator):
     search_indicator.set_query_term("TEST_TERM2")
     values = [param.value for param in search_indicator.params]
     assert len(search_indicator.params) == 1
-    assert values[0] == "TEST_TERM"
+    assert values[0] == "TEST_TERM2"
 
  
 @pytest.mark.xfail(raises=AttributeError)
