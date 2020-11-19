@@ -20,7 +20,7 @@ class Observable(Entity):
 
     @property
     def entity_type(self):
-        return entity_type
+        return self._entity_type
 
     @entity_type.setter
     def entity_type(self, entity_type):

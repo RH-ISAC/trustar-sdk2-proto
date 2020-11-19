@@ -18,7 +18,7 @@ class Attribute(Entity):
 
     @property
     def entity_type(self):
-        return entity_type
+        return self._entity_type
 
     
     @entity_type.setter

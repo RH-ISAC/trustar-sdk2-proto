@@ -1,10 +1,8 @@
 
-
-
 class Base(object):
 
     def _get_camelcase(self, attribute):
-        if (attribute == "_entity_type"):
+        if attribute == "_entity_type":
             return "type"
 
         tmp = attribute.split("_")
