@@ -64,10 +64,10 @@ class Params(MutableSet):
         return len(self.map)
 
     def __contains__(self, key):
-        return key in self.map
+        return hash(key) in self.map
 
     def _discard(self, key):
-        key, prev, next = self.map.pop(key)
+        key, prev, next = self.map.pop(hash(key))
         prev[2] = next
         next[1] = prev
 
@@ -76,7 +76,7 @@ class Params(MutableSet):
             self._discard(key)
         end = self.end
         curr = end[1]
-        curr[2] = end[1] = self.map[key] = [key, curr, end]
+        curr[2] = end[1] = self.map[hash(key)] = [key, curr, end]
 
     def discard(self, key):
         if key in self.map:

@@ -1,6 +1,5 @@
-
-from base_class import Entity
-from trustar_enums import AttributeTypes
+from base import Entity
+from trustar.trustar_enums import AttributeTypes
 
 
 class Attribute(Entity):
@@ -9,7 +8,8 @@ class Attribute(Entity):
         self._validate_attribute_type(entity_type)
         self._entity_type = entity_type
 
-    def _validate_attribute_type(self, entity_type):
+    @staticmethod
+    def _validate_attribute_type(entity_type):
         if not entity_type in AttributeTypes.members():
             raise AttributeError(
                 "Attribute type should be in the following: {}".format(
@@ -20,7 +20,6 @@ class Attribute(Entity):
     def entity_type(self):
         return self._entity_type
 
-    
     @entity_type.setter
     def entity_type(self, entity_type):
         self._validate_attribute_type(entity_type)

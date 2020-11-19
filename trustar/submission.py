@@ -1,12 +1,11 @@
-
 from base import fluent, Methods, Params, Param
 from query import Query
-from trustar_enums import ObservableTypes, SortColumns, AttributeTypes
+
 
 class SubmissionsParamSerializer(Params):
 
     def serialize(self):
-        return {n.key: n.value for n in self.map}
+        return {n.key: n.value for n in self}
 
 
 @fluent
@@ -47,11 +46,7 @@ class Submission(object):
         self.add_custom_param(Param("tags", tags))
     
     def create(self):
-
-        # for k in self.NEW_SUBMISSION_MANDATORY_FIELDS:
-        #     if (k not in self.params):
-        #         raise AttributeError("{} field should be in your submission".format(k))
-
-        q = Query(self.config, self.endpoint, self.params)
-        q.method = Methods.POST
-        return q.fetch_one()
+        for k in self.NEW_SUBMISSION_MANDATORY_FIELDS:
+            if k not in self.params:
+                raise AttributeError("{} field should be in your submission".format(k))
+        return Query(self.config, self.endpoint, Methods.POST, params=self.params).fetch_one()

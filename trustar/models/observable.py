@@ -1,6 +1,5 @@
-
-from base_class import Entity
-from trustar_enums import ObservableTypes
+from base import Entity
+from trustar.trustar_enums import ObservableTypes
 
 
 class Observable(Entity):
@@ -10,8 +9,8 @@ class Observable(Entity):
         self._validate_observable_type(entity_type)
         self._entity_type = entity_type
 
-
-    def _validate_observable_type(self, entity_type):
+    @staticmethod
+    def _validate_observable_type(entity_type):
         if not entity_type in ObservableTypes.members():
             raise AttributeError(
                 "Observable type should be in the following: {}".format(

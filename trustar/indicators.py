@@ -8,7 +8,7 @@ from trustar_enums import ObservableTypes, SortColumns, AttributeTypes
 class SearchIndicatorParamSerializer(Params):
 
     def serialize(self):
-        return {n.key: n.value for n in self.map}
+        return {n.key: n.value for n in self}
 
 
 @fluent

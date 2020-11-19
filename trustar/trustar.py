@@ -6,7 +6,6 @@ from six import string_types
 from log import get_logger
 from indicators import SearchIndicator
 from submission import Submission
-
 from version import __version__, __api_version__
 
 logger = get_logger(__name__)

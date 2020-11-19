@@ -1,9 +1,8 @@
+from trustar.base import fluent
+from base import Base
 
-# from base import fluent
-from base_class import Base
 
-
-# @fluent
+@fluent
 class Indicator(Base):
 
     def __init__(self, observable, valid_to=None, valid_from=None, mal_score=None):
