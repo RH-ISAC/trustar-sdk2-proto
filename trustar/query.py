@@ -38,3 +38,4 @@ class Query:
 
     def fetch_one(self):
         return self.api.fetch(self)
+

@@ -5,10 +5,14 @@ from six import string_types
 # package imports
 from log import get_logger
 from indicators import SearchIndicator
+from submission import Submission
 
 from version import __version__, __api_version__
 
 logger = get_logger(__name__)
+
+
+from models import Attribute, Relation, Indicator, Observable
 
 
 class TruStar:
@@ -50,6 +54,25 @@ class TruStar:
         # TODO add condig
         return SearchIndicator(self)
 
+    def submission(self):
+        return Submission(self)
 
-indicators = TruStar.config_from_file("trustar_config.json",
-                                      "staging").indicators().set_enclave_ids("").query()
+
+indicators = [
+    Indicator(Observable("1.2.3.4", "IP4"), mal_score="HIGH").set_attributes(Relation(Attribute("BAD_PANDA", "MALWARE"))).\
+                                            set_related_observables(Relation(Observable("bob@gmail.com", "EMAIL_ADDRESS"))),
+    Indicator(Observable("8.8.8.8", "IP4"), mal_score="HIGH").set_attributes(Relation(Attribute("BAD_PANDA", "MALWARE"))).\
+                                            set_related_observables(Relation(Observable("boeing.servehttp.com", "URL"))).\
+                                            set_tags("TAG1")
+]
+
+
+
+submission = TruStar.config_from_file("trustar_config.json","staging").submission()
+
+response = submission.set_title("Hernan Submission3").\
+                      set_enclave_id("8bf9617c-54f0-4a68-a6ad-dbbbdb393945").\
+                      set_tags([]).\
+                      set_content_indicators(indicators).create()
+
+print(response)
