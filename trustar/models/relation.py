@@ -1,5 +1,5 @@
+from base import Base
 
-from base_class import Base
 
 class Relation(Base):
 

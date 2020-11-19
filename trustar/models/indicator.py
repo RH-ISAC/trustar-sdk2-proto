@@ -1,6 +1,5 @@
-
-from base import fluent
-from base_class import Base
+from trustar.base import fluent
+from base import Base
 
 
 @fluent

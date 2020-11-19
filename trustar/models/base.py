@@ -1,35 +1,35 @@
-
 class Base(object):
 
-    def _get_camelcase(self, attribute):
+    @staticmethod
+    def _get_camelcase(attribute):
         if attribute == "_entity_type":
             return "type"
 
         tmp = attribute.split("_")
         return tmp[0] + "".join([w.title() for w in tmp[1:]])
 
-    def _get_serialized(self, attribute_value):
+    @staticmethod
+    def _get_serialized(attribute_value):
         serializable = getattr(attribute_value, "serialize", None)
         if serializable:
             attribute_value = attribute_value.serialize()
-        
+
         return attribute_value
 
     def _get_serialized_attribute(self, attribute_value):
         if isinstance(attribute_value, list):
             attribute_value = [self._get_serialized(a) for a in attribute_value]
-        
+
         else:
             attribute_value = self._get_serialized(attribute_value)
 
         return attribute_value
-        
 
     def serialize(self):
-        return { self._get_camelcase(k): self._get_serialized_attribute(v)
-            for k, v in self.__dict__.iteritems() 
-            if v is not None
-        }
+        return {self._get_camelcase(k): self._get_serialized_attribute(v)
+                for k, v in self.__dict__.iteritems()
+                if v is not None
+                }
 
 
 class Entity(Base):
