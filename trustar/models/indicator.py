@@ -1,9 +1,9 @@
 
-from base import fluent
+# from base import fluent
 from base_class import Base
 
 
-@fluent
+# @fluent
 class Indicator(Base):
 
     def __init__(self, observable, valid_to=None, valid_from=None, mal_score=None):
@@ -17,9 +17,12 @@ class Indicator(Base):
 
     def set_tags(self, tag):
         self.tags.append(tag)
+        return self
 
     def set_related_observables(self, related_obs):
         self.related_observables.append(related_obs)
+        return self
 
     def set_attributes(self, related_attribute):
         self.attributes.append(related_attribute)
+        return self

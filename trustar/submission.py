@@ -11,16 +11,20 @@ class SubmissionsParamSerializer(Params):
 
 @fluent
 class Submission(object):
-    endpoint = "/submissions/indicators"
+
+    NEW_SUBMISSION_MANDATORY_FIELDS = ("title", "content", "enclaveId")
+    path = "/submissions/indicators"
 
     def __init__(self, config):
         self.config = config
         self.params = SubmissionsParamSerializer()
 
+    @property
+    def endpoint(self):
+        return self.config.request_details.get("api_endpoint") + self.path
 
     def add_custom_param(self, param):
         self.params.add(param)
-
 
     def set_title(self, title):
         self.add_custom_param(Param("title", title))
@@ -28,7 +32,7 @@ class Submission(object):
     def set_content_indicators(self, indicators):
         indicators = [i.serialize() for i in indicators]
         content = {"indicators": indicators}
-        self.add_custom_param(Param("content": content))
+        self.add_custom_param(Param("content", content))
 
     def set_enclave_id(self, enclave_id):
         self.add_custom_param(Param("enclaveId", enclave_id))
@@ -42,3 +46,12 @@ class Submission(object):
     def set_tags(self, tags):
         self.add_custom_param(Param("tags", tags))
     
+    def create(self):
+
+        # for k in self.NEW_SUBMISSION_MANDATORY_FIELDS:
+        #     if (k not in self.params):
+        #         raise AttributeError("{} field should be in your submission".format(k))
+
+        q = Query(self.config, self.endpoint, self.params)
+        q.method = Methods.POST
+        return q.fetch_one()

@@ -33,3 +33,7 @@ class Query:
             return result
         else:
             raise StopIteration
+
+    def fetch_one(self):
+        result = self.api.fetch(self)
+        return result
