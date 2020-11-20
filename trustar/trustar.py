@@ -70,6 +70,10 @@ indicators = [
 
 submission = TruStar.config_from_file("trustar_config.json", "staging").submission()
 
-response = submission.set_id("50797cfb-fcc9-4b22-abf1-ea9555bf733f").get()
+response = (
+    submission.set_id("50797cfb-fcc9-4b22-abf1-ea9555bf733f")
+    .set_include_content(True)
+    .get()
+)
 
 print(response.json())
