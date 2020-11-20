@@ -17,16 +17,16 @@ from models import Attribute, Relation, Indicator, Observable
 class TruStar:
 
     DEFAULTS = {
-        'auth_endpoint': 'https://api.trustar.co/oauth/token',
-        'api_endpoint': 'https://api.trustar.co/api/2.0',
-        'station': "https://station.trustar.co",
-        'client_type': 'PYTHON_SDK',
-        'client_version': __version__,
-        'verify': True,
-        'retry': True,
-        'max_wait_time': 60,
-        'http_proxy': None,
-        'https_proxy': None
+        "auth_endpoint": "https://api.trustar.co/oauth/token",
+        "api_endpoint": "https://api.trustar.co/api/2.0",
+        "station": "https://station.trustar.co",
+        "client_type": "PYTHON_SDK",
+        "client_version": __version__,
+        "verify": True,
+        "retry": True,
+        "max_wait_time": 60,
+        "http_proxy": None,
+        "https_proxy": None,
     }
 
     def __init__(self, api_key, api_secret, client_metatag, **kwargs):
@@ -43,9 +43,9 @@ class TruStar:
 
         config = config_file.get(config_role)
         if not config:
-            raise AttributeError("{} role was not found in {} file".format(
-                config_role, config_file_path
-            ))
+            raise AttributeError(
+                "{} role was not found in {} file".format(config_role, config_file_path)
+            )
 
         return cls(**config)
 
@@ -58,20 +58,18 @@ class TruStar:
 
 
 indicators = [
-    Indicator(Observable("1.2.3.4", "IP4"), mal_score="HIGH").set_attributes(Relation(Attribute("BAD_PANDA", "MALWARE"))).\
-                                            set_related_observables(Relation(Observable("bob@gmail.com", "EMAIL_ADDRESS"))),
-    Indicator(Observable("8.8.8.8", "IP4"), mal_score="HIGH").set_attributes(Relation(Attribute("BAD_PANDA", "MALWARE"))).\
-                                            set_related_observables(Relation(Observable("boeing.servehttp.com", "URL"))).\
-                                            set_tags("TAG1")
+    Indicator(Observable("1.2.3.4", "IP4"), mal_score="HIGH")
+    .set_attributes(Relation(Attribute("BAD_PANDA", "MALWARE")))
+    .set_related_observables(Relation(Observable("bob@gmail.com", "EMAIL_ADDRESS"))),
+    Indicator(Observable("8.8.8.8", "IP4"), mal_score="HIGH")
+    .set_attributes(Relation(Attribute("BAD_PANDA", "MALWARE")))
+    .set_related_observables(Relation(Observable("boeing.servehttp.com", "URL")))
+    .set_tags("TAG1"),
 ]
 
 
+submission = TruStar.config_from_file("trustar_config.json", "staging").submission()
 
-submission = TruStar.config_from_file("trustar_config.json","staging").submission()
+response = submission.set_id("50797cfb-fcc9-4b22-abf1-ea9555bf733f").get()
 
-response = submission.set_title("Hernan Submission3").\
-                      set_enclave_id("8bf9617c-54f0-4a68-a6ad-dbbbdb393945").\
-                      set_tags([]).\
-                      set_content_indicators(indicators).create()
-
-print(response)
+print(response.json())
