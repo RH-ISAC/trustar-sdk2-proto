@@ -50,6 +50,18 @@ class Submission(object):
     def set_include_content(self, content=False):
         self.add_custom_param(Param("includeContent", content))
 
+    def set_timestamp(self, timestamp):
+        self.add_custom_param(Param("timestamp", timestamp))
+
+    def set_created(self, created):
+        self.add_custom_param(Param("created", created))
+
+    def set_updated(self, updated):
+        self.add_custom_param(Param("updated", updated))
+
+    def set_raw_content(self, raw_content):
+        self.add_custom_param(Param("rawContent", raw_content))
+
     def create(self):
         for k in self.NEW_SUBMISSION_MANDATORY_FIELDS:
             if k not in self.params:
