@@ -16,7 +16,6 @@ class Submission(object):
     def __init__(self, config):
         self.config = config
         self.params = SubmissionsParamSerializer()
-        self.current_method = Methods.GET
 
     @property
     def endpoint(self):
