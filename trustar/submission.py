@@ -16,6 +16,7 @@ class Submission(object):
     def __init__(self, config):
         self.config = config
         self.params = SubmissionsParamSerializer()
+        self.current_method = Methods.GET
 
     @property
     def endpoint(self):
@@ -62,28 +63,24 @@ class Submission(object):
     def set_raw_content(self, raw_content):
         self.add_custom_param(Param("rawContent", raw_content))
 
+    @property
+    def query_params(self):
+        return {p.key: p.value for p in self.params if p in ("id", "enclaveId", "includeContent")}
+
+    def create_query(self, method):
+        return Query(self.config, self.endpoint, method)
+
     def create(self):
         for k in self.NEW_SUBMISSION_MANDATORY_FIELDS:
             if k not in self.params:
                 raise AttributeError("{} field should be in your submission".format(k))
-        return Query(
-            self.config, self.endpoint, Methods.POST, params=self.params
-        ).fetch_one()
-
-    def _is_query_param(self, key):
-        return key in ("id", "enclaveId", "includeContent")
+        return self.create_query(Methods.POST).set_params(self.params).fetch_one()
 
     def delete(self):
-
-        params = {p.key: p.value for p in self.params if self._is_query_param(p.key)}
-        return Query(
-            self.config, self.endpoint, Methods.DELETE, query_string=params
-        ).fetch_one()
+        return self.create_query(Methods.DELETE).set_query_string(self.query_params).fetch_one()
 
     def get(self):
+        return self.create_query(Methods.GET).set_query_string(self.query_params).fetch_one()
 
-        params = {p.key: p.value for p in self.params if self._is_query_param(p.key)}
-        return Query(
-            self.config, self.endpoint, Methods.GET, query_string=params
-        ).fetch_one()
-
+    def update(self):
+        return self.create_query(Methods.PUT).set_query_string(self.query_params).fetch_one()
