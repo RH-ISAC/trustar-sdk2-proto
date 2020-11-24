@@ -3,7 +3,7 @@ import time
 import pytest
 import requests_mock
 
-from trustar import TruStar
+from trustar.trustar import TruStar
 
 BASE_URL = "/api/2.0"
 

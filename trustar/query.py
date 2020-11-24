@@ -2,9 +2,8 @@ from api_client import ApiClient
 from base import Param, fluent
 
 
+@fluent
 class Query:
-    method = None
-    serializer = None
 
     def __init__(self, config, endpoint, method, params=None, query_string=None):
         self.config = config
@@ -20,6 +19,12 @@ class Query:
 
     def __next__(self):
         return self.next()
+
+    def set_query_string(self, query_string):
+        self.query_string = query_string
+
+    def set_params(self, params):
+        self.params = params
 
     def _update_params_from_response(self, response):
         if response["responseMetadata"]["nextCursor"] != "":
