@@ -71,6 +71,12 @@ class Params(MutableSet):
         prev[2] = next
         next[1] = prev
 
+    def get(self, key):
+        try:
+            return self.map[hash(key)]
+        except KeyError:
+            pass
+
     def add(self, key):
         if hash(key) in self.map:
             self._discard(key)

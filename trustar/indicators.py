@@ -18,11 +18,8 @@ class SearchIndicator:
     def __init__(self, config):
         self.trustar = config
         self.params = SearchIndicatorParamSerializer()
-        self.tags = None
         self.from_date = None
         self.to_date = None
-        self.page_size = 25
-        self.indicator_id = None
 
     @property
     def endpoint(self):
@@ -30,13 +27,13 @@ class SearchIndicator:
 
     @property
     def tag_endpoint(self):
-        return self.endpoint + "/{}/tags".format(self.indicator_id)
+        return self.endpoint + "/{}/tags".format(self.params.get("indicator_id"))
 
-    def set_tag(self, tag):
-        self.tags.add(tag)
+    def set_tag_id(self, tag_id):
+        self.set_custom_param(Param("tag", tag_id))
 
-    def set_page_size(self, size):
-        self.page_size = size
+    def set_page_size(self, page_size):
+        self.set_custom_param(Param("pageSize", page_size))
 
     def set_custom_param(self, param):
         self.params.add(param)  # Receives a Param object
@@ -67,7 +64,7 @@ class SearchIndicator:
         self.set_custom_param(Param("to", to_date))
 
     def set_sort_column(self, column):
-        if not column in SortColumns.members():
+        if column not in SortColumns.members():
             raise AttributeError(
                 "column should be one of the following: {}".format(
                     list(SortColumns.members())
@@ -124,7 +121,7 @@ class SearchIndicator:
         self.set_custom_param(Param("relatedObservables", observables))
 
     def set_indicator_id(self, indicator_id):
-        self.indicator_id = indicator_id
+        self.set_custom_param(Param("indicator_id", indicator_id))
 
     def query(self):
         # TODO check that the both the start and to are set
@@ -134,11 +131,11 @@ class SearchIndicator:
                      query_string=("pageSize", str(self.page_size)))
 
     def create_tag(self):
-        if not "tag" and "tag_id" in self.params:
+        if not "tag_id" in self.params:
             raise AttributeError("Indicator id and a tag are required for creating a new user tag")
         return Query(self.trustar, self.endpoint, Methods.POST, query_string=self.tag_endpoint).fetch_one()
 
     def delete_tag(self):
-        if not self.indicator_id:
+        if "indicator_id" not in self.params:
             raise AttributeError("Indicator id and a tag required for deleting a user tag")
         return Query(self.trustar, self.endpoint, Methods.DELETE, query_string=self.tag_endpoint).fetch_one()

@@ -50,3 +50,4 @@ class Submission(object):
             if k not in self.params:
                 raise AttributeError("{} field should be in your submission".format(k))
         return Query(self.config, self.endpoint, Methods.POST, params=self.params).fetch_one()
+
