@@ -72,7 +72,7 @@ class Params(MutableSet):
         next[1] = prev
 
     def add(self, key):
-        if key in self.map:
+        if hash(key) in self.map:
             self._discard(key)
         end = self.end
         curr = end[1]
