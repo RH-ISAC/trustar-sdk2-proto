@@ -3,7 +3,6 @@ from query import Query
 
 
 class SubmissionsParamSerializer(Params):
-
     def serialize(self):
         return {n.key: n.value for n in self}
 
@@ -25,9 +24,12 @@ class Submission(object):
     def add_custom_param(self, param):
         self.params.add(param)
 
+    def set_id(self, submission_id):
+        self.add_custom_param(Param("id", submission_id))
+
     def set_title(self, title):
         self.add_custom_param(Param("title", title))
-        
+
     def set_content_indicators(self, indicators):
         indicators = [i.serialize() for i in indicators]
         content = {"indicators": indicators}
@@ -44,9 +46,43 @@ class Submission(object):
 
     def set_tags(self, tags):
         self.add_custom_param(Param("tags", tags))
-    
+
+    def set_include_content(self, content=False):
+        self.add_custom_param(Param("includeContent", content))
+
+    def set_timestamp(self, timestamp):
+        self.add_custom_param(Param("timestamp", timestamp))
+
+    def set_created(self, created):
+        self.add_custom_param(Param("created", created))
+
+    def set_updated(self, updated):
+        self.add_custom_param(Param("updated", updated))
+
+    def set_raw_content(self, raw_content):
+        self.add_custom_param(Param("rawContent", raw_content))
+
     def create(self):
         for k in self.NEW_SUBMISSION_MANDATORY_FIELDS:
             if k not in self.params:
                 raise AttributeError("{} field should be in your submission".format(k))
-        return Query(self.config, self.endpoint, Methods.POST, params=self.params).fetch_one()
+        return Query(
+            self.config, self.endpoint, Methods.POST, params=self.params
+        ).fetch_one()
+
+    def _is_query_param(self, key):
+        return key in ("id", "enclaveId", "includeContent")
+
+    def delete(self):
+
+        params = {p.key: p.value for p in self.params if self._is_query_param(p.key)}
+        return Query(
+            self.config, self.endpoint, Methods.DELETE, query_string=params
+        ).fetch_one()
+
+    def get(self):
+
+        params = {p.key: p.value for p in self.params if self._is_query_param(p.key)}
+        return Query(
+            self.config, self.endpoint, Methods.GET, query_string=params
+        ).fetch_one()
