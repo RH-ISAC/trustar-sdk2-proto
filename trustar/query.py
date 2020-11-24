@@ -1,6 +1,7 @@
 from api_client import ApiClient
 from base import Param, fluent
 
+
 @fluent
 class Query:
 

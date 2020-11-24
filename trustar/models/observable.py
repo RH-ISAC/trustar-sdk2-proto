@@ -11,7 +11,7 @@ class Observable(Entity):
 
     @staticmethod
     def _validate_observable_type(entity_type):
-        if not entity_type in ObservableTypes.members():
+        if entity_type not in ObservableTypes.members():
             raise AttributeError(
                 "Observable type should be in the following: {}".format(
                     list(ObservableTypes.members())
