@@ -1,3 +1,5 @@
+import dateparser
+
 from base import fluent, Methods, Params, Param
 from query import Query
 
@@ -20,6 +22,11 @@ class Submission(object):
     @property
     def endpoint(self):
         return self.config.request_details.get("api_endpoint") + self.path
+
+    @staticmethod
+    def _get_timestamp(date):
+        dt_obj = dateparser.parse(date)
+        return int(dt_obj.strftime("%s"))
 
     def add_custom_param(self, param):
         self.params.add(param)
@@ -51,20 +58,21 @@ class Submission(object):
         self.add_custom_param(Param("includeContent", content))
 
     def set_timestamp(self, timestamp):
+        if not isinstance(timestamp, int):
+            timestamp = self._get_timestamp(timestamp)
+
         self.add_custom_param(Param("timestamp", timestamp))
-
-    def set_created(self, created):
-        self.add_custom_param(Param("created", created))
-
-    def set_updated(self, updated):
-        self.add_custom_param(Param("updated", updated))
 
     def set_raw_content(self, raw_content):
         self.add_custom_param(Param("rawContent", raw_content))
 
     @property
     def query_params(self):
-        return {p.key: p.value for p in self.params if p in ("id", "enclaveId", "includeContent")}
+        return {
+            p.key: p.value
+            for p in self.params
+            if p in ("id", "enclaveId", "includeContent")
+        }
 
     def create_query(self, method):
         return Query(self.config, self.endpoint, method)
@@ -76,10 +84,22 @@ class Submission(object):
         return self.create_query(Methods.POST).set_params(self.params).fetch_one()
 
     def delete(self):
-        return self.create_query(Methods.DELETE).set_query_string(self.query_params).fetch_one()
+        return (
+            self.create_query(Methods.DELETE)
+            .set_query_string(self.query_params)
+            .fetch_one()
+        )
 
     def get(self):
-        return self.create_query(Methods.GET).set_query_string(self.query_params).fetch_one()
+        return (
+            self.create_query(Methods.GET)
+            .set_query_string(self.query_params)
+            .fetch_one()
+        )
 
     def update(self):
-        return self.create_query(Methods.PUT).set_query_string(self.query_params).fetch_one()
+        return (
+            self.create_query(Methods.PUT)
+            .set_query_string(self.query_params)
+            .fetch_one()
+        )
