@@ -9,12 +9,12 @@ def api_client():
     return ApiClient(TruStar("API_KEY", "API_SECRET", "TEST_METATAG"))
 
 
-def test_get_token_successfully(api_client, mocked_auth):
+def test_get_token_successfully(api_client, mocked_request):
     token = api_client._get_token()
     assert token == "TOKEN12345"
 
 
-def test_get_headers(api_client, mocked_auth):
+def test_get_headers(api_client, mocked_request):
     headers = api_client._get_headers("POST")
     expected_headers = {
         "Authorization": "Bearer TOKEN12345",
