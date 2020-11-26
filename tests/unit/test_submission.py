@@ -90,6 +90,19 @@ def test_set_raw_content(submission):
     assert params[0] == "RAW CONTENT"
 
 
+@pytest.mark.parametrize("date", [1596607968000, "2020-11-10", "1 day ago"])
+def test_set_to(submission, date):
+    if not isinstance(date, int):
+        timestamp = submission._get_timestamp(date)
+    else:
+        timestamp = date
+
+    submission.set_timestamp(date)
+    values = [param.value for param in submission.params]
+    assert len(submission.params) == 1
+    assert values[0] == timestamp
+
+
 @pytest.mark.xfail(raises=AttributeError)  # title missing
 def test_create_fails_without_mandatory_fields(submission, indicators):
     submission.set_enclave_id("TEST-ENCLAVE_ID")
