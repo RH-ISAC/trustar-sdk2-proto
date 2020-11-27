@@ -4,7 +4,6 @@ from base import Base
 
 @fluent
 class Indicator(Base):
-
     def __init__(self, observable, valid_to=None, valid_from=None, mal_score=None):
         self.observable = observable
         self.valid_to = valid_to
@@ -14,8 +13,8 @@ class Indicator(Base):
         self.related_observables = []
         self.tags = []
 
-    def set_tags(self, tag):
-        self.tags.append(tag)
+    def set_tags(self, tags):
+        self.tags += tags
         return self
 
     def set_related_observables(self, related_obs):
