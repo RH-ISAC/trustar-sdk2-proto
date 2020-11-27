@@ -1,12 +1,16 @@
 import pytest
 
 from trustar.indicators import SearchIndicator
+from trustar.query import Query
+from trustar.trustar import TruStar
+from trustar.trustar_enums import ObservableTypes
 
 
 @pytest.fixture
 def search_indicator():
-    search_indicator = SearchIndicator(None) # update to use dummy config
-    return search_indicator
+    return SearchIndicator(TruStar(api_key="xxxx",
+                                   api_secret="xxx",
+                                   client_metatag="test_env"))
 
 
 def test_search_indicators_is_empty(search_indicator):
@@ -125,3 +129,15 @@ def test_query_will_not_work_due_to_invalid_dates(search_indicator):
     search_indicator.set_from("1 day ago")
     search_indicator.set_to("2 days ago")
     search_indicator.query()
+
+
+def test_ok_query(search_indicator, mocked_request):
+    # mocked_request.post()
+    attribute = [{"type": "THREAT_ACTOR", "value": "BAD PANDA"}]
+    q = search_indicator.set_query_term("/Users/mknopf/code/test.sh").\
+        set_enclave_ids("3a93fab3-f87a-407a-9376-8eb3fae99b4e").set_priority_scores([3]).\
+        set_observable_types([ObservableTypes.SOFTWARE]).set_from("1596607968000").set_to("1598308171000").\
+        set_sort_column("PROCESSED_AT").set_attributes(attribute).search()
+    import pdb; pdb.set_trace()
+    print(q.params.serialize())
+    assert isinstance(q, Query)
