@@ -1,9 +1,13 @@
+from __future__ import unicode_literals
+
+import json
 import pytest
 
 from trustar.indicators import SearchIndicator
-from trustar.query import Query
+from trustar.base import Param
 from trustar.trustar import TruStar
 from trustar.trustar_enums import ObservableTypes
+from .resources import indicators_example_request
 
 
 @pytest.fixture
@@ -131,13 +135,11 @@ def test_query_will_not_work_due_to_invalid_dates(search_indicator):
     search_indicator.query()
 
 
-def test_ok_query(search_indicator, mocked_request):
-    # mocked_request.post()
+def test_ok_query(search_indicator):
     attribute = [{"type": "THREAT_ACTOR", "value": "BAD PANDA"}]
+    p = Param("cursor", "eyJwYWdlTnVtYmVyIjoxLCJwYWdlU2l6ZSI6Miwib2Zmc2V0Ijo0fQ==")
     q = search_indicator.set_query_term("/Users/mknopf/code/test.sh").\
         set_enclave_ids("3a93fab3-f87a-407a-9376-8eb3fae99b4e").set_priority_scores([3]).\
-        set_observable_types([ObservableTypes.SOFTWARE]).set_from("1596607968000").set_to("1598308171000").\
-        set_sort_column("PROCESSED_AT").set_attributes(attribute).search()
-    import pdb; pdb.set_trace()
-    print(q.params.serialize())
-    assert isinstance(q, Query)
+        set_observable_types([ObservableTypes.SOFTWARE.name]).set_from(1596607968000).set_to(1598308171000).\
+        set_sort_column("PROCESSED_AT").set_attributes(attribute).set_custom_param(p).search()
+    assert q.params.serialize() == json.loads(indicators_example_request)

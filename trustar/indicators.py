@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 import dateparser
 
 from base import fluent, Methods, Params, Param
@@ -41,7 +43,7 @@ class SearchIndicator:
     @staticmethod
     def _get_timestamp(date):
         dt_obj = dateparser.parse(date)
-        return int(dt_obj.strftime("%s"))
+        return long(dt_obj.strftime("%s"))
 
     def _valid_dates(self):
         return not (self.from_date and self.to_date and self.to_date < self.from_date)
@@ -89,8 +91,7 @@ class SearchIndicator:
             raise AttributeError("types should be a list")
         selected_types = set(types)
         valid_types = set(ObservableTypes.members())
-        valid_types_enum = set(ObservableTypes)
-        if not selected_types.issubset(valid_types) or not selected_types.issubset(valid_types_enum):
+        if not selected_types.issubset(valid_types):
             raise AttributeError(
                 "observable type should be one of the following: {}".format(
                     valid_types)
@@ -135,7 +136,7 @@ class SearchIndicator:
         if not self._valid_dates():
             raise AttributeError("Polling window should end after the start of it.")
         return self.create_query(Methods.POST).set_params(self.params).\
-            set_query_string(("pageSize", str(self.params.get("pageSize", 25))))
+            set_query_string({"pageSize": self.params.get("pageSize", 25)})
 
     def create_tag(self):
         if "tag_id" not in self.params:
