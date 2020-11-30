@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 import dateparser
 
 from base import fluent, Methods, Params, Param
@@ -41,13 +43,13 @@ class SearchIndicator:
     @staticmethod
     def _get_timestamp(date):
         dt_obj = dateparser.parse(date)
-        return int(dt_obj.strftime("%s"))
+        return long(dt_obj.strftime("%s"))
 
     def _valid_dates(self):
         return not (self.from_date and self.to_date and self.to_date < self.from_date)
 
     def set_query_term(self, query):
-        self.params.add(Param("queryTerm", query))
+        self.set_custom_param(Param("queryTerm", query))
 
     def set_from(self, from_date):
         if not isinstance(from_date, int):
@@ -70,15 +72,14 @@ class SearchIndicator:
                     list(SortColumns.members())
                 ))
 
-        self.params.add(Param("sortColumn", column))
+        self.set_custom_param(Param("sortColumn", column))
 
     def set_priority_scores(self, scores):
-        if any([s for s in scores if s > 3 or s < -1]):
+        if not isinstance(scores, list) or any([s for s in scores if s > 3 or s < -1]):
             raise AttributeError(
                 "scores should be a list of integers between -1 and 3"
             )
-
-        self.params.add(Param("priorityScores", scores))
+        self.set_custom_param(Param("priorityScores", scores))
 
     def set_enclave_ids(self, enclave_ids):
         if not isinstance(enclave_ids, list):
@@ -86,6 +87,8 @@ class SearchIndicator:
         self.set_custom_param(Param("enclaveIds", enclave_ids))
 
     def set_observable_types(self, types):
+        if not isinstance(types, list):
+            raise AttributeError("types should be a list")
         selected_types = set(types)
         valid_types = set(ObservableTypes.members())
         if not selected_types.issubset(valid_types):
@@ -97,13 +100,15 @@ class SearchIndicator:
         self.set_custom_param(Param("types", types))
 
     def set_attributes(self, attributes):
+        if not isinstance(attributes, list):
+            raise AttributeError("attribute should be a list")
         attribute_types = [a.get("type") for a in attributes]
         selected_attributes = set(attribute_types)
         valid_attributes = set(AttributeTypes.members())
         if not selected_attributes.issubset(valid_attributes):
             raise AttributeError(
                 "attribute type should be one of the following: {}".format(
-                    valid_attributes
+                    tuple(valid_attributes)
                 ))
 
         self.set_custom_param(Param("attributes", attributes))
@@ -131,7 +136,7 @@ class SearchIndicator:
         if not self._valid_dates():
             raise AttributeError("Polling window should end after the start of it.")
         return self.create_query(Methods.POST).set_params(self.params).\
-            set_query_string(("pageSize", str(self.page_size)))
+            set_query_string({"pageSize": self.params.get("pageSize", 25)})
 
     def create_tag(self):
         if "tag_id" not in self.params:

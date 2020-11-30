@@ -55,25 +55,3 @@ class TruStar:
 
     def submission(self):
         return Submission(self)
-
-
-indicators = [
-    Indicator(Observable("1.2.3.4", "IP4"), mal_score="HIGH")
-    .set_attributes(Relation(Attribute("BAD_PANDA", "MALWARE")))
-    .set_related_observables(Relation(Observable("bob@gmail.com", "EMAIL_ADDRESS"))),
-    Indicator(Observable("8.8.8.8", "IP4"), mal_score="HIGH")
-    .set_attributes(Relation(Attribute("BAD_PANDA", "MALWARE")))
-    .set_related_observables(Relation(Observable("boeing.servehttp.com", "URL")))
-    .set_tags("TAG1"),
-]
-
-
-submission = TruStar.config_from_file("trustar_config.json", "staging").submission()
-
-response = (
-    submission.set_id("50797cfb-fcc9-4b22-abf1-ea9555bf733f")
-    .set_include_content(True)
-    .get()
-)
-
-print(response.json())
