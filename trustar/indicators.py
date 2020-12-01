@@ -43,7 +43,7 @@ class SearchIndicator:
     @staticmethod
     def _get_timestamp(date):
         dt_obj = dateparser.parse(date)
-        return long(dt_obj.strftime("%s"))
+        return int(dt_obj.strftime("%s"))
 
     def _valid_dates(self):
         return not (self.from_date and self.to_date and self.to_date < self.from_date)
