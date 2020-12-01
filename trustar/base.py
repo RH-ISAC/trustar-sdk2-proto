@@ -24,7 +24,7 @@ def chained(method):
 
 def fluent(cls):
     """Class decorator to allow method chaining."""
-    for name, member in cls.__dict__.iteritems():
+    for name, member in cls.__dict__.items():
         if inspect.isfunction(member) and name.startswith("set_"):
             setattr(cls, name, chained(member))
     return cls

@@ -1,4 +1,4 @@
-from base import Entity
+from .base import Entity
 from trustar.trustar_enums import ObservableTypes
 
 

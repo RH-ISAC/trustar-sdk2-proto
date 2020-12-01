@@ -2,9 +2,9 @@ from __future__ import unicode_literals
 
 import dateparser
 
-from base import fluent, Methods, Params, Param
-from query import Query
-from trustar_enums import ObservableTypes, SortColumns, AttributeTypes
+from .base import fluent, Methods, Params, Param
+from .query import Query
+from .trustar_enums import ObservableTypes, SortColumns, AttributeTypes
 
 
 class SearchIndicatorParamSerializer(Params):

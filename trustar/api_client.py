@@ -1,9 +1,9 @@
-from log import get_logger
 from math import ceil
-import time
-
 import requests
 from requests.exceptions import HTTPError
+import time
+
+from .log import get_logger
 
 
 logger = get_logger(__name__)
