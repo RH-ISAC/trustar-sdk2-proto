@@ -29,7 +29,7 @@ def test_get_headers(api_client, mocked_request):
 def test_token_is_not_expired(api_client, mocker):
     mock_response = mocker.Mock(status_code=200)
     expired = api_client._token_is_expired(mock_response)
-    assert expired == False
+    assert not expired
 
 
 def test_token_is_expired(api_client, mocker):
@@ -38,7 +38,7 @@ def test_token_is_expired(api_client, mocker):
         json=lambda: {"error_description": "Expired oauth2 access token"},
     )
     expired = api_client._token_is_expired(mock_response)
-    assert expired == True
+    assert expired
 
 
 def test_sleep_wait_time_lower_max_wait_time(api_client, mocker):
@@ -46,7 +46,7 @@ def test_sleep_wait_time_lower_max_wait_time(api_client, mocker):
         json=lambda: {"waitTime": 500},
     )
     keep_trying = api_client._sleep(mock_response)
-    assert keep_trying == True
+    assert keep_trying
 
 
 def test_sleep_wait_time_higher_max_wait_time(api_client, mocker):
@@ -54,4 +54,4 @@ def test_sleep_wait_time_higher_max_wait_time(api_client, mocker):
         json=lambda: {"waitTime": 65000},
     )
     keep_trying = api_client._sleep(mock_response)
-    assert keep_trying == False
+    assert not keep_trying
