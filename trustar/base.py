@@ -1,4 +1,4 @@
-from collections import MutableSet
+from collections import namedtuple
 import functools
 import inspect
 
@@ -30,20 +30,7 @@ def fluent(cls):
     return cls
 
 
-class Param:
-
-    __slots__ = 'key', 'value'
-
-    def __init__(self, key, value):
-        self.key = key
-        self.value = value
-
-    def __eq__(self, other):
-        return isinstance(other, type(self)) and self.key == other.key
-
-    def __str__(self):
-        # TODO html escape here
-        return "{}={}".format(self.key, self.value)
+Param = namedtuple('Param', 'key value')
 
 
 class Params:

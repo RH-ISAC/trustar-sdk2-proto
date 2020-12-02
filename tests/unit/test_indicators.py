@@ -4,7 +4,7 @@ import json
 import pytest
 
 from trustar.indicators import SearchIndicator
-from trustar.base import Param
+from trustar.base import Methods
 from trustar.trustar import TruStar
 from trustar.trustar_enums import ObservableTypes
 from .resources import indicators_example_request
@@ -66,8 +66,8 @@ def test_set_sort_column(search_indicator, column):
 
 
 @pytest.mark.parametrize("scores", [
-    [1,2,3],
-    pytest.param([1,2,4], marks=pytest.mark.xfail(raises=AttributeError))
+    [1, 2, 3],
+    pytest.param([1, 2, 4], marks=pytest.mark.xfail(raises=AttributeError))
 ])
 def test_set_priority_scores(search_indicator, scores):
     search_indicator.set_priority_scores(scores)
@@ -137,9 +137,22 @@ def test_query_will_not_work_due_to_invalid_dates(search_indicator):
 
 def test_ok_query(search_indicator):
     attribute = [{"type": "THREAT_ACTOR", "value": "BAD PANDA"}]
-    p = Param("cursor", "eyJwYWdlTnVtYmVyIjoxLCJwYWdlU2l6ZSI6Miwib2Zmc2V0Ijo0fQ==")
+    p = ("cursor", "eyJwYWdlTnVtYmVyIjoxLCJwYWdlU2l6ZSI6Miwib2Zmc2V0Ijo0fQ==")
     q = search_indicator.set_query_term("/Users/mknopf/code/test.sh").\
         set_enclave_ids("3a93fab3-f87a-407a-9376-8eb3fae99b4e").set_priority_scores([3]).\
         set_observable_types([ObservableTypes.SOFTWARE.name]).set_from(1596607968000).set_to(1598308171000).\
-        set_sort_column("PROCESSED_AT").set_attributes(attribute).set_custom_param(p).search()
+        set_sort_column("PROCESSED_AT").set_attributes(attribute).set_custom_param(*p).search()
     assert q.params.serialize() == json.loads(indicators_example_request)
+
+
+def test_ok_tag_create(search_indicator, mocked_request):
+    expected_url = "https://api.trustar.co/api/2.0/indicators/cc12a5c6-e575-3879-8e41-2bf240cc6fce/tags?tag=example"
+    mocked_request.post(url=expected_url, json={})
+    search_indicator.set_indicator_id("cc12a5c6-e575-3879-8e41-2bf240cc6fce").set_tag("example").create_tag()
+
+
+def test_ok_tag_delete(search_indicator, mocked_request):
+    expected_url = "https://api.trustar.co/api/2.0/indicators/cc12a5c6-e575-3879-8e41-2bf240cc6fce/tags?tag=example"
+    mocked_request.delete(url=expected_url)
+    search_indicator.set_indicator_id("cc12a5c6-e575-3879-8e41-2bf240cc6fce").set_tag("example").delete_tag()
+
