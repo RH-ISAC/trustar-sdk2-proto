@@ -2,9 +2,9 @@ from __future__ import unicode_literals
 
 import dateparser
 
-from base import fluent, Methods, Params, Param
-from query import Query
-from trustar_enums import ObservableTypes, SortColumns, AttributeTypes
+from .base import fluent, Methods, Params, Param
+from .query import Query
+from .trustar_enums import ObservableTypes, SortColumns, AttributeTypes
 
 
 class SearchIndicatorParamSerializer(Params):
@@ -20,8 +20,6 @@ class SearchIndicator:
     def __init__(self, config):
         self.config = config
         self.params = SearchIndicatorParamSerializer()
-        self.from_date = None
-        self.to_date = None
 
     @property
     def endpoint(self):
@@ -43,10 +41,11 @@ class SearchIndicator:
     @staticmethod
     def _get_timestamp(date):
         dt_obj = dateparser.parse(date)
-        return long(dt_obj.strftime("%s"))
+        return int(dt_obj.strftime("%s"))
 
     def _valid_dates(self):
-        return not (self.from_date and self.to_date and self.to_date < self.from_date)
+        return self.params.get("from", False) and self.params.get("to", False)\
+               and self.params.get("from", 0) < self.params.get("to", 0)
 
     def set_query_term(self, query):
         self.set_custom_param(Param("queryTerm", query))
@@ -54,14 +53,12 @@ class SearchIndicator:
     def set_from(self, from_date):
         if not isinstance(from_date, int):
             from_date = self._get_timestamp(from_date)
-            self.from_date = from_date
 
         self.set_custom_param(Param("from", from_date))
 
     def set_to(self, to_date):
         if not isinstance(to_date, int):
             to_date = self._get_timestamp(to_date)
-            self.to_date = to_date
 
         self.set_custom_param(Param("to", to_date))
 

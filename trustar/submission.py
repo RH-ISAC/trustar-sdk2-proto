@@ -1,7 +1,7 @@
 import dateparser
 
-from base import fluent, Methods, Params, Param
-from query import Query
+from .base import fluent, Methods, Params, Param
+from .query import Query
 
 
 class SubmissionsParamSerializer(Params):

@@ -1,4 +1,4 @@
-from base import Entity
+from .base import Entity
 from trustar.trustar_enums import AttributeTypes
 
 
@@ -10,7 +10,7 @@ class Attribute(Entity):
 
     @staticmethod
     def _validate_attribute_type(entity_type):
-        if not entity_type in AttributeTypes.members():
+        if entity_type not in AttributeTypes.members():
             raise AttributeError(
                 "Attribute type should be in the following: {}".format(
                     list(AttributeTypes.members())

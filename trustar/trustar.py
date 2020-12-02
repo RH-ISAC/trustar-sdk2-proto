@@ -1,17 +1,15 @@
+from __future__ import absolute_import
 import json
 
-from six import string_types
-
 # package imports
-from log import get_logger
-from indicators import SearchIndicator
-from submission import Submission
-from version import __version__, __api_version__
+from .models import Attribute, Relation, Indicator, Observable
+
+from .log import get_logger
+from .indicators import SearchIndicator
+from .submission import Submission
+from .version import __version__
 
 logger = get_logger(__name__)
-
-
-from models import Attribute, Relation, Indicator, Observable
 
 
 class TruStar:

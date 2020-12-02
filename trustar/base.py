@@ -24,7 +24,7 @@ def chained(method):
 
 def fluent(cls):
     """Class decorator to allow method chaining."""
-    for name, member in cls.__dict__.iteritems():
+    for name, member in cls.__dict__.items():
         if inspect.isfunction(member) and name.startswith("set_"):
             setattr(cls, name, chained(member))
     return cls
@@ -38,9 +38,6 @@ class Param:
         self.key = key
         self.value = value
 
-    def __hash__(self):
-        return hash(self.key)
-
     def __eq__(self, other):
         return isinstance(other, type(self)) and self.key == other.key
 
@@ -49,72 +46,57 @@ class Param:
         return "{}={}".format(self.key, self.value)
 
 
-class Params(MutableSet):
-    """
-    An orderer set, unlike regular set, add replaces old keys
-    """
-    def __init__(self, iterable=None):
-        self.end = end = []
-        end += [None, end, end]  # sentinel node for doubly linked list
-        self.map = {}  # key --> [key, prev, next]
-        if iterable is not None:
-            self |= iterable
+class Params:
 
-    def __len__(self):
-        return len(self.map)
+    def __init__(self, *args):
+        self._dict = {}
+        for arg in args:
+            self.add(arg)
 
-    def __contains__(self, key):
-        return hash(key) in self.map
+    def __repr__(self):
+        elements = map(repr, self._dict.keys())
+        return "%s(%s)" % (self.__class__.__name__, ', '.join(elements))
 
-    def _discard(self, key):
-        key, prev, next = self.map.pop(hash(key))
-        prev[2] = next
-        next[1] = prev
+    def extend(self, args):
+        """ Add several items at once. """
+        for arg in args:
+            self.add(arg)
+
+    def add(self, item):
+        """ Add one item to the set. """
+        self._dict[item.key] = item
 
     def get(self, key, default=None):
         try:
-            return self.map[hash(key)]
+            return self._dict[key].value
         except KeyError:
             return default
 
-    def add(self, key):
-        if hash(key) in self.map:
-            self._discard(key)
-        end = self.end
-        curr = end[1]
-        curr[2] = end[1] = self.map[hash(key)] = [key, curr, end]
+    def remove(self, item):
+        """ Remove an item from the set. """
+        del self._dict[item]
 
-    def discard(self, key):
-        if key in self.map:
-            self._discard(key)
+    def contains(self, item):
+        """ Check whether the set contains a certain item. """
+        return item in self._dict.keys()
+
+    # High-performance membership test for Python 2.0 and later
+    __contains__ = contains
+
+    def __getitem__(self, index):
+        """ Support the 'for item in set:' protocol. """
+        return list(self._dict.keys())[index]
 
     def __iter__(self):
-        end = self.end
-        curr = end[2]
-        while curr is not end:
-            yield curr[0]
-            curr = curr[2]
+        return iter([value for key, value in self._dict.items()])
 
-    def __reversed__(self):
-        end = self.end
-        curr = end[1]
-        while curr is not end:
-            yield curr[0]
-            curr = curr[1]
+    def __len__(self):
+        """ Return the number of items in the set """
+        return len(self._dict)
 
-    def pop(self, last=True):
-        if not self:
-            raise KeyError('set is empty')
-        key = self.end[1][0] if last else self.end[2][0]
-        self.discard(key)
-        return key
+    def items(self):
+        """ Return a list containing all items in sorted order, if possible (Python 3 only) """
+        return self._dict.keys()
 
-    def __repr__(self):
-        if not self:
-            return '%s()' % (self.__class__.__name__,)
-        return '%s(%r)' % (self.__class__.__name__, list(self))
-
-    def __eq__(self, other):
-        if isinstance(other, Params):
-            return len(self) == len(other) and list(self) == list(other)
-        return set(self) == set(other)
+    def __copy__(self):
+        return Params(self)

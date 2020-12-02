@@ -1,5 +1,5 @@
 from trustar.base import fluent
-from base import Base
+from .base import Base
 
 
 @fluent
@@ -15,12 +15,9 @@ class Indicator(Base):
 
     def set_tags(self, tags):
         self.tags += tags
-        return self
 
     def set_related_observables(self, related_obs):
         self.related_observables.append(related_obs)
-        return self
 
     def set_attributes(self, related_attribute):
         self.attributes.append(related_attribute)
-        return self

@@ -1,9 +1,9 @@
-from log import get_logger
 from math import ceil
-import time
-
 import requests
 from requests.exceptions import HTTPError
+import time
+
+from .log import get_logger
 
 
 logger = get_logger(__name__)
@@ -25,7 +25,7 @@ class ApiClient(object):
         self.config = config
         self.token = None
 
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls, config, *args, **kwargs):
         if not cls._instance:
             cls._instance = object.__new__(cls, *args, **kwargs)
 
