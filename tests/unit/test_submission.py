@@ -103,8 +103,8 @@ def test_set_to(submission, date):
     assert values[0] == timestamp
 
 
-@pytest.mark.xfail(raises=AttributeError)  # title missing
 def test_create_fails_without_mandatory_fields(submission, indicators):
     submission.set_enclave_id("TEST-ENCLAVE_ID")
     submission.set_content_indicators(indicators)
-    submission.create()
+    with pytest.raises(AttributeError):
+        submission.create()
