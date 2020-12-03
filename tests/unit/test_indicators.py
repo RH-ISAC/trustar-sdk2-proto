@@ -6,14 +6,15 @@ import pytest
 from trustar.indicators import SearchIndicator
 from trustar.trustar import TruStar
 from trustar.trustar_enums import ObservableTypes
+from trustar.models import Observable, Attribute
 from .resources import indicators_example_request
 
 
 @pytest.fixture
 def search_indicator():
-    return SearchIndicator(TruStar(api_key="xxxx",
-                                   api_secret="xxx",
-                                   client_metatag="test_env"))
+    return SearchIndicator(
+        TruStar(api_key="xxxx", api_secret="xxx", client_metatag="test_env")
+    )
 
 
 def test_search_indicators_is_empty(search_indicator):
@@ -89,11 +90,18 @@ def test_set_enclave_ids(search_indicator):
     assert search_indicator.params.get("enclaveIds") == ["TEST_ENCLAVE_ID"]
 
 
-@pytest.mark.parametrize("obs_types",  [["URL", "MD5", "IP4"]])
+@pytest.mark.parametrize(
+    "obs_types",
+    [
+        ["URL", "MD5", "IP4"],
+        [ObservableTypes.URL, ObservableTypes.MD5, ObservableTypes.IP4],
+    ],
+)
 def test_set_observable_types(search_indicator, obs_types):
+    expected_result = ["URL", "MD5", "IP4"]
     search_indicator.set_observable_types(obs_types)
     assert len(search_indicator.params) == 1
-    assert search_indicator.params.get("types") == obs_types
+    assert search_indicator.params.get("types") == expected_result
 
 
 def test_fail_set_observable_types(search_indicator):
@@ -102,30 +110,48 @@ def test_fail_set_observable_types(search_indicator):
     assert len(search_indicator.params) == 0
 
 
-def test_set_attributes(search_indicator):
-    attributes = [{"type": "MALWARE", "value": "ATTRIBUTE"}]
+@pytest.mark.parametrize(
+    "attributes",
+    [[{"type": "MALWARE", "value": "ATTRIBUTE"}], [Attribute("ATTRIBUTE", "MALWARE")]],
+)
+def test_set_attributes(search_indicator, attributes):
+    expected_result = [{"type": "MALWARE", "value": "ATTRIBUTE"}]
     search_indicator.set_attributes(attributes)
     assert len(search_indicator.params) == 1
-    assert search_indicator.params.get("attributes") == attributes
+    assert search_indicator.params.get("attributes") == expected_result
 
 
-@pytest.mark.parametrize("attributes", [{"type": "INVALID", "value": "ATTRIBUTE"},
-                                         [{"type": "INVALID", "value": "ATTRIBUTE"}]])
+@pytest.mark.parametrize(
+    "attributes",
+    [
+        {"type": "INVALID", "value": "ATTRIBUTE"},
+        [{"type": "INVALID", "value": "ATTRIBUTE"}],
+    ],
+)
 def test_fail_attributes(search_indicator, attributes):
     with pytest.raises(AttributeError):
         search_indicator.set_attributes(attributes)
     assert len(search_indicator.params) == 0
 
 
-def test_set_related_observable(search_indicator):
-    observables = [{"type": "URL", "value": "RELATED_OBS"}]
+@pytest.mark.parametrize(
+    "observables",
+    [[{"type": "URL", "value": "RELATED_OBS"}], [Observable("RELATED_OBS", "URL")]],
+)
+def test_set_related_observable(search_indicator, observables):
+    expected_result = [{"type": "URL", "value": "RELATED_OBS"}]
     search_indicator.set_related_observables(observables)
     assert len(search_indicator.params) == 1
-    assert search_indicator.params.get("relatedObservables") == observables
+    assert search_indicator.params.get("relatedObservables") == expected_result
 
 
-@pytest.mark.parametrize("observables", [{"type": "URL", "value": "RELATED_OBS"},
-                                         [{"type": "INVALID", "value": "RELATED_OBS"}]])
+@pytest.mark.parametrize(
+    "observables",
+    [
+        {"type": "URL", "value": "RELATED_OBS"},
+        [{"type": "INVALID", "value": "RELATED_OBS"}],
+    ],
+)
 def test_set_related_observable_fail(search_indicator, observables):
     with pytest.raises(AttributeError):
         search_indicator.set_related_observables(observables)
@@ -148,23 +174,34 @@ def test_query_will_not_work_due_to_invalid_dates(search_indicator):
 def test_ok_query(search_indicator):
     attribute = [{"type": "THREAT_ACTOR", "value": "BAD PANDA"}]
     p = ("cursor", "eyJwYWdlTnVtYmVyIjoxLCJwYWdlU2l6ZSI6Miwib2Zmc2V0Ijo0fQ==")
-    q = search_indicator.set_query_term("/Users/mknopf/code/test.sh").\
-        set_enclave_ids("3a93fab3-f87a-407a-9376-8eb3fae99b4e").set_priority_scores([3]).\
-        set_observable_types([ObservableTypes.SOFTWARE.name]).set_from(1596607968000).set_to(1598308171000).\
-        set_sort_column("PROCESSED_AT").set_attributes(attribute).set_custom_param(*p).search()
+    q = (
+        search_indicator.set_query_term("/Users/mknopf/code/test.sh")
+        .set_enclave_ids("3a93fab3-f87a-407a-9376-8eb3fae99b4e")
+        .set_priority_scores([3])
+        .set_observable_types([ObservableTypes.SOFTWARE.name])
+        .set_from(1596607968000)
+        .set_to(1598308171000)
+        .set_sort_column("PROCESSED_AT")
+        .set_attributes(attribute)
+        .set_custom_param(*p)
+        .search()
+    )
     assert q.params.serialize() == json.loads(indicators_example_request)
 
 
 def test_ok_tag_create(search_indicator, mocked_request):
-    #TODO refactor this
+    # TODO refactor this
     expected_url = "https://api.trustar.co/api/2.0/indicators/cc12a5c6-e575-3879-8e41-2bf240cc6fce/tags?tag=example"
     mocked_request.post(url=expected_url, json={})
-    search_indicator.set_indicator_id("cc12a5c6-e575-3879-8e41-2bf240cc6fce").set_tag("example").create_tag()
+    search_indicator.set_indicator_id("cc12a5c6-e575-3879-8e41-2bf240cc6fce").set_tag(
+        "example"
+    ).create_tag()
 
 
 def test_ok_tag_delete(search_indicator, mocked_request):
-    #TODO refactor this
+    # TODO refactor this
     expected_url = "https://api.trustar.co/api/2.0/indicators/cc12a5c6-e575-3879-8e41-2bf240cc6fce/tags?tag=example"
     mocked_request.delete(url=expected_url)
-    search_indicator.set_indicator_id("cc12a5c6-e575-3879-8e41-2bf240cc6fce").set_tag("example").delete_tag()
-
+    search_indicator.set_indicator_id("cc12a5c6-e575-3879-8e41-2bf240cc6fce").set_tag(
+        "example"
+    ).delete_tag()

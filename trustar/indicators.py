@@ -5,10 +5,10 @@ import dateparser
 from .base import fluent, Methods, Params, Param
 from .query import Query
 from .trustar_enums import ObservableTypes, SortColumns, AttributeTypes
+from .models import Attribute, Observable
 
 
 class SearchIndicatorParamSerializer(Params):
-
     def serialize(self):
         return {n.key: n.value for n in self}
 
@@ -29,7 +29,9 @@ class SearchIndicator:
     @property
     def tag_endpoint(self):
         if "tag" and "indicator_id" not in self.params:
-            raise AttributeError("Indicator id and a tag are required for creating/deleting a new user tag")
+            raise AttributeError(
+                "Indicator id and a tag are required for creating/deleting a new user tag"
+            )
         return self.base_url + "/{}/tags".format(self.params.get("indicator_id"))
 
     @staticmethod
@@ -38,8 +40,46 @@ class SearchIndicator:
         return int(dt_obj.strftime("%s"))
 
     def _valid_dates(self):
-        return self.params.get("from", False) and self.params.get("to", False)\
-               and self.params.get("from", 0) < self.params.get("to", 0)
+        return (
+            self.params.get("from", False)
+            and self.params.get("to", False)
+            and self.params.get("from", 0) < self.params.get("to", 0)
+        )
+
+    @staticmethod
+    def _get_value(arg, enum):
+        if isinstance(arg, enum):
+            return arg.value
+
+        if isinstance(arg, unicode) and arg in enum.members():
+            return arg
+
+        if isinstance(arg, str) and arg in enum.members():
+            return arg
+
+        raise AttributeError(
+            "Possible value types are: {}".format(list(enum.members()))
+        )
+
+    @staticmethod
+    def _get_entity(entity, entity_type):
+        if isinstance(entity, entity_type):
+            return entity.serialize()
+
+        if isinstance(entity, dict):
+            entity_type = (
+                AttributeTypes
+                if issubclass(entity_type, Attribute)
+                else ObservableTypes
+            )
+            return {
+                "type": SearchIndicator._get_value(entity.get("type"), entity_type),
+                "value": entity.get("value"),
+            }
+
+        raise AttributeError(
+            "List elements should be a dictionary or the entity class (Attibute, Observable)"
+        )
 
     def set_tag(self, tag):
         self.set_custom_param("tag", tag)
@@ -66,19 +106,12 @@ class SearchIndicator:
         self.set_custom_param("to", to_date)
 
     def set_sort_column(self, column):
-        if column not in SortColumns.members():
-            raise AttributeError(
-                "column should be one of the following: {}".format(
-                    list(SortColumns.members())
-                ))
-
+        column = self._get_value(column, SortColumns)
         self.set_custom_param("sortColumn", column)
 
     def set_priority_scores(self, scores):
         if not isinstance(scores, list) or any([s for s in scores if s > 3 or s < -1]):
-            raise AttributeError(
-                "scores should be a list of integers between -1 and 3"
-            )
+            raise AttributeError("scores should be a list of integers between -1 and 3")
         self.set_custom_param("priorityScores", scores)
 
     def set_enclave_ids(self, enclave_ids):
@@ -89,40 +122,22 @@ class SearchIndicator:
     def set_observable_types(self, types):
         if not isinstance(types, list):
             raise AttributeError("types should be a list")
-        selected_types = set(types)
-        valid_types = set(ObservableTypes.members())
-        if not selected_types.issubset(valid_types):
-            raise AttributeError(
-                "observable type should be one of the following: {}".format(
-                    valid_types)
-                )
 
+        types = [self._get_value(t, ObservableTypes) for t in types]
         self.set_custom_param("types", types)
 
     def set_attributes(self, attributes):
         if not isinstance(attributes, list):
-            raise AttributeError("attribute should be a list")
-        attribute_types = [a.get("type") for a in attributes]
-        selected_attributes = set(attribute_types)
-        valid_attributes = set(AttributeTypes.members())
-        if not selected_attributes.issubset(valid_attributes):
-            raise AttributeError(
-                "attribute type should be one of the following: {}".format(
-                    tuple(valid_attributes)
-                ))
+            raise AttributeError("attributes should be a list")
 
+        attributes = [self._get_entity(e, Attribute) for e in attributes]
         self.set_custom_param("attributes", attributes)
 
     def set_related_observables(self, observables):
-        obs_types = [o.get("type") for o in observables]
-        selected_observables = set(obs_types)
-        valid_observables = set(ObservableTypes.members())
-        if not selected_observables.issubset(valid_observables):
-            raise AttributeError(
-                "observable type should be one of the following: {}".format(
-                    obs_types
-                ))
+        if not isinstance(observables, list):
+            raise AttributeError("observables should be a list")
 
+        observables = [self._get_entity(o, Observable) for o in observables]
         self.set_custom_param("relatedObservables", observables)
 
     def set_indicator_id(self, indicator_id):
@@ -136,13 +151,24 @@ class SearchIndicator:
         if not self._valid_dates():
             raise AttributeError("Polling window should end after the start of it.")
         self.endpoint = self.base_url
-        return self.create_query(Methods.POST).set_params(self.params).\
-            set_query_string({"pageSize": self.params.get("pageSize", 25)})
+        return (
+            self.create_query(Methods.POST)
+            .set_params(self.params)
+            .set_query_string({"pageSize": self.params.get("pageSize", 25)})
+        )
 
     def create_tag(self):
         self.endpoint = self.tag_endpoint
-        return self.create_query(Methods.POST).set_query_string({"tag": self.params.get("tag")}).fetch_one()
+        return (
+            self.create_query(Methods.POST)
+            .set_query_string({"tag": self.params.get("tag")})
+            .fetch_one()
+        )
 
     def delete_tag(self):
         self.endpoint = self.tag_endpoint
-        return self.create_query(Methods.DELETE).set_query_string({"tag": self.params.get("tag")}).fetch_one()
+        return (
+            self.create_query(Methods.DELETE)
+            .set_query_string({"tag": self.params.get("tag")})
+            .fetch_one()
+        )
