@@ -1,0 +1,14 @@
+FROM python:2.7.18-buster
+
+RUN apt-get update
+
+WORKDIR /trustar-sdk2/
+ENV SHELL=/bin/bash
+
+COPY . .
+RUN chmod +x ./scripts/run_tests.sh
+RUN pip install pipenv
+RUN pipenv --two
+RUN pipenv install --dev --system --deploy
+
+ENTRYPOINT [ "pipenv", "run", "./scripts/run_tests.sh" ]
