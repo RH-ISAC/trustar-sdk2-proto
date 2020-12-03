@@ -3,11 +3,12 @@ FROM python:2.7.18-buster
 RUN apt-get update
 
 WORKDIR /trustar-sdk2/
+ENV SHELL=/bin/bash
 
-COPY dev-requirements.txt ./dev-requirements.txt
+COPY . .
+RUN chmod +x ./scripts/run_tests.sh
+RUN apt install -y pipenv
+RUN pipenv --two
+RUN pipenv install --dev --system --deploy
 
-RUN pip install -r ./dev-requirements.txt
-
-COPY tests ./tests
-COPY trustar ./trustar
-COPY scripts/run_tests.sh ./run-tests.sh
+ENTRYPOINT [ "pipenv", "run", "./scripts/run_tests.sh" ]
