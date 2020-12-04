@@ -36,11 +36,9 @@ def test_set_from(search_indicator, from_date):
 
 
 def test_set_from_fail(search_indicator):
-    search_indicator.set_from("3 months ago")
     with pytest.raises(AttributeError):
-        search_indicator.search()
-    # TODO this shouldn't fail
-    # assert len(search_indicator.params) == 0
+        search_indicator.set_from("XXXX-XX-XX")
+    assert len(search_indicator.params) == 0
 
 
 @pytest.mark.parametrize("to_date", [1583971200, "2020-03-11T21:00:00+00:00"])
@@ -51,11 +49,9 @@ def test_set_to(search_indicator, to_date):
 
 
 def test_set_to_fail(search_indicator):
-    search_indicator.set_to("1 day ago")
     with pytest.raises(AttributeError):
-        search_indicator.search()
-    # TODO this shouldn't fail
-    # assert len(search_indicator.params) == 0
+        search_indicator.set_to("XXXX-XX-XX")
+    assert len(search_indicator.params) == 0
 
 
 def test_set_sort_column(search_indicator):
