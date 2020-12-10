@@ -28,10 +28,10 @@ def test_set_query_term(search_indicator):
     assert values[0] == "TEST_TERM"
 
 
-@pytest.mark.parametrize("from_date", [1583971200, "2020-03-11T21:00:00+00:00"])
+@pytest.mark.parametrize("from_date", [1583960400, "2020-03-11T21:00:00"])
 def test_set_from(search_indicator, from_date):
     search_indicator.set_from(from_date)
-    assert search_indicator.params.get("from") == 1583971200
+    assert search_indicator.params.get("from") == 1583960400
     assert len(search_indicator.params) == 1
 
 
@@ -43,10 +43,10 @@ def test_set_from_fail(search_indicator):
     # assert len(search_indicator.params) == 0
 
 
-@pytest.mark.parametrize("to_date", [1583971200, "2020-03-11T21:00:00+00:00"])
+@pytest.mark.parametrize("to_date", [1583960400, "2020-03-11T21:00:00+00:00"])
 def test_set_to(search_indicator, to_date):
     search_indicator.set_to(to_date)
-    assert search_indicator.params.get("to") == 1583971200
+    assert search_indicator.params.get("to") == 1583960400
     assert len(search_indicator.params) == 1
 
 

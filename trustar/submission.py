@@ -1,4 +1,7 @@
+import pytz
+
 import dateparser
+from datetime import datetime
 
 from .base import fluent, Methods, Params, Param
 from .query import Query
@@ -25,8 +28,12 @@ class Submission(object):
 
     @staticmethod
     def _get_timestamp(date):
-        dt_obj = dateparser.parse(date)
-        return int(dt_obj.strftime("%s"))
+        dt_obj = dateparser.parse(
+            date, settings={"TIMEZONE": "UTC", "RETURN_AS_TIMEZONE_AWARE": True}
+        )
+
+        timestamp = (dt_obj - datetime(1970, 1, 1, tzinfo=pytz.UTC)).total_seconds()
+        return timestamp
 
     def add_custom_param(self, param):
         """Adds a new param to set of params."""
