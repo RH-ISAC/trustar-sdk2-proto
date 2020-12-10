@@ -1,80 +1,52 @@
 version: 2.1
 
 commands:
-  build_cmd:
+  test_py27:
     steps:
-      - checkout # checkout source code to working directory
-      - restore_cache_cmd
+      - checkout
+      - run: "ls"
       - run:
+          name: Run tests with Python 2.7
           command: |
-            pipenv install --dev # use pipenv to install dependencies
-      - save_cache_cmd
+            sudo pip install --upgrade pip
+            pip install --user tox
+            tox -e py27
 
-  restore_cache_cmd:
+  test_py37:
     steps:
+      - checkout
       - run:
+          name: Run tests with Python 3.7
           command: |
-            sudo chown -R circleci:circleci /usr/local/bin
-            sudo chown -R circleci:circleci /usr/local/lib/python3.8/site-packages
-      - restore_cache:
-          key: deps2-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
-
-  save_cache_cmd:
-    steps:
-      - save_cache:
-          key: deps2-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
-          paths:
-            - ".venv"
-            - "/usr/local/bin"
-            - "/usr/local/lib/python3.8/site-packages"
-
-  run_integration_tests:
-    steps:
-      - run:
-          command: |
-            pipenv run pytest --junitxml=test-results/junit.xml --cov=trustar
-      - store_test_results: # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
-          path: test-results
-      - store_artifacts: # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
-          path: test-results
-
-  build_conf_file:
-    steps:
-      - run:
-          command: |
-            pipenv run python trustar_conf_builder.py
-
-  create_artifacts_directories:
-    steps:
-      - run:
-          command: |
-            mkdir test-results
+            sudo pip install --upgrade pip
+            pip install --user tox
+            tox -e py37
 
 executors:
-  docker_python_3_8:
-    docker: # it runs inside a docker image, the same as above.
-      - image: circleci/python:3.8
+  docker_python_2_7:
+    docker:
+      - image: circleci/python:2.7.18
+
+  docker_python_3_7:
+    docker:
+      - image: circleci/python:3.7.7
 
 jobs:
-  build:
-    executor: docker_python_3_8
+  test_python_2_7_environment:
+    executor: docker_python_2_7
+    working_directory: ~/project
     steps:
-      - build_cmd
+      - test_py27
 
-  test:
-    executor: docker_python_3_8
+  test_python_3_7_environment:
+    executor: docker_python_3_7
+    working_directory: ~/project
     steps:
-      - build_cmd
-      - create_artifacts_directories
-      - build_conf_file
-      - run_integration_tests
+      - test_py37
 
-# Under the workflows: map, we can coordinate our two jobs, defined above.
 workflows:
   version: 2
-  build_and_test: # this is the name of our workflow
-    jobs: # and here we list the jobs we are going to run.
-      - build
-      - test:
-          requires:
-            - build
+  tests:
+    jobs:
+      - test_python_2_7_environment
+      - test_python_3_7_environment
