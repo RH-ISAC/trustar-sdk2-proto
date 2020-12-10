@@ -4,7 +4,6 @@ commands:
   test_py27:
     steps:
       - checkout
-      - run: "ls"
       - run:
           name: Run tests with Python 2.7
           command: |
