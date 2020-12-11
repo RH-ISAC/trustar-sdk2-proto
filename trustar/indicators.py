@@ -1,6 +1,8 @@
 from __future__ import unicode_literals
 
+import pytz
 import dateparser
+from datetime import datetime
 
 from .base import fluent, Methods, Params, Param
 from .query import Query
@@ -36,8 +38,12 @@ class SearchIndicator:
 
     @staticmethod
     def _get_timestamp(date):
-        dt_obj = dateparser.parse(date)
-        return int(dt_obj.strftime("%s"))
+        dt_obj = dateparser.parse(
+            date, settings={"TIMEZONE": "UTC", "RETURN_AS_TIMEZONE_AWARE": True}
+        )
+
+        timestamp = (dt_obj - datetime(1970, 1, 1, tzinfo=pytz.UTC)).total_seconds()
+        return timestamp
 
     def _valid_dates(self):
         return (
@@ -51,11 +57,11 @@ class SearchIndicator:
         if isinstance(arg, enum):
             return arg.value
 
-        if isinstance(arg, unicode) and arg in enum.members():
-            return arg
-
         if isinstance(arg, str) and arg in enum.members():
             return arg
+
+        if isinstance(arg, type("")) and arg in enum.members():
+            return arg  # For py2 and py3 compatibility
 
         raise AttributeError(
             "Possible value types are: {}".format(list(enum.members()))
