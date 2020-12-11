@@ -4,9 +4,7 @@
 
 This repository is built using tox to test the code with diferrent python versions. If you want to set up your development environment follow the instructions.
 
-1.
-
-If you don't have tox installed in your sysem
+1. If you don't have tox installed in your sysem
 
 `pip install tox`
 
@@ -32,6 +30,6 @@ If you want to test all available environments:, just do:
 
 `tox` in project's root
 
-If you want to run an especific environment:
+If you want to run a specific environment:
 
 `tox -e py27` or `tox -e py37`
