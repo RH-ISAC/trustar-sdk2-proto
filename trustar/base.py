@@ -1,5 +1,7 @@
 from collections import namedtuple
 import dateparser
+from datetime import datetime
+import pytz
 import functools
 import inspect
 
@@ -7,8 +9,12 @@ from enum import Enum
 
 
 def get_timestamp(date):
-    dt_obj = dateparser.parse(date)
-    return int(dt_obj.strftime("%s"))
+    dt_obj = dateparser.parse(
+        date, settings={"TIMEZONE": "UTC", "RETURN_AS_TIMEZONE_AWARE": True}
+    )
+
+    timestamp = (dt_obj - datetime(1970, 1, 1, tzinfo=pytz.UTC)).total_seconds()
+    return timestamp
 
 
 class Methods(Enum):
