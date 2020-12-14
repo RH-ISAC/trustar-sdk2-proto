@@ -1,8 +1,6 @@
 from __future__ import unicode_literals
 
-import dateparser
-
-from .base import fluent, Methods, Params, Param
+from .base import fluent, Methods, Params, Param, get_timestamp
 from .query import Query
 
 
@@ -24,11 +22,6 @@ class Submission(object):
     @property
     def endpoint(self):
         return self.config.request_details.get("api_endpoint") + self.path
-
-    @staticmethod
-    def _get_timestamp(date):
-        dt_obj = dateparser.parse(date)
-        return int(dt_obj.strftime("%s"))
 
     def add_custom_param(self, param):
         """Adds a new param to set of params."""
@@ -108,7 +101,7 @@ class Submission(object):
         :returns: self.
         """
         if not isinstance(timestamp, int):
-            timestamp = self._get_timestamp(timestamp)
+            timestamp = get_timestamp(timestamp)
 
         self.add_custom_param(Param("timestamp", timestamp))
 

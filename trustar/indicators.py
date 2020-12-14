@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
-
 from .base import fluent, Methods, Params, Param, get_timestamp
+
 from .query import Query
 from .trustar_enums import ObservableTypes, SortColumns, AttributeTypes
 from .models import Entity
@@ -44,11 +44,11 @@ class SearchIndicator:
         if isinstance(arg, enum):
             return arg.value
 
-        if isinstance(arg, unicode) and arg in enum.members():
-            return arg
-
         if isinstance(arg, str) and arg in enum.members():
             return arg
+
+        if isinstance(arg, type("")) and arg in enum.members():
+            return arg  # For py2 and py3 compatibility
 
         raise AttributeError(
             "Possible value types are: {}".format(list(enum.members()))
