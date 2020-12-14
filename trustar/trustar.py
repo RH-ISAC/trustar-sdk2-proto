@@ -1,9 +1,6 @@
 from __future__ import absolute_import
 import json
 
-# package imports
-from .models import Attribute, Relation, Indicator, Observable
-
 from .log import get_logger
 from .indicators import SearchIndicator
 from .submission import Submission

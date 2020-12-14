@@ -1,5 +1,7 @@
-from trustar.base import fluent
 from .base import Base
+from .entity import Entity
+from trustar.base import fluent
+from trustar.trustar_enums import AttributeTypes, ObservableTypes
 
 
 @fluent

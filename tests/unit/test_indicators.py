@@ -5,8 +5,8 @@ import pytest
 
 from trustar.indicators import SearchIndicator
 from trustar.trustar import TruStar
-from trustar.trustar_enums import ObservableTypes
-from trustar.models import Observable, Attribute
+from trustar.trustar_enums import ObservableTypes, AttributeTypes
+from trustar.models import Entity
 from .resources import indicators_example_request
 
 
@@ -108,7 +108,7 @@ def test_fail_set_observable_types(search_indicator):
 
 @pytest.mark.parametrize(
     "attributes",
-    [[{"type": "MALWARE", "value": "ATTRIBUTE"}], [Attribute("ATTRIBUTE", "MALWARE")]],
+    [[{"type": "MALWARE", "value": "ATTRIBUTE"}], [Entity(AttributeTypes, "MALWARE", "ATTRIBUTE")]],
 )
 def test_set_attributes(search_indicator, attributes):
     expected_result = [{"type": "MALWARE", "value": "ATTRIBUTE"}]
@@ -132,7 +132,7 @@ def test_fail_attributes(search_indicator, attributes):
 
 @pytest.mark.parametrize(
     "observables",
-    [[{"type": "URL", "value": "RELATED_OBS"}], [Observable("RELATED_OBS", "URL")]],
+    [[{"type": "URL", "value": "RELATED_OBS"}], [Entity(ObservableTypes, "URL", "RELATED_OBS")]],
 )
 def test_set_related_observable(search_indicator, observables):
     expected_result = [{"type": "URL", "value": "RELATED_OBS"}]

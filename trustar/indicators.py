@@ -5,7 +5,7 @@ import dateparser
 from .base import fluent, Methods, Params, Param
 from .query import Query
 from .trustar_enums import ObservableTypes, SortColumns, AttributeTypes
-from .models import Attribute, Observable
+from .models import Entity
 
 
 class SearchIndicatorParamSerializer(Params):
@@ -63,13 +63,13 @@ class SearchIndicator:
 
     @staticmethod
     def _get_entity(entity, entity_type):
-        if isinstance(entity, entity_type):
-            return entity.serialize()
+        if isinstance(entity, Entity):
+            return entity.params.serialize()[entity.key]
 
         if isinstance(entity, dict):
             entity_type = (
                 AttributeTypes
-                if issubclass(entity_type, Attribute)
+                if issubclass(entity_type, AttributeTypes)
                 else ObservableTypes
             )
             return {
@@ -78,7 +78,7 @@ class SearchIndicator:
             }
 
         raise AttributeError(
-            "List elements should be a dictionary or the entity class (Attibute, Observable)"
+            "List elements should be a dictionary or the entity class"
         )
 
     def set_tag(self, tag):
@@ -130,14 +130,14 @@ class SearchIndicator:
         if not isinstance(attributes, list):
             raise AttributeError("attributes should be a list")
 
-        attributes = [self._get_entity(e, Attribute) for e in attributes]
+        attributes = [self._get_entity(e, AttributeTypes) for e in attributes]
         self.set_custom_param("attributes", attributes)
 
     def set_related_observables(self, observables):
         if not isinstance(observables, list):
             raise AttributeError("observables should be a list")
 
-        observables = [self._get_entity(o, Observable) for o in observables]
+        observables = [self._get_entity(o, ObservableTypes) for o in observables]
         self.set_custom_param("relatedObservables", observables)
 
     def set_indicator_id(self, indicator_id):
