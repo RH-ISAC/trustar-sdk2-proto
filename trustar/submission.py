@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 import dateparser
 
 from .base import fluent, Methods, Params, Param
@@ -61,7 +63,7 @@ class Submission(object):
     def set_enclave_id(self, enclave_id):
         """Adds enclaveId param to set of params.
 
-        :param raw_content: field value.
+        :param enclave_id: field value.
         :returns: self.
         """
         self.add_custom_param(Param("enclaveId", enclave_id))

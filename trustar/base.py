@@ -1,8 +1,14 @@
 from collections import namedtuple
+import dateparser
 import functools
 import inspect
 
 from enum import Enum
+
+
+def get_timestamp(date):
+    dt_obj = dateparser.parse(date)
+    return int(dt_obj.strftime("%s"))
 
 
 class Methods(Enum):

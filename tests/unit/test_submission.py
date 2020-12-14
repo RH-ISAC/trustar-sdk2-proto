@@ -1,9 +1,14 @@
+from __future__ import unicode_literals
+
+import json
 import pytest
 
 from trustar.submission import Submission
 from trustar.trustar import TruStar
 from trustar.trustar_enums import AttributeTypes, ObservableTypes
 from trustar.models import Indicator, Entity
+
+from resources import submission_example_request
 
 
 @pytest.fixture
@@ -13,15 +18,17 @@ def submission():
 
 @pytest.fixture
 def indicators():
+    bad_panda = Entity(AttributeTypes, "MALWARE", "BAD_PANDA")
+    related_observable_email = Entity(ObservableTypes, "EMAIL_ADDRESS", "bob@gmail.com")
+    related_observable_bad_url = Entity(ObservableTypes, "URL", "badurl.com")
     return [
-        Indicator(Entity(ObservableTypes, "IP4", "1.2.3.4")
-                  .set_malicious_score("HIGH"))
-                  .set_attributes(Entity(AttributeTypes, "MALWARE", "BAD_PANDA"))
-                  .set_related_observables(Entity(ObservableTypes, "EMAIL_ADDRESS", "bob@gmail.com")),
-        Indicator(Entity(ObservableTypes, "IP4", "5.6.7.8").set_malicious_score("HIGH"))
-            .set_attributes(Entity(AttributeTypes, "MALWARE", "BAD_PANDA"))
-            .set_related_observables(Entity(ObservableTypes, "URL", "badurl.com"))
-            .set_tags(["TAG1"])
+        Indicator("IP4", "1.2.3.4").set_malicious_score("HIGH")
+                                   .set_attributes(bad_panda)
+                                   .set_related_observables(related_observable_email),
+        Indicator("IP4", "5.6.7.8").set_malicious_score("HIGH")
+                                   .set_attributes(bad_panda)
+                                   .set_related_observables(related_observable_bad_url)
+                                   .set_tags(["TAG1"])
     ]
 
 
@@ -111,54 +118,47 @@ def test_create_fails_without_mandatory_fields(submission, indicators):
         submission.create()
 
 
-# @pytest.fixture
-# def complex_indicator():
-#     obs = Observable("verybadurl", "URL")
-#     {
-#         "entity": {
-#             "value": "ActorName",
-#             "type": "THREAT_ACTOR"
-#         },
-#         "validFrom": 1604510497000,
-#         "validTo": 1607102497000,
-#         "confidenceScore": "LOW"
-#     },
-#     {
-#         "entity": {
-#             "value": "MalwareName",
-#             "type": "MALWARE"
-#         },
-#         "validFrom": 1604510497000,
-#         "validTo": 1607102497000,
-#         "confidenceScore": "MEDIUM"
-#     }
-#     attr = Observable("ActorName", "THREAT_ACTOR")
-#     ci = [
-#         Indicator(obs, valid_from="1604510497000", valid_to="1607102497000", conf_score="LOW", mal_score="BENIGN")
-#             .set_attributes(Relation(Attribute("BAD_PANDA", "MALWARE")))
-#             .set_related_observables(Relation(Observable("bob@gmail.com", "EMAIL_ADDRESS"), ))
-#     ]
-#     return ci
-#
-#
-# @pytest.fixture
-# def full_submission(submission, complex_indicator):
-#     return submission.set_title("Report, complex test") \
-#         .set_content_indicators(complex_indicator) \
-#         .set_enclave_id("c0f07a9f-76e4-48df-a0d4-c63ed2edccf0") \
-#         .set_external_id("external-1234") \
-#         .set_external_url("externalUrlValue") \
-#         .set_timestamp("1607102497000") \
-#         .set_tags(["random_tag"]) \
-#         .set_raw_content("blob of text")
-#
-#
-# def test_submission_ok_json(full_submission):
-#     q = full_submission.params.serialize()
-#     assert q == {}
-#
-#
-# def test_ok_submission_ok(mocked_request, full_submission):
-#     expected_url = "https://api.trustar.co/api/2.0/submissions/indicators"
-#     mocked_request.post(url=expected_url, json={})
-#     full_submission.create()
+@pytest.fixture
+def complex_indicator():
+    threat_actor = Entity(AttributeTypes, "THREAT_ACTOR", "ActorName").set_valid_from("1604510497000")\
+                                                                      .set_valid_to("1607102497000")\
+                                                                      .set_confidence_score("LOW")
+
+    malware = Entity(AttributeTypes, "MALWARE", "MalwareName").set_valid_from("1604510497000")\
+                                                              .set_valid_to("1607102497000")\
+                                                              .set_confidence_score("MEDIUM")
+    ip4 = Entity(ObservableTypes, "IP4", "2.2.2.2").set_valid_from("1604510497000")\
+                                                   .set_valid_to("1607102497000")\
+                                                   .set_confidence_score("LOW")
+    url = Entity(ObservableTypes, "URL", "wwww.relatedUrl.com").set_valid_from("1604510497000")\
+                                                               .set_valid_to("1607102497000")\
+                                                               .set_confidence_score("HIGH")
+    indicator = [
+        Indicator("URL", "verybadurl").set_valid_from("1604510497000").set_valid_to("1607102497000")
+                                      .set_confidence_score("LOW").set_malicious_score("BENIGN")
+                                      .set_attributes([threat_actor, malware])
+                                      .set_related_observables([ip4, url])
+    ]
+    return indicator
+
+
+@pytest.fixture
+def full_submission(submission, complex_indicator):
+    return submission.set_title("Report, complex test")\
+                     .set_content_indicators(complex_indicator)\
+                     .set_enclave_id("c0f07a9f-76e4-48df-a0d4-c63ed2edccf0")\
+                     .set_external_id("external-1234")\
+                     .set_external_url("externalUrlValue")\
+                     .set_timestamp("1607102497000")\
+                     .set_tags(["random_tag"])\
+                     .set_raw_content("blob of text")
+
+
+def test_submission_ok_json(full_submission):
+    assert full_submission.params.serialize() == full_submission.params.serialize()
+
+
+def test_ok_submission_ok(mocked_request, full_submission):
+    expected_url = "https://api.trustar.co/api/2.0/submissions/indicators"
+    mocked_request.post(url=expected_url, json={})
+    full_submission.create()
