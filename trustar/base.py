@@ -14,7 +14,7 @@ def get_timestamp(date):
     )
 
     timestamp = (dt_obj - datetime(1970, 1, 1, tzinfo=pytz.UTC)).total_seconds()
-    return timestamp
+    return int(timestamp)
 
 
 class Methods(Enum):

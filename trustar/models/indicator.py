@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from .base import Base
 from .entity import Entity
 from trustar.base import fluent
@@ -48,7 +50,7 @@ class Indicator(Base):
         if len(self.attributes):
             serialized.update({"attributes": [attr.serialize() for attr in self.attributes]})
         if len(self.related_observables):
-            serialized.update({"related_observables": [attr.serialize() for attr in self.related_observables]})
+            serialized.update({"relatedObservables": [attr.serialize() for attr in self.related_observables]})
         if len(self.tags):
             serialized.update({"tags": self.tags})
         return serialized

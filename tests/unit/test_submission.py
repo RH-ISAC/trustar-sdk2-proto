@@ -5,7 +5,6 @@ import pytest
 
 from trustar.submission import Submission
 from trustar.trustar import TruStar
-from trustar.trustar_enums import AttributeTypes, ObservableTypes
 from trustar.models import Indicator, Entity
 
 from resources import submission_example_request
@@ -18,9 +17,9 @@ def submission():
 
 @pytest.fixture
 def indicators():
-    bad_panda = Entity(AttributeTypes, "MALWARE", "BAD_PANDA")
-    related_observable_email = Entity(ObservableTypes, "EMAIL_ADDRESS", "bob@gmail.com")
-    related_observable_bad_url = Entity(ObservableTypes, "URL", "badurl.com")
+    bad_panda = Entity.attribute("MALWARE", "BAD_PANDA")
+    related_observable_email = Entity.observable("EMAIL_ADDRESS", "bob@gmail.com")
+    related_observable_bad_url = Entity.observable("URL", "badurl.com")
     return [
         Indicator("IP4", "1.2.3.4").set_malicious_score("HIGH")
                                    .set_attributes(bad_panda)
@@ -114,24 +113,25 @@ def test_create_fails_without_mandatory_fields(submission, indicators):
 
 @pytest.fixture
 def complex_indicator():
-    threat_actor = Entity(AttributeTypes, "THREAT_ACTOR", "ActorName").set_valid_from("1604510497000")\
-                                                                      .set_valid_to("1607102497000")\
+    threat_actor = Entity.attribute("THREAT_ACTOR", "ActorName").set_valid_from(1604510497)\
+                                                                      .set_valid_to(1607102497)\
                                                                       .set_confidence_score("LOW")
 
-    malware = Entity(AttributeTypes, "MALWARE", "MalwareName").set_valid_from("1604510497000")\
-                                                              .set_valid_to("1607102497000")\
-                                                              .set_confidence_score("MEDIUM")
-    ip4 = Entity(ObservableTypes, "IP4", "2.2.2.2").set_valid_from("1604510497000")\
-                                                   .set_valid_to("1607102497000")\
-                                                   .set_confidence_score("LOW")
-    url = Entity(ObservableTypes, "URL", "wwww.relatedUrl.com").set_valid_from("1604510497000")\
-                                                               .set_valid_to("1607102497000")\
-                                                               .set_confidence_score("HIGH")
+    malware = Entity.attribute("MALWARE", "MalwareName").set_valid_from(1604510497)\
+                                                        .set_valid_to(1607102497)\
+                                                        .set_confidence_score("MEDIUM")
+    ip4 = Entity.observable("IP4", "2.2.2.2").set_valid_from(1604510497)\
+                                             .set_valid_to(1607102497)\
+                                             .set_confidence_score("LOW")
+    url = Entity.observable("URL", "wwww.relatedUrl.com").set_valid_from(1604510497)\
+                                                         .set_valid_to(1607102497)\
+                                                         .set_confidence_score("HIGH")
     indicator = [
-        Indicator("URL", "verybadurl").set_valid_from("1604510497000").set_valid_to("1607102497000")
+        Indicator("URL", "verybadurl").set_valid_from(1604510497).set_valid_to(1607102497)
                                       .set_confidence_score("LOW").set_malicious_score("BENIGN")
                                       .set_attributes([threat_actor, malware])
                                       .set_related_observables([ip4, url])
+                                      .set_tags(["importantTag", "anotherTag"])
     ]
     return indicator
 
@@ -143,13 +143,13 @@ def full_submission(submission, complex_indicator):
                      .set_enclave_id("c0f07a9f-76e4-48df-a0d4-c63ed2edccf0")\
                      .set_external_id("external-1234")\
                      .set_external_url("externalUrlValue")\
-                     .set_timestamp("1607102497000")\
+                     .set_timestamp(1607102497)\
                      .set_tags(["random_tag"])\
                      .set_raw_content("blob of text")
 
 
 def test_submission_ok_json(full_submission):
-    assert full_submission.params.serialize() == full_submission.params.serialize()
+    assert full_submission.params.serialize() == json.loads(submission_example_request)
 
 
 def test_ok_submission_ok(mocked_request, full_submission):

@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from .base import Base
 from trustar.base import fluent, Params, Param, get_timestamp
+from trustar.trustar_enums import AttributeTypes, ObservableTypes
 
 
 class EntitySerializer(Params):
@@ -21,6 +22,14 @@ class Entity(Base):
                 ))
         self.key = alias
         self.set_custom_param(self.key, {"value": value, "type": entity_type})
+
+    @classmethod
+    def attribute(cls, entity_type, value):
+        return Entity(AttributeTypes, entity_type, value)
+
+    @classmethod
+    def observable(cls, entity_type, value):
+        return Entity(ObservableTypes, entity_type, value)
 
     def set_valid_from(self, valid_from):
         if not isinstance(valid_from, int):
