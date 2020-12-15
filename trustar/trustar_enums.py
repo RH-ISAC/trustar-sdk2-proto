@@ -16,7 +16,6 @@ class SortColumns(TSEnum):
 
 
 class ObservableTypes(TSEnum):
-
     IP4 = "IP4"
     IP6 = "IP6"
     URL = "URL"
@@ -33,7 +32,6 @@ class ObservableTypes(TSEnum):
 
 
 class AttributeTypes(TSEnum):
-
     MALWARE = "MALWARE"
     CORA_MALWARE = "CORA_MALWARE"
     THREAT_ACTOR = "THREAT_ACTOR"

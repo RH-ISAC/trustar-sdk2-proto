@@ -6,7 +6,7 @@ import pytest
 from trustar.indicators import SearchIndicator
 from trustar.trustar import TruStar
 from trustar.trustar_enums import ObservableTypes
-from trustar.models import Observable, Attribute
+from trustar.models import Entity
 from .resources import indicators_example_request
 
 
@@ -36,11 +36,9 @@ def test_set_from(search_indicator, from_date):
 
 
 def test_set_from_fail(search_indicator):
-    search_indicator.set_from("3 months ago")
-    with pytest.raises(AttributeError):
-        search_indicator.search()
-    # TODO this shouldn't fail
-    # assert len(search_indicator.params) == 0
+    with pytest.raises(TypeError):
+        search_indicator.set_from("XXXX-XX-XX")
+    assert len(search_indicator.params) == 0
 
 
 @pytest.mark.parametrize("to_date", [1583960400, "2020-03-11T21:00:00+00:00"])
@@ -51,11 +49,9 @@ def test_set_to(search_indicator, to_date):
 
 
 def test_set_to_fail(search_indicator):
-    search_indicator.set_to("1 day ago")
-    with pytest.raises(AttributeError):
-        search_indicator.search()
-    # TODO this shouldn't fail
-    # assert len(search_indicator.params) == 0
+    with pytest.raises(TypeError):
+        search_indicator.set_to("XXXX-XX-XX")
+    assert len(search_indicator.params) == 0
 
 
 def test_set_sort_column(search_indicator):
@@ -112,7 +108,7 @@ def test_fail_set_observable_types(search_indicator):
 
 @pytest.mark.parametrize(
     "attributes",
-    [[{"type": "MALWARE", "value": "ATTRIBUTE"}], [Attribute("ATTRIBUTE", "MALWARE")]],
+    [[{"type": "MALWARE", "value": "ATTRIBUTE"}], [Entity.attribute("MALWARE", "ATTRIBUTE")]],
 )
 def test_set_attributes(search_indicator, attributes):
     expected_result = [{"type": "MALWARE", "value": "ATTRIBUTE"}]
@@ -136,7 +132,7 @@ def test_fail_attributes(search_indicator, attributes):
 
 @pytest.mark.parametrize(
     "observables",
-    [[{"type": "URL", "value": "RELATED_OBS"}], [Observable("RELATED_OBS", "URL")]],
+    [[{"type": "URL", "value": "RELATED_OBS"}], [Entity.observable("URL", "RELATED_OBS")]],
 )
 def test_set_related_observable(search_indicator, observables):
     expected_result = [{"type": "URL", "value": "RELATED_OBS"}]

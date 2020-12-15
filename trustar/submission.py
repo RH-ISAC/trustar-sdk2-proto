@@ -1,9 +1,6 @@
-import pytz
+from __future__ import unicode_literals
 
-import dateparser
-from datetime import datetime
-
-from .base import fluent, Methods, Params, Param
+from .base import fluent, Methods, Params, Param, get_timestamp
 from .query import Query
 
 
@@ -26,17 +23,9 @@ class Submission(object):
     def endpoint(self):
         return self.config.request_details.get("api_endpoint") + self.path
 
-    @staticmethod
-    def _get_timestamp(date):
-        dt_obj = dateparser.parse(
-            date, settings={"TIMEZONE": "UTC", "RETURN_AS_TIMEZONE_AWARE": True}
-        )
-
-        timestamp = (dt_obj - datetime(1970, 1, 1, tzinfo=pytz.UTC)).total_seconds()
-        return timestamp
-
-    def add_custom_param(self, param):
+    def set_custom_param(self, key, value):
         """Adds a new param to set of params."""
+        param = Param(key=key, value=value)
         self.params.add(param)
 
     def set_id(self, submission_id):
@@ -45,7 +34,7 @@ class Submission(object):
         :param submission_id: field value.
         :returns: self.
         """
-        self.add_custom_param(Param("id", submission_id))
+        self.set_custom_param("id", submission_id)
 
     def set_title(self, title):
         """Adds title param to set of params.
@@ -53,7 +42,7 @@ class Submission(object):
         :param title: field value.
         :returns: self.
         """
-        self.add_custom_param(Param("title", title))
+        self.set_custom_param("title", title)
 
     def set_content_indicators(self, indicators):
         """Adds content param to set of params.
@@ -63,15 +52,15 @@ class Submission(object):
         """
         indicators = [i.serialize() for i in indicators]
         content = {"indicators": indicators}
-        self.add_custom_param(Param("content", content))
+        self.set_custom_param("content", content)
 
     def set_enclave_id(self, enclave_id):
         """Adds enclaveId param to set of params.
 
-        :param raw_content: field value.
+        :param enclave_id: field value.
         :returns: self.
         """
-        self.add_custom_param(Param("enclaveId", enclave_id))
+        self.set_custom_param("enclaveId", enclave_id)
 
     def set_external_id(self, external_id):
         """Adds externalId param to set of params.
@@ -79,7 +68,7 @@ class Submission(object):
         :param external_id: field value.
         :returns: self.
         """
-        self.add_custom_param(Param("externalId", external_id))
+        self.set_custom_param("externalId", external_id)
 
     def set_external_url(self, external_url):
         """Adds externalUrl param to set of params.
@@ -87,7 +76,7 @@ class Submission(object):
         :param external_url: field value.
         :returns: self.
         """
-        self.add_custom_param(Param("externalUrl", external_url))
+        self.set_custom_param("externalUrl", external_url)
 
     def set_tags(self, tags):
         """Adds tags param to set of params.
@@ -95,7 +84,7 @@ class Submission(object):
         :param tags: field value.
         :returns: self.
         """
-        self.add_custom_param(Param("tags", tags))
+        self.set_custom_param("tags", tags)
 
     def set_include_content(self, content=False):
         """
@@ -104,7 +93,7 @@ class Submission(object):
         :param content: field value.
         :returns: self.
         """
-        self.add_custom_param(Param("includeContent", content))
+        self.set_custom_param("includeContent", content)
 
     def set_timestamp(self, timestamp):
         """Adds timestamp param to set of params.
@@ -113,9 +102,9 @@ class Submission(object):
         :returns: self.
         """
         if not isinstance(timestamp, int):
-            timestamp = self._get_timestamp(timestamp)
+            timestamp = get_timestamp(timestamp)
 
-        self.add_custom_param(Param("timestamp", timestamp))
+        self.set_custom_param("timestamp", timestamp)
 
     def set_raw_content(self, raw_content):
         """Adds rawContent param to set of params.
@@ -123,7 +112,7 @@ class Submission(object):
         :param raw_content: field value.
         :returns: self.
         """
-        self.add_custom_param(Param("rawContent", raw_content))
+        self.set_custom_param("rawContent", raw_content)
 
     @property
     def query_params(self):

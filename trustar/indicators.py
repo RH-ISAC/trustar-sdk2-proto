@@ -1,13 +1,9 @@
 from __future__ import unicode_literals
+from .base import fluent, Methods, Params, Param, get_timestamp
 
-import pytz
-import dateparser
-from datetime import datetime
-
-from .base import fluent, Methods, Params, Param
 from .query import Query
 from .trustar_enums import ObservableTypes, SortColumns, AttributeTypes
-from .models import Attribute, Observable
+from .models import Entity
 
 
 class SearchIndicatorParamSerializer(Params):
@@ -36,15 +32,6 @@ class SearchIndicator:
             )
         return self.base_url + "/{}/tags".format(self.params.get("indicator_id"))
 
-    @staticmethod
-    def _get_timestamp(date):
-        dt_obj = dateparser.parse(
-            date, settings={"TIMEZONE": "UTC", "RETURN_AS_TIMEZONE_AWARE": True}
-        )
-
-        timestamp = (dt_obj - datetime(1970, 1, 1, tzinfo=pytz.UTC)).total_seconds()
-        return timestamp
-
     def _valid_dates(self):
         return (
             self.params.get("from", False)
@@ -69,13 +56,13 @@ class SearchIndicator:
 
     @staticmethod
     def _get_entity(entity, entity_type):
-        if isinstance(entity, entity_type):
-            return entity.serialize()
+        if isinstance(entity, Entity):
+            return entity.params.serialize()[entity.key]
 
         if isinstance(entity, dict):
             entity_type = (
                 AttributeTypes
-                if issubclass(entity_type, Attribute)
+                if issubclass(entity_type, AttributeTypes)
                 else ObservableTypes
             )
             return {
@@ -84,7 +71,7 @@ class SearchIndicator:
             }
 
         raise AttributeError(
-            "List elements should be a dictionary or the entity class (Attibute, Observable)"
+            "List elements should be a dictionary or the entity class"
         )
 
     def set_tag(self, tag):
@@ -102,12 +89,12 @@ class SearchIndicator:
 
     def set_from(self, from_date):
         if not isinstance(from_date, int):
-            from_date = self._get_timestamp(from_date)
+            from_date = get_timestamp(from_date)
         self.set_custom_param("from", from_date)
 
     def set_to(self, to_date):
         if not isinstance(to_date, int):
-            to_date = self._get_timestamp(to_date)
+            to_date = get_timestamp(to_date)
 
         self.set_custom_param("to", to_date)
 
@@ -136,14 +123,14 @@ class SearchIndicator:
         if not isinstance(attributes, list):
             raise AttributeError("attributes should be a list")
 
-        attributes = [self._get_entity(e, Attribute) for e in attributes]
+        attributes = [self._get_entity(e, AttributeTypes) for e in attributes]
         self.set_custom_param("attributes", attributes)
 
     def set_related_observables(self, observables):
         if not isinstance(observables, list):
             raise AttributeError("observables should be a list")
 
-        observables = [self._get_entity(o, Observable) for o in observables]
+        observables = [self._get_entity(o, ObservableTypes) for o in observables]
         self.set_custom_param("relatedObservables", observables)
 
     def set_indicator_id(self, indicator_id):

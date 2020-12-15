@@ -1,5 +1,3 @@
 from __future__ import absolute_import
-from .attribute import Attribute
+from .entity import Entity
 from .indicator import Indicator
-from .observable import Observable
-from .relation import Relation
