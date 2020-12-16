@@ -1,9 +1,11 @@
 from __future__ import absolute_import
 import json
+from os import name
 
 from .log import get_logger
 from .indicators import SearchIndicator
 from .submission import Submission
+from .trustar_enums import TruStarUrls
 from .version import __version__
 
 logger = get_logger(__name__)
@@ -12,9 +14,9 @@ logger = get_logger(__name__)
 class TruStar:
 
     DEFAULTS = {
-        "auth_endpoint": "https://api.trustar.co/oauth/token",
-        "api_endpoint": "https://api.trustar.co/api/2.0",
-        "station": "https://station.trustar.co",
+        "auth_endpoint": TruStarUrls.AUTH_TOKEN.value,
+        "api_endpoint": TruStarUrls.API.value,
+        "station": TruStarUrls.STATION.value,
         "client_type": "PYTHON_SDK",
         "client_version": __version__,
         "verify": True,
