@@ -18,6 +18,8 @@ class Submission(object):
     def __init__(self, config):
         self.config = config
         self.params = SubmissionsParamSerializer()
+        for func in (self.set_tags,):
+            func()
 
     @property
     def endpoint(self):
@@ -78,12 +80,14 @@ class Submission(object):
         """
         self.set_custom_param("externalUrl", external_url)
 
-    def set_tags(self, tags):
+    def set_tags(self, tags=None):
         """Adds tags param to set of params.
 
         :param tags: field value.
         :returns: self.
         """
+        if not tags:
+            tags = []
         self.set_custom_param("tags", tags)
 
     def set_include_content(self, content=False):

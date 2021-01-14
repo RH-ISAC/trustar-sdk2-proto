@@ -47,10 +47,7 @@ class Indicator(Base):
     def serialize(self):
         serialized = {}
         serialized.update(self.observable.serialize())
-        if len(self.attributes):
-            serialized.update({"attributes": [attr.serialize() for attr in self.attributes]})
-        if len(self.related_observables):
-            serialized.update({"relatedObservables": [attr.serialize() for attr in self.related_observables]})
-        if len(self.tags):
-            serialized.update({"tags": self.tags})
+        serialized.update({"attributes": [attr.serialize() for attr in self.attributes] if len(self.attributes) else []})
+        serialized.update({"relatedObservables": [attr.serialize() for attr in self.related_observables] if len(self.related_observables) else []})
+        serialized.update({"tags": self.tags})
         return serialized
