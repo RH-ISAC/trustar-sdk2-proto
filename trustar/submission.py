@@ -118,6 +118,14 @@ class Submission(object):
         """
         self.set_custom_param("rawContent", raw_content)
 
+    def set_submission_version(self, version):
+        """Adds submissionVersion param to set of params.
+
+        :param version: field value.
+        :returns: self.
+        """
+        self.set_custom_param("submissionVersion", version)
+
     @property
     def query_params(self):
         return {
