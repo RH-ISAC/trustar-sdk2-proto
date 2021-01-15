@@ -45,62 +45,63 @@ def test_set_id(submission):
     submission.set_id("TEST_ID")
     params = [p.value for p in submission.params]
     assert len(submission.params) == TOTAL_DEFAULT_PARAMS + 1
-    assert params[TOTAL_DEFAULT_PARAMS] == "TEST_ID"
+    assert "TEST_ID" in params
 
 
 def test_set_title(submission):
     submission.set_title("TEST_TITLE")
     params = [p.value for p in submission.params]
     assert len(submission.params) == TOTAL_DEFAULT_PARAMS + 1
-    assert params[TOTAL_DEFAULT_PARAMS] == "TEST_TITLE"
+    assert "TEST_TITLE" in params
 
 
 def test_set_enclave_id(submission):
     submission.set_enclave_id("TEST-ENCLAVE-ID")
     params = [p.value for p in submission.params]
     assert len(submission.params) == TOTAL_DEFAULT_PARAMS + 1
-    assert params[TOTAL_DEFAULT_PARAMS] == "TEST-ENCLAVE-ID"
+    assert  "TEST-ENCLAVE-ID" in params
 
 
 def test_set_external_id(submission):
     submission.set_external_id("TEST-EXTERNAL-ID")
     params = [p.value for p in submission.params]
     assert len(submission.params) == TOTAL_DEFAULT_PARAMS + 1
-    assert params[TOTAL_DEFAULT_PARAMS] == "TEST-EXTERNAL-ID"
+    assert "TEST-EXTERNAL-ID" in params
 
 
 def test_set_external_url(submission):
     submission.set_external_url("TEST-EXTERNAL-URL")
     params = [p.value for p in submission.params]
     assert len(submission.params) == TOTAL_DEFAULT_PARAMS + 1
-    assert params[TOTAL_DEFAULT_PARAMS] == "TEST-EXTERNAL-URL"
+    assert "TEST-EXTERNAL-URL" in params
 
 
 def test_set_tags(submission):
     submission.set_tags(["TEST_TAG1", "TEST_TAG2"])
     params = [p.value for p in submission.params]
     assert len(submission.params) == TOTAL_DEFAULT_PARAMS
-    assert params[TOTAL_DEFAULT_PARAMS -1] == ["TEST_TAG1", "TEST_TAG2"]
+    assert ["TEST_TAG1", "TEST_TAG2"] in params
 
 
 def test_set_include_content(submission):
     submission.set_include_content(True)
     params = [p.value for p in submission.params]
     assert len(submission.params) == TOTAL_DEFAULT_PARAMS + 1
-    assert params[TOTAL_DEFAULT_PARAMS] == True
+    assert True in params
 
 
 def test_set_content_indicators(submission, indicators):
     submission.set_content_indicators(indicators)
     serialized_indicators = [i.serialize() for i in indicators]
-    params = [p.value for p in submission.params]
-    assert params[TOTAL_DEFAULT_PARAMS]["indicators"] == serialized_indicators
+    # hacky workaround for python2 unsorted dicts
+    params = [p.value for p in submission.params if p.value != []]
+    assert serialized_indicators == params[0]["indicators"]
 
 
 def test_set_raw_content(submission):
     submission.set_raw_content("RAW CONTENT")
     params = [p.value for p in submission.params]
-    assert params[TOTAL_DEFAULT_PARAMS] == "RAW CONTENT"
+    assert "RAW CONTENT" in params
 
 
 @pytest.mark.parametrize("date", [1583960400, "2020-03-11T21:00:00"])
