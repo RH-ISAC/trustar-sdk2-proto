@@ -12,10 +12,10 @@ class SubmissionsParamSerializer(Params):
 @fluent
 class Submission(object):
 
-    NEW_SUBMISSION_MANDATORY_FIELDS = ("title", "content", "enclaveId")
+    NEW_SUBMISSION_MANDATORY_FIELDS = ("title", "content", "enclaveGuid")
     path = "/submissions/indicators"
 
-    def __init__(self, config):
+    def __init__(self, config=None):
         self.config = config
         self.params = SubmissionsParamSerializer()
         for func in (self.set_tags,):
@@ -62,7 +62,7 @@ class Submission(object):
         :param enclave_id: field value.
         :returns: self.
         """
-        self.set_custom_param("enclaveId", enclave_id)
+        self.set_custom_param("enclaveGuid", enclave_id)
 
     def set_external_id(self, external_id):
         """Adds externalId param to set of params.
@@ -131,7 +131,7 @@ class Submission(object):
         return {
             p.key: p.value
             for p in self.params
-            if p in ("id", "enclaveId", "includeContent")
+            if p in ("id", "enclaveGuid", "includeContent")
         }
 
     def create_query(self, method):
