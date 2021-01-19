@@ -8,19 +8,11 @@ commands:
           name: Run tests with Python 2.7
           command: |
             sudo pip install --upgrade pip
-            pip install --user tox
+            pip install --user tox tox-wheel
             tox -e py27
-
-  build_python_2_7_wheel:
-    steps:
-      - run:
-        name: Build the python2 wheel
-        when: always
-        command: |
-          python2 setup.py bdist_wheel
       - store_artifacts:
-          path: dist/
-          destination: circleci-wheels
+          path: .tox/dist/
+          destination: circleci-wheels-p27
 
   test_py37:
     steps:
@@ -29,19 +21,11 @@ commands:
           name: Run tests with Python 3.7
           command: |
             sudo pip install --upgrade pip
-            pip install --user tox
+            pip install --user tox tox-wheel
             tox -e py37
-
-  build_python_3_7_wheel:
-    steps:
-      - run:
-        name: Build the python3 wheel
-        command:  |
-          python3 setup.py bdist_wheel
-        when: always
       - store_artifacts:
-          path: dist/
-          destination: circleci-wheels
+          path: .tox/dist/
+          destination: circleci-wheels-p37
 
 executors:
   docker_python_2_7:
@@ -58,14 +42,12 @@ jobs:
     working_directory: ~/project
     steps:
       - test_py27
-      - build_python_2_7_wheel
 
   test_python_3_7_environment:
     executor: docker_python_3_7
     working_directory: ~/project
     steps:
       - test_py37
-      - build_python_3_7_wheel
 
 workflows:
   version: 2
