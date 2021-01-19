@@ -15,7 +15,9 @@ commands:
     steps:
       - run:
         name: Build the python2 wheel
-        command: python2 setup.py bdist_wheel
+        when: always
+        command: |
+          python2 setup.py bdist_wheel
       - store_artifacts:
           path: dist/
           destination: circleci-wheels
@@ -34,7 +36,9 @@ commands:
     steps:
       - run:
         name: Build the python3 wheel
-        command: python3 setup.py bdist_wheel
+        command:  |
+          python3 setup.py bdist_wheel
+        when: always
       - store_artifacts:
           path: dist/
           destination: circleci-wheels
