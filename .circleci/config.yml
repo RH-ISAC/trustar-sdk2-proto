@@ -11,6 +11,15 @@ commands:
             pip install --user tox
             tox -e py27
 
+  build_python_2_7_wheel:
+    steps:
+      - run:
+        name: Build the python2 wheel
+        command: python2 setup.py bdist_wheel
+        - store_artifacts:
+            path: dist/
+            destination: circleci-wheels
+
   test_py37:
     steps:
       - checkout
@@ -20,6 +29,15 @@ commands:
             sudo pip install --upgrade pip
             pip install --user tox
             tox -e py37
+
+  build_python_3_7_wheel:
+    steps:
+      - run:
+        name: Build the python3 wheel
+        command: python3 setup.py bdist_wheel
+        - store_artifacts:
+            path: dist/
+            destination: circleci-wheels
 
 executors:
   docker_python_2_7:
@@ -36,12 +54,14 @@ jobs:
     working_directory: ~/project
     steps:
       - test_py27
+      - build_python_2_7_wheel
 
   test_python_3_7_environment:
     executor: docker_python_3_7
     working_directory: ~/project
     steps:
       - test_py37
+      - build_python_3_7_wheel
 
 workflows:
   version: 2
