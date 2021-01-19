@@ -16,9 +16,9 @@ commands:
       - run:
         name: Build the python2 wheel
         command: python2 setup.py bdist_wheel
-        - store_artifacts:
-            path: dist/
-            destination: circleci-wheels
+      - store_artifacts:
+          path: dist/
+          destination: circleci-wheels
 
   test_py37:
     steps:
@@ -35,9 +35,9 @@ commands:
       - run:
         name: Build the python3 wheel
         command: python3 setup.py bdist_wheel
-        - store_artifacts:
-            path: dist/
-            destination: circleci-wheels
+      - store_artifacts:
+          path: dist/
+          destination: circleci-wheels
 
 executors:
   docker_python_2_7:
