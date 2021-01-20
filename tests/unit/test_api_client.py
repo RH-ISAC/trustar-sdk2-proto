@@ -2,6 +2,7 @@ import pytest
 
 from trustar2.api_client import ApiClient
 from trustar2.trustar import TruStar
+from trustar2.version import __version__
 
 
 @pytest.fixture
@@ -20,7 +21,7 @@ def test_get_headers(api_client, mocked_request):
         "Authorization": "Bearer TOKEN12345",
         "Client-Metatag": "TEST_METATAG",
         "Client-Type": "PYTHON_SDK",
-        "Client-Version": "1.0.0",
+        "Client-Version": __version__,
         "Content-Type": "application/json",
     }
     assert headers == expected_headers
