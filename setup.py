@@ -3,7 +3,7 @@ from glob import glob
 
 # read version
 version_globals = {}
-with open("trustar/version.py") as fp:
+with open("trustar2/version.py") as fp:
     exec(fp.read(), version_globals)
 version = version_globals['__version__']
 

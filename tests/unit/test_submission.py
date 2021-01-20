@@ -3,9 +3,9 @@ from __future__ import unicode_literals
 import json
 import pytest
 
-from trustar.submission import Submission
-from trustar.trustar import TruStar
-from trustar.models import Indicator, Entity
+from trustar2.submission import Submission
+from trustar2.trustar import TruStar
+from trustar2.models import Indicator, Entity
 
 from tests.unit.resources import submission_example_request
 

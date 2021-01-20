@@ -2,8 +2,8 @@ from __future__ import unicode_literals
 
 from .base import Base
 from .entity import Entity
-from trustar.base import fluent
-from trustar.trustar_enums import ObservableTypes
+from trustar2.base import fluent
+from trustar2.trustar_enums import ObservableTypes
 
 
 @fluent

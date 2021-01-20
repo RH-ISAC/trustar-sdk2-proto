@@ -3,10 +3,10 @@ from __future__ import unicode_literals
 import json
 import pytest
 
-from trustar.indicators import SearchIndicator
-from trustar.trustar import TruStar
-from trustar.trustar_enums import ObservableTypes
-from trustar.models import Entity
+from trustar2.indicators import SearchIndicator
+from trustar2.trustar import TruStar
+from trustar2.trustar_enums import ObservableTypes
+from trustar2.models import Entity
 from .resources import indicators_example_request
 
 

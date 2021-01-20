@@ -1,4 +1,4 @@
-# Seems like from time to time people do a from trustar import *, lets minimize the chances of something ugly happening
+# Seems like from time to time people do a from trustar2 import *, lets minimize the chances of something ugly happening
 __all__ = ["get_logger", "TrustarJSONFormatter"]
 
 import datetime

@@ -1,8 +1,8 @@
 from __future__ import unicode_literals
 
 from .base import Base
-from trustar.base import fluent, Params, Param, get_timestamp
-from trustar.trustar_enums import AttributeTypes, ObservableTypes
+from trustar2.base import fluent, Params, Param, get_timestamp
+from trustar2.trustar_enums import AttributeTypes, ObservableTypes
 
 
 class EntitySerializer(Params):

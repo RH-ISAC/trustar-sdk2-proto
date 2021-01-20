@@ -1,8 +1,8 @@
 import pytest
 
-from trustar.api_client import ApiClient
-from trustar.trustar import TruStar
-from trustar.version import __version__
+from trustar2.api_client import ApiClient
+from trustar2.trustar import TruStar
+from trustar2.version import __version__
 
 
 @pytest.fixture
