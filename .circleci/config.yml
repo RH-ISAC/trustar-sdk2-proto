@@ -8,8 +8,11 @@ commands:
           name: Run tests with Python 2.7
           command: |
             sudo pip install --upgrade pip
-            pip install --user tox
+            pip install --user tox tox-wheel
             tox -e py27
+      - store_artifacts:
+          path: .tox/dist/
+          destination: circleci-wheels-p27
 
   test_py37:
     steps:
@@ -18,8 +21,11 @@ commands:
           name: Run tests with Python 3.7
           command: |
             sudo pip install --upgrade pip
-            pip install --user tox
+            pip install --user tox tox-wheel
             tox -e py37
+      - store_artifacts:
+          path: .tox/dist/
+          destination: circleci-wheels-p37
 
 executors:
   docker_python_2_7:

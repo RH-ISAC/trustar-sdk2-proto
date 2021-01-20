@@ -8,14 +8,14 @@ with open("trustar/version.py") as fp:
 version = version_globals['__version__']
 
 setup(
-    name='trustar',
-    packages=find_packages(),
+    name='trustar2',
+    packages=find_packages(exclude=("tests",)),
     version=version,
     author='TruSTAR Technology, Inc.',
     author_email='support@trustar.co',
-    url='https://github.com/trustar/trustar-python',
-    download_url='https://github.com/trustar/trustar-python/tarball/%s' % version,
-    description='Python SDK for the TruSTAR REST API',
+    url='https://github.com/trustar/trustar-sdk2-proto/',
+    download_url='https://github.com/trustar/trustar-sdk2-proto/tarball/%s' % version,
+    description='Python SDK2 for the TruSTAR REST API',
     license='MIT',
     install_requires=['json_log_formatter',
                       'future',
@@ -29,6 +29,5 @@ setup(
                       'six'
                       ],
     include_package_data=True,
-    scripts=glob('trustar/examples/**/*.py') + glob('trustar/examples/*.py'),
     use_2to3=True
 )
