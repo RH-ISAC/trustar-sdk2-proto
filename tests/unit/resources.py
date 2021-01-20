@@ -82,7 +82,7 @@ submission_example_request = """
       }
     ]
   },
-  "enclaveId": "c0f07a9f-76e4-48df-a0d4-c63ed2edccf0",
+  "enclaveGuid": "c0f07a9f-76e4-48df-a0d4-c63ed2edccf0",
   "externalId": "external-1234",
   "externalUrl": "externalUrlValue",
   "timestamp": 1607102497,
