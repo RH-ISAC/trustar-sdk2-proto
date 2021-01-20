@@ -131,7 +131,7 @@ class Submission(object):
         return {
             p.key: p.value
             for p in self.params
-            if p in ("id", "enclaveGuid", "includeContent")
+            if p.key in ("id", "enclaveGuid", "includeContent")
         }
 
     def create_query(self, method):
