@@ -12,7 +12,7 @@ setup(
     packages=find_packages(exclude=("tests",)),
     version=version,
     author='TruSTAR Technology, Inc.',
-    author_email='support@trustar2.co',
+    author_email='support@trustar.co',
     url='https://github.com/trustar/trustar-sdk2-proto/',
     download_url='https://github.com/trustar/trustar-sdk2-proto/tarball/%s' % version,
     description='Python SDK2 for the TruSTAR REST API',

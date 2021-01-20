@@ -7,10 +7,10 @@ VERSION=$1
 
 # replace version in file
 echo "Replacing version in trustar/version.py"
-cat > trustar/version.py <<- EOM
+cat > trustar2/version.py <<- EOM
 __version__ = "$VERSION"
 EOM
-git add trustar/version.py
+git add trustar2/version.py
 git commit -m "Bump version"
 git push main
 

@@ -23,6 +23,6 @@ repos:
     hooks:
     -   id: tests
         name: Tests
-        entry: sh -c "PYTHONPATH=${PYTHONPATH}:${PWD} pytest --cov=trustar22"
+        entry: sh -c "PYTHONPATH=${PYTHONPATH}:${PWD} pytest --cov=trustar2"
         language: system
         types: [python]
