@@ -33,3 +33,13 @@ If you want to test all available environments:, just do:
 If you want to run a specific environment:
 
 `tox -e py27` or `tox -e py37`
+
+# Releasing a new version
+
+To publish a new version in PyPI you should use the `release.sh` script that is in the root of the project. Suppose you want to release v0.0.1, you should do:
+
+```
+bash release.sh v0.0.1
+```
+
+Obviously, in order to make a release, you must have permissions to do so and you must have your PyPI creds available for Twine.
