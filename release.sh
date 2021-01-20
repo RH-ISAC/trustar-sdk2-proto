@@ -10,6 +10,9 @@ echo "Replacing version in trustar/version.py"
 cat > trustar/version.py <<- EOM
 __version__ = "$VERSION"
 EOM
+git add trustar/version.py
+git commit -m "Bump version"
+git push main
 
 # tag repository
 echo "Tagging $VERSION"
