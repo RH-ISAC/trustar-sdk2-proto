@@ -1,7 +1,7 @@
 import pytest
 
-from trustar.api_client import ApiClient
-from trustar.trustar import TruStar
+from trustar2.api_client import ApiClient
+from trustar2.trustar import TruStar
 
 
 @pytest.fixture

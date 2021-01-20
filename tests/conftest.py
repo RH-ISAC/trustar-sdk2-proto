@@ -1,7 +1,7 @@
 import pytest
 import requests_mock
 
-from trustar.trustar import TruStar
+from trustar2.trustar import TruStar
 
 BASE_URL = "/api/2.0"
 
