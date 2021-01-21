@@ -143,7 +143,7 @@ class Submission(object):
             if p.key in ("id", "idType", "enclaveGuid", "includeContent")
         }
 
-    def get_by_external_id(self):
+    def should_fetch_by_external_id(self):
         """Returns True if params are set to retrieve a submission by external id"""
         return "idType" in self.params and "externalId" in self.params
 
@@ -169,7 +169,7 @@ class Submission(object):
     def get(self):
         """Retrieves a submission according to query_params set before."""
         query_string = self.query_params
-        if self.get_by_external_id():
+        if self.should_fetch_by_external_id():
             query_string["id"] = self.params.get("externalId")
 
         return (
