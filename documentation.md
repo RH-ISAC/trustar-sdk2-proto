@@ -84,6 +84,28 @@ response = TruStar.config_from_file("trustar_config.json", "station")\
         pprint(page.json().get("items"))
 ```
 
+## Using SDK without the fluent interface
+
+You can use the SDK without having to call to the `submission` and `indicators` methods from the `TruStar` class. And you can work with your config and submission / indicator search, in a decoupled way.
+
+```python
+from trustar2 import TruStar, Submission
+
+trustar_config = TruStar.config_from_file("trustar_config.json", "station")
+submission = Submission()
+
+# Lines of code
+
+submission.set_id("your-id")
+submissions.set_include_content(True) 
+
+# More lines of code
+
+submission.set_trustar_config(trustar_config)
+submission.get()
+```
+
+
 # Data Model
 
 ## Submission
@@ -111,11 +133,11 @@ response = TruStar.config_from_file("trustar_config.json", "station")\
 |`.set_from`|Int (unix timestamp) or python Date|
 |`.set_to`|Int (unix timestamp) or python Date|
 |`.set_priority_scores`| List of Integers between -1 and 3|
-|`.set_sort_column`| String / Enum |
+|`.set_sort_column`| String / [Enum](trustar2/trustar_enums.py#L11)|
 |`.set_enclave_ids`| Single or List of Strings|
-|`.set_observable_types`| List of Strings or Enums|
-|`.set_attributes`| List of Strings or Enums |
-|`.set_related_observables`|List of Strings or Enums|
+|`.set_observable_types`| List of Strings or [Enums](trustar2/trustar_enums.py#L18)|
+|`.set_attributes`| List of Strings or [Enums](trustar2/trustar_enums.py#L35)|
+|`.set_related_observables`|List of Strings or [Enums](trustar2/trustar_enums.py#L18)|
 
 Only mandatory setter is `.set_enclave_ids` .
 
@@ -125,7 +147,7 @@ Other setters are not mandatory, but if you want to filter the returned IOCs, yo
 
 | Attribute / Setter | Param Type |
 | :----------------: | :----: |
-| Observable Type | String  / Enum|
+| Observable Type | String  / [Enum](trustar2/trustar_enums.py#L18)|
 | Observable Value | String |
 | `.set_related_observables` | List of / or single [Observable](#observable) entity |
 | `.set_attributes`| List of / or single [Attribute](#attribute) entity|
@@ -139,7 +161,7 @@ Other setters are not mandatory, but if you want to filter the returned IOCs, yo
 
 | Attribute / Setter | Param Type |
 | :----------------: | :----: |
-| Observable Type | String  / Enum|
+| Observable Type | String  / [Enum](trustar2/trustar_enums.py#L18)|
 | Observable Value | String |
 | `.set_confidence_score` | String ("LOW", "MEDIUM", "HIGH") |
 | `.set_valid_from` | Int (unix timestamp) or python Date |
@@ -149,7 +171,7 @@ Other setters are not mandatory, but if you want to filter the returned IOCs, yo
 
 | Attribute / Setter | Param Type |
 | :----------------: | :----: |
-| Attribute Type | String  / Enum|
+| Attribute Type | String  / [Enum](trustar2/trustar_enums.py#L35)|
 | Attribute Value | String |
 | `.set_confidence_score` | String ("LOW", "MEDIUM", "HIGH") |
 | `.set_valid_from` | Int (unix timestamp) or python Date |
