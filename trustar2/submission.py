@@ -21,6 +21,9 @@ class Submission(object):
         for func in (self.set_tags,):
             func()
 
+    def __str__(self):
+        return "Submission <{}> with external Id <{}>".format(self.params.get("title"), self.params.get("externalId"))
+
     @property
     def endpoint(self):
         return self.config.request_details.get("api_endpoint") + self.path
@@ -137,13 +140,18 @@ class Submission(object):
 
     @property
     def query_params(self):
-        return {
+        query_params = {
             p.key: p.value
             for p in self.params
             if p.key in ("id", "idType", "enclaveGuid", "includeContent")
         }
 
-    def should_fetch_by_external_id(self):
+        if self.should_use_external_id():
+            query_params["id"] = self.params.get("externalId")
+
+        return query_params
+
+    def should_use_external_id(self):
         """Returns True if params are set to retrieve a submission by external id"""
         return "idType" in self.params and "externalId" in self.params
 
@@ -168,13 +176,9 @@ class Submission(object):
 
     def get(self):
         """Retrieves a submission according to query_params set before."""
-        query_string = self.query_params
-        if self.should_fetch_by_external_id():
-            query_string["id"] = self.params.get("externalId")
-
         return (
             self.create_query(Methods.GET)
-            .set_query_string(query_string)
+            .set_query_string(self.query_params)
             .fetch_one()
         )
 
@@ -182,6 +186,7 @@ class Submission(object):
         """Updates a submission according to query_params set before."""
         return (
             self.create_query(Methods.PUT)
+            .set_params(self.params)
             .set_query_string(self.query_params)
             .fetch_one()
         )
