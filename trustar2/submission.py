@@ -22,7 +22,10 @@ class Submission(object):
             func()
 
     def __str__(self):
-        return "Submission <{}> with external Id <{}>".format(self.params.get("title"), self.params.get("externalId"))
+        return "Submission <{}> with external Id <{}>".format(
+            self.params.get("title"), 
+            self.params.get("externalId")
+        )
 
     @property
     def endpoint(self):
