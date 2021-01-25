@@ -91,7 +91,7 @@ response = TruStar.config_from_file("trustar_config.json", "station")\
 | Setter | Param Type | Functionality | Mandatory? |
 | :----------------: | :----: | :----: | :----: |
 | `.set_title` | String | Title of the submission | Yes on Creation, optional while updating |
-| `.set_content_indicators`| List of [Indicator](indicator) objects| Indicators to be included in the submission|Yes on Creation, optional while updating|
+| `.set_content_indicators`| List of [Indicator](#indicator) objects| Indicators to be included in the submission|Yes on Creation, optional while updating|
 | `.set_enclave_id` | String | Enclave where the submission will be created/deleted/fetched | Yes on creation. While updating / fetching / deleting, it's mandatory IF id type was marked as external|
 | `.set_external_url` | String | url for an external report| No. Optional always |
 | `.set_timestamp` | Int (unix timestamp) or python Date | Submission's timestamp| No. Optional always |
@@ -152,7 +152,7 @@ response = TruStar.config_from_file("trustar_config.json", "station")\
 | `.set_valid_from` | Int (unix timestamp) or python Date |
 | `.set_valid_to` | Int (unix timestamp) or python Date |
 
-[Valid observable / attribute types](.trustar2/trustar_enums): 
+[Valid observable / attribute types](trustar2/trustar_enums.py): 
 
 Attribute: 
 - THREAT_ACTOR
