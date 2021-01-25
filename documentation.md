@@ -1,4 +1,4 @@
-# Usage
+# Usage Examples
 ## Create new submissions in TruSTAR
 
 ```python
@@ -84,7 +84,8 @@ response = TruStar.config_from_file("trustar_config.json", "station")\
         pprint(page.json().get("items"))
 ```
 
-# Models
+# Data Model
+
 ## Submission
 
 | Setter | Param Type | Functionality | Mandatory? |
@@ -119,8 +120,6 @@ response = TruStar.config_from_file("trustar_config.json", "station")\
 Only mandatory setter is `.set_enclave_ids` .
 
 Other setters are not mandatory, but if you want to filter the returned IOCs, you need call the right method.
-
-
 
 ## Indicator
 
