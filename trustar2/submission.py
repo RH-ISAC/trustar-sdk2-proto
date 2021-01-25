@@ -138,6 +138,9 @@ class Submission(object):
         """
         self.set_custom_param("submissionVersion", version)
 
+    def set_trustar_config(self, trustar_config):
+        self.config = trustar_config
+
     @property
     def query_params(self):
         query_params = {
