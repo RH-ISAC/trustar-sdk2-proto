@@ -1,4 +1,8 @@
-# trustar-sdk2-proto
+# TruSTAR SDK 2
+
+# Documentation
+
+Click [here](documentation.md) to check some examples of how the SDK is used and the data model.
 
 # Project development setup
 
