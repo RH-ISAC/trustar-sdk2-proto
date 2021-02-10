@@ -21,6 +21,12 @@ class Submission(object):
         for func in (self.set_tags,):
             func()
 
+    def __str__(self):
+        return "Submission <{}> with external Id <{}>".format(
+            self.params.get("title"), 
+            self.params.get("externalId")
+        )
+
     @property
     def endpoint(self):
         return self.config.request_details.get("api_endpoint") + self.path
@@ -90,6 +96,15 @@ class Submission(object):
             tags = []
         self.set_custom_param("tags", tags)
 
+    def set_id_type_as_external(self, external=False):
+        """Sets idType to EXTERNAL if 'external' parameter is True.
+        
+        :param external: boolean indicating if id is external or not
+        :returns: self.
+        """
+        if external:
+            self.set_custom_param("idType", "EXTERNAL")
+
     def set_include_content(self, content=False):
         """
         Adds includeContent param to set of params.
@@ -126,13 +141,25 @@ class Submission(object):
         """
         self.set_custom_param("submissionVersion", version)
 
+    def set_trustar_config(self, trustar_config):
+        self.config = trustar_config
+
     @property
     def query_params(self):
-        return {
+        query_params = {
             p.key: p.value
             for p in self.params
-            if p.key in ("id", "enclaveGuid", "includeContent")
+            if p.key in ("id", "idType", "enclaveGuid", "includeContent")
         }
+
+        if self.should_use_external_id():
+            query_params["id"] = self.params.get("externalId")
+
+        return query_params
+
+    def should_use_external_id(self):
+        """Returns True if params are set to retrieve a submission by external id"""
+        return "idType" in self.params and "externalId" in self.params
 
     def create_query(self, method):
         """Returns a new instance of a Query object according config, endpoint and method."""
@@ -165,6 +192,7 @@ class Submission(object):
         """Updates a submission according to query_params set before."""
         return (
             self.create_query(Methods.PUT)
+            .set_params(self.params)
             .set_query_string(self.query_params)
             .fetch_one()
         )
