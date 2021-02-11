@@ -24,6 +24,7 @@ class ApiClient(object):
     def __init__(self, config):
         self.config = config
         self.token = None
+        self.proxy = config.get_proxy()
 
     def __new__(cls, config, *args, **kwargs):
         if not cls._instance:
@@ -42,7 +43,7 @@ class ApiClient(object):
         post_data = {"grant_type": "client_credentials"}
         endpoint = self.config.request_details.get("auth_endpoint")
         response = requests.post(
-            endpoint, auth=client_auth, data=post_data, verify=True
+            endpoint, auth=client_auth, data=post_data, verify=True, proxies=self.proxy
         )
         response.raise_for_status()
         self.token = response.json()["access_token"]
@@ -118,6 +119,7 @@ class ApiClient(object):
                 headers=headers,
                 json=payload,
                 params=params,
+                proxies=self.proxy,
             )
             if response.status_code == requests.codes.ok:
                 return response

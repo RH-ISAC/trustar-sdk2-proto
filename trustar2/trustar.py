@@ -22,8 +22,10 @@ class TruStar:
         "verify": True,
         "retry": True,
         "max_wait_time": 60,
-        "http_proxy": None,
-        "https_proxy": None,
+        "proxies": {
+            "http": None,
+            "https": None,
+        }
     }
 
     def __init__(self, api_key, api_secret, client_metatag, **kwargs):
@@ -32,6 +34,9 @@ class TruStar:
         self.client_metatag = client_metatag
         self.request_details = self.DEFAULTS.copy()
         self.request_details.update(kwargs)
+
+    def get_proxy(self):
+        return self.request_details["proxies"]
 
     @classmethod
     def config_from_file(cls, config_file_path, config_role):
