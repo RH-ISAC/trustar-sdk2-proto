@@ -104,10 +104,10 @@ def test_set_raw_content(submission):
     assert "RAW CONTENT" in params
 
 
-@pytest.mark.parametrize("date", [1583960400, "2020-03-11T21:00:00"])
+@pytest.mark.parametrize("date", [1583960400000, "2020-03-11T21:00:00"])
 def test_set_timestamp(submission, date):
     submission.set_timestamp(date)
-    assert submission.params.get("timestamp") == 1583960400
+    assert submission.params.get("timestamp") == 1583960400000
     assert len(submission.params) == TOTAL_DEFAULT_PARAMS + 1
 
 
@@ -122,33 +122,33 @@ def test_create_fails_without_mandatory_fields(submission, indicators):
 def complex_indicator():
     threat_actor = (
         Entity.attribute("THREAT_ACTOR", "ActorName")
-        .set_valid_from(1604510497)
-        .set_valid_to(1607102497)
+        .set_valid_from(1604510497000)
+        .set_valid_to(1607102497000)
         .set_confidence_score("LOW")
     )
 
     malware = (
         Entity.attribute("MALWARE", "MalwareName")
-        .set_valid_from(1604510497)
-        .set_valid_to(1607102497)
+        .set_valid_from(1604510497000)
+        .set_valid_to(1607102497000)
         .set_confidence_score("MEDIUM")
     )
     ip4 = (
         Entity.observable("IP4", "2.2.2.2")
-        .set_valid_from(1604510497)
-        .set_valid_to(1607102497)
+        .set_valid_from(1604510497000)
+        .set_valid_to(1607102497000)
         .set_confidence_score("LOW")
     )
     url = (
         Entity.observable("URL", "wwww.relatedUrl.com")
-        .set_valid_from(1604510497)
-        .set_valid_to(1607102497)
+        .set_valid_from(1604510497000)
+        .set_valid_to(1607102497000)
         .set_confidence_score("HIGH")
     )
     indicator = [
         Indicator("URL", "verybadurl")
-        .set_valid_from(1604510497)
-        .set_valid_to(1607102497)
+        .set_valid_from(1604510497000)
+        .set_valid_to(1607102497000)
         .set_confidence_score("LOW")
         .set_malicious_score("BENIGN")
         .set_attributes([threat_actor, malware])
@@ -167,7 +167,7 @@ def full_submission(submission, complex_indicator):
         .set_enclave_id("c0f07a9f-76e4-48df-a0d4-c63ed2edccf0")
         .set_external_id("external-1234")
         .set_external_url("externalUrlValue")
-        .set_timestamp(1607102497)
+        .set_timestamp(1607102497000)
         .set_tags(["random_tag"])
         .set_raw_content("blob of text")
     )
