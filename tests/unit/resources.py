@@ -75,6 +75,9 @@ submission_example_request = """
             "confidenceScore": "HIGH"
           }
         ],
+        "properties": {
+          "propertyKey": "propertyValue"
+        },
         "tags": [
           "importantTag",
           "anotherTag"

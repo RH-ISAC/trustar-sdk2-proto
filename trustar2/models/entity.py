@@ -54,7 +54,7 @@ class Entity(Base):
             raise AttributeError("properties field can not have more than 20 elements")
 
         for k, v in properties.items():
-            if type(k) is not str or type(v) is not str:
+            if not isinstance(k, type("")) or not isinstance(v, type("")): # py2 / py3 compatibility
                 raise AttributeError("Both key and value of the properties should be strings.")
 
         self.set_custom_param("properties", properties)
