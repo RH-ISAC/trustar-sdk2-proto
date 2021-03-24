@@ -13,7 +13,7 @@ def get_timestamp(date):
         date, settings={"TIMEZONE": "UTC", "RETURN_AS_TIMEZONE_AWARE": True}
     )
 
-    timestamp = (dt_obj - datetime(1970, 1, 1, tzinfo=pytz.UTC)).total_seconds()
+    timestamp = (dt_obj - datetime(1970, 1, 1, tzinfo=pytz.UTC)).total_seconds() * 1000
     return int(timestamp)
 
 

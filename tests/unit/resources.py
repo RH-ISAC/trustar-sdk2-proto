@@ -31,8 +31,8 @@ submission_example_request = """
           "value": "verybadurl",
           "type": "URL"
         },
-        "validFrom": 1604510497,
-        "validTo": 1607102497,
+        "validFrom": 1604510497000,
+        "validTo": 1607102497000,
         "maliciousScore": "BENIGN",
         "confidenceScore": "LOW",
         "attributes": [
@@ -41,8 +41,8 @@ submission_example_request = """
               "value": "ActorName",
               "type": "THREAT_ACTOR"
             },
-            "validFrom": 1604510497,
-            "validTo": 1607102497,
+            "validFrom": 1604510497000,
+            "validTo": 1607102497000,
             "confidenceScore": "LOW"
           },
           {
@@ -50,8 +50,8 @@ submission_example_request = """
               "value": "MalwareName",
               "type": "MALWARE"
             },
-            "validFrom": 1604510497,
-            "validTo": 1607102497,
+            "validFrom": 1604510497000,
+            "validTo": 1607102497000,
             "confidenceScore": "MEDIUM"
           }
         ],
@@ -61,8 +61,8 @@ submission_example_request = """
               "value": "2.2.2.2",
               "type": "IP4"
             },
-            "validFrom": 1604510497,
-            "validTo": 1607102497,
+            "validFrom": 1604510497000,
+            "validTo": 1607102497000,
             "confidenceScore": "LOW"
           },
           {
@@ -70,8 +70,8 @@ submission_example_request = """
               "value": "wwww.relatedUrl.com",
               "type": "URL"
             },
-            "validFrom": 1604510497,
-            "validTo": 1607102497,
+            "validFrom": 1604510497000,
+            "validTo": 1607102497000,
             "confidenceScore": "HIGH"
           }
         ],
@@ -88,7 +88,7 @@ submission_example_request = """
   "enclaveGuid": "c0f07a9f-76e4-48df-a0d4-c63ed2edccf0",
   "externalId": "external-1234",
   "externalUrl": "externalUrlValue",
-  "timestamp": 1607102497,
+  "timestamp": 1607102497000,
   "tags": ["random_tag"],
   "rawContent": "blob of text"
 }
