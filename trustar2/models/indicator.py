@@ -38,6 +38,9 @@ class Indicator(Base):
     def set_confidence_score(self, conf_score):
         self.observable.set_confidence_score(conf_score)
 
+    def set_properties(self, properties):
+        self.observable.set_properties(properties)
+
     def set_tags(self, tag):
         if isinstance(tag, list):
             self.tags += tag

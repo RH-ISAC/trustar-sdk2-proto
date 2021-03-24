@@ -153,6 +153,7 @@ def complex_indicator():
         .set_malicious_score("BENIGN")
         .set_attributes([threat_actor, malware])
         .set_related_observables([ip4, url])
+        .set_properties({"propertyKey": "propertyValue"})
         .set_tags(["importantTag", "anotherTag"])
     ]
     return indicator
