@@ -49,6 +49,16 @@ class Entity(Base):
     def set_malicious_score(self, malicious_score):
         self.set_custom_param("maliciousScore", malicious_score)
 
+    def set_properties(self, properties):
+        if len(properties) > 20:
+            raise AttributeError("properties field can not have more than 20 elements")
+
+        for k, v in properties.items():
+            if type(k) is not str or type(v) is not str:
+                raise AttributeError("Both key and value of the properties should be strings.")
+
+        self.set_custom_param("properties", properties)
+
     def set_custom_param(self, key, value):
         param = Param(key=key, value=value)
         self.params.add(param)
