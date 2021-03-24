@@ -145,7 +145,6 @@ def complex_indicator():
         .set_valid_to(1607102497)
         .set_confidence_score("HIGH")
     )
-    properties = {"propertyKey": "propertyValue"}
     indicator = [
         Indicator("URL", "verybadurl")
         .set_valid_from(1604510497)
@@ -154,7 +153,7 @@ def complex_indicator():
         .set_malicious_score("BENIGN")
         .set_attributes([threat_actor, malware])
         .set_related_observables([ip4, url])
-        .set_properties(properties)
+        .set_properties({"propertyKey": "propertyValue"})
         .set_tags(["importantTag", "anotherTag"])
     ]
     return indicator
