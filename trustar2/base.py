@@ -23,6 +23,7 @@ class Methods(Enum):
     DELETE = 3
     UPDATE = 4
     PUT = 5
+    PATCH = 6
 
 
 def chained(method):
