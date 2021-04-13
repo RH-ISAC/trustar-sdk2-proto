@@ -100,3 +100,8 @@ class Params:
 
     def __copy__(self):
         return Params(self)
+
+
+class ParamsSerializer(Params):
+    def serialize(self):
+        return {n.key: n.value for n in self}
