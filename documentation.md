@@ -5,6 +5,7 @@
  - [Submissions](#submissions)
  - [Search Indicators](#search-indicators)
  - [Safelists](#safelists)
+ - [Data Model](#data-model)
 
 
 # Submissions
