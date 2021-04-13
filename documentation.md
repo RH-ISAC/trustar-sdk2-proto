@@ -1,4 +1,13 @@
 # Usage Examples
+
+### Overview
+
+ - [Submissions](#submissions)
+ - [Search Indicators](#search-indicators)
+ - [Safelists](#safelists)
+
+
+# Submissions
 ## Create new submissions in TruSTAR
 
 ```python
@@ -72,7 +81,7 @@ TruStar.config_from_file("trustar_config.json", "station")\
     .delete()
 ```
 
-## Search Indicators
+# Search Indicators
 ```python
 from trustar2 import TruStar
 response = TruStar.config_from_file("trustar_config.json", "station")\
@@ -107,8 +116,6 @@ submission.get()
 
 
 # Safelists
-
-
 
 ## Retrieve Safelist Summaries
 
