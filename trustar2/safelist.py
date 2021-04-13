@@ -33,6 +33,11 @@ class Safelist(object):
     def libraries_endpoint(self):
         return self.config.request_details.get("api_endpoint") + self.libraries
 
+
+    @property
+    def extract_endpoint(self):
+        return self.config.request_details.get("api_endpoint") + self.extract
+
     
     @property
     def details_endpoint(self):
@@ -52,6 +57,11 @@ class Safelist(object):
     def set_library_name(self, library_name):
         # TODO: Validations
         self.set_custom_param("name", library_name)
+
+    
+    def set_text(self, text):
+        # TODO: Validations
+        self.set_custom_param("text", text)
 
 
     def get_safelist_libraries(self):
@@ -89,3 +99,7 @@ class Safelist(object):
             raise AttributeError("No enclave guid was found.")
 
         return Query(self.config, self.details_endpoint, Methods.DELETE).set_params(self.params).fetch_one()
+
+
+    def extract_terms(self):
+        return Query(self.config, self.extract_endpoint, Methods.POST).set_params(self.params).fetch_one()
