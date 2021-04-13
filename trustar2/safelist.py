@@ -93,15 +93,34 @@ class Safelist(object):
 
 
     def get_safelist_libraries(self):
+        """Retrieves safelist details given a library guid. 
+
+        You have to call 'set_library_guid' before calling this method.
+
+        :returns: HTTP response with safelist library summaries in it's content.
+        """
         return Query(self.config, self.summaries_endpoint, Methods.GET).set_params(self.params).fetch_one()
     
 
     def get_safelist_details(self):
+        """Retrieves safelist details given a library guid. 
+
+        You have to call 'set_library_guid' before calling this method.
+
+        :returns: HTTP response with Safelist Library Details in it's content.
+        """
         self._validate_library_guid_is_present()
         return Query(self.config, self.details_endpoint, Methods.GET).set_params(self.params).fetch_one()
 
 
     def create_entries(self):
+        """Creates a new entry in a safelist library.
+
+        You have to call 'set_safelist_entries' and 'set_library_guid' 
+        before calling this method.
+
+        :returns: HTTP response with Safelist Library Details in it's content.
+        """
         self._validate_library_guid_is_present()
         if not self.params.get("entries"):
             raise AttributeError(
@@ -112,6 +131,12 @@ class Safelist(object):
 
 
     def create_safelist(self):
+        """Creates a new safelist library with the corresponding name. 
+
+        You have to call 'set_library_name' before calling this method. 
+        
+        :returns: HTTP response with safelist library summaries in it's content.
+        """
         if not self.params.get("name"):
             raise AttributeError(
                 "You must provide a name for the new library. Call the 'set_library_name' method before."
@@ -121,17 +146,31 @@ class Safelist(object):
 
 
     def delete_entry(self, entry_guid):
+        """Deletes an entry from a safelist library. 
+
+        You have to call 'set_library_guid' before calling this method.
+        
+        :param entry_guid: entry guid to be deleted.
+        """
         self._validate_library_guid_is_present()
         endpoint = self.details_endpoint + "/" + entry_guid
         return Query(self.config, endpoint, Methods.DELETE).set_params(self.params).fetch_one()
     
 
     def delete_safelist(self):
+        """Deletes a safelist library. You have to call 'set_library_guid' before
+        calling this method."""
         self._validate_library_guid_is_present()
         return Query(self.config, self.details_endpoint, Methods.DELETE).set_params(self.params).fetch_one()
 
 
     def extract_terms(self):
+        """Extracts IOCs from unstructured text and returns a list of entities ready to be submitted. 
+
+        You have to call 'set_text_to_be_extracted' before calling this method.
+
+        :returns: HTTP response with parsed entities in its content.
+        """
         if not self.params.get("text"):
             raise AttributeError(
                 "You did not set any text for entities extraction. Call 'set_text_to_be_extracted' before."
