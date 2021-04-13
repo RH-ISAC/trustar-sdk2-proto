@@ -48,9 +48,9 @@ class Safelist(object):
         self.set_custom_param("entries", entries)
 
 
-    def set_library_name(self, library):
+    def set_library_name(self, library_name):
         # TODO: Validations
-        self.set_custom_param("name", library)
+        self.set_custom_param("name", library_name)
 
 
     def get_safelist_libraries(self):
@@ -69,6 +69,11 @@ class Safelist(object):
             raise AttributeError("No enclave guid was found.")
 
         return Query(self.config, self.details_endpoint, Methods.PATCH).set_params(self.params).fetch_one()
+
+
+    def create_safelist(self):
+
+        return Query(self.config, self.libraries_endpoint, Methods.POST).set_params(self.params).fetch_one()
 
 
     
