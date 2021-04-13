@@ -15,6 +15,7 @@ class Safelist(object):
 
     libraries = "/safelist-libraries"
     details = "/safelist-libraries/{}"
+    extract = "/safelist-libraries/extract"
 
     def __init__(self, trustar_config=None):
         self.config = trustar_config
@@ -72,8 +73,19 @@ class Safelist(object):
 
 
     def create_safelist(self):
-
         return Query(self.config, self.libraries_endpoint, Methods.POST).set_params(self.params).fetch_one()
 
 
+    def delete_entry(self, entry_guid):
+        if self.enclave_guid is None:
+            raise AttributeError("No enclave guid was found.")
+
+        endpoint = self.details_endpoint + "/" + entry_guid
+        return Query(self.config, endpoint, Methods.DELETE).set_params(self.params).fetch_one()
     
+
+    def delete_safelist(self):
+        if self.enclave_guid is None:
+            raise AttributeError("No enclave guid was found.")
+
+        return Query(self.config, self.details_endpoint, Methods.DELETE).set_params(self.params).fetch_one()
