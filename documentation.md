@@ -1,4 +1,14 @@
 # Usage Examples
+
+### Overview
+
+ - [Submissions](#submissions)
+ - [Search Indicators](#search-indicators)
+ - [Safelists](#safelists)
+ - [Data Model](#data-model)
+
+
+# Submissions
 ## Create new submissions in TruSTAR
 
 ```python
@@ -72,7 +82,7 @@ TruStar.config_from_file("trustar_config.json", "station")\
     .delete()
 ```
 
-## Search Indicators
+# Search Indicators
 ```python
 from trustar2 import TruStar
 response = TruStar.config_from_file("trustar_config.json", "station")\
@@ -103,6 +113,71 @@ submissions.set_include_content(True)
 
 submission.set_trustar_config(trustar_config)
 submission.get()
+```
+
+
+# Safelists
+
+## Retrieve Safelist Summaries
+
+```python
+ts = TruStar.config_from_file("trustar_config.json", "station")
+response = ts.safelist().get_safelist_libraries()
+```
+
+## Retrieve Safelist Details 
+
+```python
+ts = TruStar.config_from_file("trustar_config.json", "station")
+response = ts.safelist() \
+    .set_library_guid("<library-guid>") \
+    .get_safelist_details()
+```
+
+
+## Creating entries in a safelist
+
+```python
+ts = TruStar.config_from_file("trustar_config.json", "station")
+response = ts.safelist() \
+    .set_library_guid("<library-guid>") \
+    .set_safelist_entries([{"entity": "8.8.8.8", "type": "IP4"}]) \
+    .create_entries() 
+```
+
+
+## Creating a new empty safelist
+
+```python
+ts = TruStar.config_from_file("trustar_config.json", "station")
+response = ts.safelist() \
+    .set_library_name("<NAME>") \
+    .create_safelist() 
+```
+
+
+## Deleting an entry from a safelist
+
+```python
+ts = TruStar.config_from_file("trustar_config.json", "station")
+response = ts.safelist().set_library_guid("<library-guid>").delete_entry("<entry-guid>")
+```
+
+
+## Deleting a safelist 
+
+```python
+ts = TruStar.config_from_file("trustar_config.json", "station")
+response = ts.safelist().set_library_guid("<library-guid>").delete_safelist()
+```
+
+
+## Extracting entities
+
+```python
+ts = TruStar.config_from_file("trustar_config.json", "station")
+text_blob = "8.8.8.8 - example@domain.com" # This can be any unstructured text containing multiple observables
+response = ts.safelist().set_text_to_be_extracted(text_blob).extract_terms()
 ```
 
 

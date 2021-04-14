@@ -23,6 +23,7 @@ class Methods(Enum):
     DELETE = 3
     UPDATE = 4
     PUT = 5
+    PATCH = 6
 
 
 def chained(method):
@@ -99,3 +100,8 @@ class Params:
 
     def __copy__(self):
         return Params(self)
+
+
+class ParamsSerializer(Params):
+    def serialize(self):
+        return {n.key: n.value for n in self}

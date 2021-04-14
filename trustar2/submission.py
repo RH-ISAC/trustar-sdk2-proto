@@ -1,12 +1,7 @@
 from __future__ import unicode_literals
 
-from .base import fluent, Methods, Params, Param, get_timestamp
+from .base import fluent, Methods, ParamsSerializer, Param, get_timestamp
 from .query import Query
-
-
-class SubmissionsParamSerializer(Params):
-    def serialize(self):
-        return {n.key: n.value for n in self}
 
 
 @fluent
@@ -17,7 +12,7 @@ class Submission(object):
 
     def __init__(self, config=None):
         self.config = config
-        self.params = SubmissionsParamSerializer()
+        self.params = ParamsSerializer()
         for func in (self.set_tags,):
             func()
 

@@ -5,6 +5,7 @@ from os import name
 from .log import get_logger
 from .indicators import SearchIndicator
 from .submission import Submission
+from .safelist import Safelist
 from .trustar_enums import TruStarUrls
 from .version import __version__
 
@@ -59,3 +60,6 @@ class TruStar:
 
     def submission(self):
         return Submission(self)
+
+    def safelist(self):
+        return Safelist(self)

@@ -1,20 +1,16 @@
 from __future__ import unicode_literals
 
 from .base import Base
-from trustar2.base import fluent, Params, Param, get_timestamp
+from trustar2.base import fluent, ParamsSerializer, Param, get_timestamp
 from trustar2.trustar_enums import AttributeTypes, ObservableTypes
 
-
-class EntitySerializer(Params):
-    def serialize(self):
-        return {n.key: n.value for n in self}
 
 
 @fluent
 class Entity(Base):
 
     def __init__(self, validator, entity_type, value, alias='entity'):
-        self.params = EntitySerializer()
+        self.params = ParamsSerializer()
         if entity_type not in validator.members():
             raise AttributeError(
                 "Attribute type should be in the following: {}".format(

@@ -93,3 +93,63 @@ submission_example_request = """
   "rawContent": "blob of text"
 }
 """
+
+safelist_summaries = """
+[
+  {
+    "guid": "test-library-guid-1",
+    "name": "test-library-name-1",
+    "companyGuid": "test-company-guid-1",
+    "excerpt": "",
+    "createdAt": 1618258235178,
+    "updatedAt": 1618258235331,
+    "createdBy": "test-user-1@trustar.co",
+    "updatedBy": "test-user-1@trustar.co"
+  },
+  {
+    "guid": "test-library-guid-2",
+    "name": "test-library-name-2",
+    "companyGuid": "test-company-guid-2",
+    "excerpt": "",
+    "createdAt": 1616791794869,
+    "updatedAt": 1618288545872,
+    "createdBy": "test-user-2@trustar.co",
+    "updatedBy": "test-user-2@trustar.co"
+  }
+]
+"""
+
+safelist_details = """
+{
+  "guid": "test-library-guid-1",
+  "name": "test-library-name-1",
+  "companyGuid": "test-company-guid-1",
+  "excerpt": "",
+  "createdAt": 1618258235178,
+  "updatedAt": 1618258235331,
+  "createdBy": "test-user-1@trustar.co",
+  "updatedBy": "test-user-1@trustar.co",
+  "entries": [
+      {
+          "guid": "entry-guid-1",
+          "entity": "good-email@test-domain.com",
+          "type": "EMAIL_ADDRESS",
+          "createdBy": "test-user-1@trustar.co",
+          "createdAt": 1618288545871
+      }
+  ]
+}
+"""
+
+entities_extraction = """
+[
+  {
+      "entity": "8.8.8.8",
+      "type": "IP4"
+  },
+  {
+      "entity": "good-email@test-domain.com",
+      "type": "EMAIL_ADDRESS"
+  }
+]
+"""
