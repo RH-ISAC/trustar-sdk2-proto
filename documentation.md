@@ -160,7 +160,7 @@ response = ts.safelist() \
 
 ```python
 ts = TruStar.config_from_file("trustar_config.json", "station")
-response = ts.safelist.set_library_guid("<library-guid>").delete_entry("<entry-guid>")
+response = ts.safelist().set_library_guid("<library-guid>").delete_entry("<entry-guid>")
 ```
 
 
@@ -168,7 +168,7 @@ response = ts.safelist.set_library_guid("<library-guid>").delete_entry("<entry-g
 
 ```python
 ts = TruStar.config_from_file("trustar_config.json", "station")
-response = ts.safelist.set_library_guid("<library-guid>").delete_safelist()
+response = ts.safelist().set_library_guid("<library-guid>").delete_safelist()
 ```
 
 

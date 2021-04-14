@@ -10,8 +10,8 @@ from .trustar_enums import ObservableTypes
 class Safelist(object):
 
     summaries = "/safelist-libraries"
-    details = "/safelist-libraries/{}"
-    extract = "/safelist-libraries/extract"
+    details =  summaries + "/{}"
+    extract = summaries + "/extract"
 
     def __init__(self, trustar_config=None):
         self.config = trustar_config

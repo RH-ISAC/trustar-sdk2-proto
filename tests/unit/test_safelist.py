@@ -140,7 +140,7 @@ def test_delete_safelist_library_without_guid(safelist):
 
 
 def test_extract_terms_successfully(mocked_request, safelist, entities_extraction_json):
-    url = SAFELIST_SUMMARIES + "/extract"
+    url = safelist.extract_endpoint
     mocked_request.post(url, json=entities_extraction_json)
     text_blob = "IP: 8.8.8.8\nUnstructured text extraction\ngood-email@test-domain.com"
     response = safelist.set_text_to_be_extracted(text_blob).extract_terms()
