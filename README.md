@@ -8,7 +8,7 @@ Click [here](documentation.md) to check some examples of how the SDK is used and
 
 This repository is built using tox to test the code with diferrent python versions. If you want to set up your development environment follow the instructions.
 
-1. If you don't have tox installed in your sysem
+1. If you don't have tox installed in your system, do the following:
 
 `pip install tox`
 

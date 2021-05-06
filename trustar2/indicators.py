@@ -139,7 +139,7 @@ class SearchIndicator:
         # TODO check that the both the start and to are set
         if not self._valid_dates():
             raise AttributeError("Polling window should end after the start of it.")
-        self.endpoint = self.base_url
+        self.endpoint = self.base_url + "/search"
         return (
             self.create_query(Methods.POST)
             .set_params(self.params)
