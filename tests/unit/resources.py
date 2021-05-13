@@ -1,6 +1,6 @@
 indicators_example_request = """{
    "queryTerm":"/Users/mknopf/code/test.sh",
-   "enclaveIds":[
+   "enclaveGuids":[
       "3a93fab3-f87a-407a-9376-8eb3fae99b4e"
    ],
    "priorityScores":[

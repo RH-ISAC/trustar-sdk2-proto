@@ -15,6 +15,11 @@ class SortColumns(TSEnum):
     UPDATED = "UPDATED"
 
 
+class SortOrder(TSEnum):
+    ASC = "ASC"
+    DESC = "DESC"
+
+
 class ObservableTypes(TSEnum):
 
     BITCOIN_ADDRESS = "BITCOIN_ADDRESS"
@@ -46,3 +51,19 @@ class TruStarUrls(TSEnum):
     API = "https://api.trustar.co/api/2.0"
     AUTH_TOKEN = "https://api.trustar.co/oauth/token"
     STATION = "https://station.trustar.co"
+
+
+@staticmethod
+def get_enum_value(arg, enum):
+    if isinstance(arg, enum):
+        return arg.value
+
+    if isinstance(arg, str) and arg in enum.members():
+        return arg
+
+    if isinstance(arg, type("")) and arg in enum.members():
+        return arg  # For py2 and py3 compatibility
+
+    raise AttributeError(
+        "Possible value types are: {}".format(list(enum.members()))
+    )

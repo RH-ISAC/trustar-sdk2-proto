@@ -83,7 +83,7 @@ def test_set_priority_scores_fail(search_indicator):
 def test_set_enclave_ids(search_indicator):
     search_indicator.set_enclave_ids(["TEST_ENCLAVE_ID"])
     assert len(search_indicator.params) == 1
-    assert search_indicator.params.get("enclaveIds") == ["TEST_ENCLAVE_ID"]
+    assert search_indicator.params.get("enclaveGuids") == ["TEST_ENCLAVE_ID"]
 
 
 @pytest.mark.parametrize(
@@ -183,21 +183,3 @@ def test_ok_query(search_indicator):
         .search()
     )
     assert q.params.serialize() == json.loads(indicators_example_request)
-
-
-def test_ok_tag_create(search_indicator, mocked_request):
-    # TODO refactor this
-    expected_url = "https://api.trustar.co/api/2.0/indicators/cc12a5c6-e575-3879-8e41-2bf240cc6fce/tags?tag=example"
-    mocked_request.post(url=expected_url, json={})
-    search_indicator.set_indicator_id("cc12a5c6-e575-3879-8e41-2bf240cc6fce").set_tag(
-        "example"
-    ).create_tag()
-
-
-def test_ok_tag_delete(search_indicator, mocked_request):
-    # TODO refactor this
-    expected_url = "https://api.trustar.co/api/2.0/indicators/cc12a5c6-e575-3879-8e41-2bf240cc6fce/tags?tag=example"
-    mocked_request.delete(url=expected_url)
-    search_indicator.set_indicator_id("cc12a5c6-e575-3879-8e41-2bf240cc6fce").set_tag(
-        "example"
-    ).delete_tag()
