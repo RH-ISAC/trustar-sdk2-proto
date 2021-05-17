@@ -38,55 +38,55 @@ def indicators():
 
 
 def test_submission_is_empty(submission):
-    assert len(submission.params) == TOTAL_DEFAULT_PARAMS
+    assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS
 
 
 def test_set_id(submission):
     submission.set_id("TEST_ID")
-    params = [p.value for p in submission.params]
-    assert len(submission.params) == TOTAL_DEFAULT_PARAMS + 1
+    params = [p.value for p in submission.payload_params]
+    assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS + 1
     assert "TEST_ID" in params
 
 
 def test_set_title(submission):
     submission.set_title("TEST_TITLE")
-    params = [p.value for p in submission.params]
-    assert len(submission.params) == TOTAL_DEFAULT_PARAMS + 1
+    params = [p.value for p in submission.payload_params]
+    assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS + 1
     assert "TEST_TITLE" in params
 
 
 def test_set_enclave_id(submission):
     submission.set_enclave_id("TEST-ENCLAVE-ID")
-    params = [p.value for p in submission.params]
-    assert len(submission.params) == TOTAL_DEFAULT_PARAMS + 1
+    params = [p.value for p in submission.payload_params]
+    assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS + 1
     assert  "TEST-ENCLAVE-ID" in params
 
 
 def test_set_external_id(submission):
     submission.set_external_id("TEST-EXTERNAL-ID")
-    params = [p.value for p in submission.params]
-    assert len(submission.params) == TOTAL_DEFAULT_PARAMS + 1
+    params = [p.value for p in submission.payload_params]
+    assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS + 1
     assert "TEST-EXTERNAL-ID" in params
 
 
 def test_set_external_url(submission):
     submission.set_external_url("TEST-EXTERNAL-URL")
-    params = [p.value for p in submission.params]
-    assert len(submission.params) == TOTAL_DEFAULT_PARAMS + 1
+    params = [p.value for p in submission.payload_params]
+    assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS + 1
     assert "TEST-EXTERNAL-URL" in params
 
 
 def test_set_tags(submission):
     submission.set_tags(["TEST_TAG1", "TEST_TAG2"])
-    params = [p.value for p in submission.params]
-    assert len(submission.params) == TOTAL_DEFAULT_PARAMS
+    params = [p.value for p in submission.payload_params]
+    assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS
     assert ["TEST_TAG1", "TEST_TAG2"] in params
 
 
 def test_set_include_content(submission):
     submission.set_include_content(True)
-    params = [p.value for p in submission.params]
-    assert len(submission.params) == TOTAL_DEFAULT_PARAMS + 1
+    params = [p.value for p in submission.query_params]
+    assert len(submission.query_params) == 1
     assert True in params
 
 
@@ -94,28 +94,28 @@ def test_set_content_indicators(submission, indicators):
     submission.set_content_indicators(indicators)
     serialized_indicators = [i.serialize() for i in indicators]
     # hacky workaround for python2 unsorted dicts
-    params = [p.value for p in submission.params if p.value != []]
+    params = [p.value for p in submission.payload_params if p.value != []]
     assert serialized_indicators == params[0]["indicators"]
 
 
 def test_set_raw_content(submission):
     submission.set_raw_content("RAW CONTENT")
-    params = [p.value for p in submission.params]
+    params = [p.value for p in submission.payload_params]
     assert "RAW CONTENT" in params
 
 
 @pytest.mark.parametrize("date", [1583960400000, "2020-03-11T21:00:00"])
 def test_set_timestamp(submission, date):
     submission.set_timestamp(date)
-    assert submission.params.get("timestamp") == 1583960400000
-    assert len(submission.params) == TOTAL_DEFAULT_PARAMS + 1
+    assert submission.payload_params.get("timestamp") == 1583960400000
+    assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS + 1
 
 
 def test_create_fails_without_mandatory_fields(submission, indicators):
     submission.set_enclave_id("TEST-ENCLAVE_ID")
     submission.set_content_indicators(indicators)
     with pytest.raises(AttributeError):
-        submission.create()
+        submission.upsert()
 
 
 @pytest.fixture
@@ -166,6 +166,7 @@ def full_submission(submission, complex_indicator):
         .set_content_indicators(complex_indicator)
         .set_enclave_id("c0f07a9f-76e4-48df-a0d4-c63ed2edccf0")
         .set_external_id("external-1234")
+        .set_id_type_as_external(True)
         .set_external_url("externalUrlValue")
         .set_timestamp(1607102497000)
         .set_tags(["random_tag"])
@@ -174,10 +175,34 @@ def full_submission(submission, complex_indicator):
 
 
 def test_submission_ok_json(full_submission):
-    assert full_submission.params.serialize() == json.loads(submission_example_request)
+    assert full_submission.payload_params.serialize() == json.loads(submission_example_request)
 
 
 def test_ok_submission_ok(mocked_request, full_submission):
-    expected_url = "https://api.trustar.co/api/2.0/submissions/indicators"
-    mocked_request.post(url=expected_url, json={})
-    full_submission.create()
+    expected_url = "https://api.trustar.co/api/2.0/submissions/indicators/upsert"
+    mocked_request.post(url=expected_url, json={"id": "TEST-ID", "submissionVersion": 1})
+    response = full_submission.upsert()
+    assert response.json().get("submissionVersion") == 1
+    mocked_request.post(url=expected_url, json={"id": "TEST-ID", "submissionVersion": 2})
+    response = full_submission.upsert()
+    assert response.json().get("submissionVersion") == 2
+
+
+def test_get_submission_with_content_ok(mocked_request, submission):
+    external_id = "external-1234"
+    enclave_id = "c0f07a9f-76e4-48df-a0d4-c63ed2edccf0"
+    submission.set_external_id(external_id)
+    submission.set_id_type_as_external(True)
+    submission.set_enclave_id(enclave_id)
+    submission.set_include_content(True)
+    query_string = "?id={}&idType=EXTERNAL&enclaveGuid={}&includeContent=true".format(external_id, enclave_id)
+    expected_url = "https://api.trustar.co/api/2.0/submissions/indicators" + query_string
+    mocked_request.get(expected_url, json=json.loads(submission_example_request))
+    response = submission.get()
+    assert response.json().get("title") == "Report, complex test"
+    assert response.json().get("tags") == ["random_tag"]
+
+
+def test_get_submission_without_id(submission):
+    with pytest.raises(AttributeError):
+        submission.get()
