@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 from .base import fluent, Methods, ParamsSerializer, Param, get_timestamp
 
 from .query import Query
-from .trustar_enums import ObservableTypes, SortColumns, AttributeTypes
+from .trustar_enums import ObservableTypes, SortColumns, SortOrder, AttributeTypes
 from .models import Entity
 
 
@@ -19,14 +19,6 @@ class SearchIndicator:
     @property
     def base_url(self):
         return self.config.request_details.get("api_endpoint") + self.url
-
-    @property
-    def tag_endpoint(self):
-        if "tag" and "indicator_id" not in self.params:
-            raise AttributeError(
-                "Indicator id and a tag are required for creating/deleting a new user tag"
-            )
-        return self.base_url + "/{}/tags".format(self.params.get("indicator_id"))
 
     def _valid_dates(self):
         return (
@@ -70,18 +62,15 @@ class SearchIndicator:
             "List elements should be a dictionary or the entity class"
         )
 
-    def set_tag(self, tag):
-        self.set_custom_param("tag", tag)
-
-    def set_page_size(self, page_size):
-        self.set_custom_param("pageSize", page_size)
-
     def set_custom_param(self, key, value):
         param = Param(key=key, value=value)
         self.params.add(param)
 
     def set_query_term(self, query):
         self.set_custom_param("queryTerm", query)
+
+    def set_page_size(self, page_size):
+        self.set_custom_param("pageSize", page_size)
 
     def set_from(self, from_date):
         if not isinstance(from_date, int):
@@ -98,15 +87,29 @@ class SearchIndicator:
         column = self._get_value(column, SortColumns)
         self.set_custom_param("sortColumn", column)
 
+    def set_sort_order(self, order):
+        order = self._get_value(order, SortOrder)
+        self.set_custom_param("sortOrder", order)
+
     def set_priority_scores(self, scores):
         if not isinstance(scores, list) or any([s for s in scores if s > 3 or s < -1]):
             raise AttributeError("scores should be a list of integers between -1 and 3")
         self.set_custom_param("priorityScores", scores)
 
-    def set_enclave_ids(self, enclave_ids):
-        if not isinstance(enclave_ids, list):
-            enclave_ids = [enclave_ids]
-        self.set_custom_param("enclaveIds", enclave_ids)
+    def set_enclave_ids(self, enclave_guids):
+        if not isinstance(enclave_guids, list):
+            enclave_guids = [enclave_guids]
+        self.set_custom_param("enclaveGuids", enclave_guids)
+
+    def set_included_tags(self, tags):
+        if not isinstance(tags, list):
+            tags = [tags]
+        self.set_custom_param("includedTags", tags)
+
+    def set_excluded_tags(self, tags):
+        if not isinstance(tags, list):
+            tags = [tags]
+        self.set_custom_param("excludedTags", tags)
 
     def set_observable_types(self, types):
         if not isinstance(types, list):
@@ -129,8 +132,8 @@ class SearchIndicator:
         observables = [self._get_entity(o, ObservableTypes) for o in observables]
         self.set_custom_param("relatedObservables", observables)
 
-    def set_indicator_id(self, indicator_id):
-        self.set_custom_param("indicator_id", indicator_id)
+    def set_include_safelisted(self, include_safelisted):
+        self.set_custom_param("includeSafelisted", include_safelisted)
 
     def create_query(self, method):
         return Query(self.config, self.endpoint, method)
@@ -144,20 +147,4 @@ class SearchIndicator:
             self.create_query(Methods.POST)
             .set_params(self.params)
             .set_query_string({"pageSize": self.params.get("pageSize", 25)})
-        )
-
-    def create_tag(self):
-        self.endpoint = self.tag_endpoint
-        return (
-            self.create_query(Methods.POST)
-            .set_query_string({"tag": self.params.get("tag")})
-            .fetch_one()
-        )
-
-    def delete_tag(self):
-        self.endpoint = self.tag_endpoint
-        return (
-            self.create_query(Methods.DELETE)
-            .set_query_string({"tag": self.params.get("tag")})
-            .fetch_one()
         )

@@ -15,6 +15,11 @@ class SortColumns(TSEnum):
     UPDATED = "UPDATED"
 
 
+class SortOrder(TSEnum):
+    ASC = "ASC"
+    DESC = "DESC"
+
+
 class ObservableTypes(TSEnum):
 
     BITCOIN_ADDRESS = "BITCOIN_ADDRESS"
