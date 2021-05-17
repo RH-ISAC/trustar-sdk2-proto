@@ -208,7 +208,7 @@ class Submission(object):
         )
 
     def upsert(self):
-        """ """
+        """Update a submission if it already exists or create a new one if it doesn't."""
         for k in self.SUBMISSION_MANDATORY_FIELDS:
             if k not in self.payload_params:
                 raise AttributeError("{} field should be in your submission".format(k))
