@@ -19,18 +19,11 @@ class ApiClient(object):
         "Invalid oauth2 access token",
     )
 
-    _instance = None
-
     def __init__(self, config):
         self.config = config
         self.token = None
         self.proxy = config.get_proxy()
 
-    def __new__(cls, config, *args, **kwargs):
-        if not cls._instance:
-            cls._instance = object.__new__(cls, *args, **kwargs)
-
-        return cls._instance
 
     def _refresh_token(self):
         """
