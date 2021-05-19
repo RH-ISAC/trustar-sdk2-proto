@@ -7,38 +7,29 @@ from .query import Query
 @fluent
 class Submission(object):
 
-    SUBMISSION_MANDATORY_FIELDS = ("title", "content", "enclaveGuid")
+    NEW_SUBMISSION_MANDATORY_FIELDS = ("title", "content", "enclaveGuid")
     path = "/submissions/indicators"
 
     def __init__(self, config=None):
         self.config = config
-        self.payload_params = ParamsSerializer()
-        self.query_params = ParamsSerializer()
+        self.params = ParamsSerializer()
         for func in (self.set_tags,):
             func()
 
     def __str__(self):
         return "Submission <{}> with external Id <{}>".format(
-            self.payload_params.get("title"), 
-            self.payload_params.get("externalId")
+            self.params.get("title"), 
+            self.params.get("externalId")
         )
 
     @property
     def endpoint(self):
         return self.config.request_details.get("api_endpoint") + self.path
 
-
-    def set_payload_param(self, key, value):
+    def set_custom_param(self, key, value):
         """Adds a new param to set of params."""
         param = Param(key=key, value=value)
-        self.payload_params.add(param)
-
-    
-    def set_query_param(self, key, value):
-        """Adds a new param to set of params."""
-        param = Param(key=key, value=value)
-        self.query_params.add(param)
-
+        self.params.add(param)
 
     def set_id(self, submission_id):
         """Adds id param to set of params.
@@ -46,9 +37,7 @@ class Submission(object):
         :param submission_id: field value.
         :returns: self.
         """
-        self.set_payload_param("id", submission_id)
-        self.set_query_param("id", submission_id)
-
+        self.set_custom_param("id", submission_id)
 
     def set_title(self, title):
         """Adds title param to set of params.
@@ -56,8 +45,7 @@ class Submission(object):
         :param title: field value.
         :returns: self.
         """
-        self.set_payload_param("title", title)
-
+        self.set_custom_param("title", title)
 
     def set_content_indicators(self, indicators):
         """Adds content param to set of params.
@@ -67,8 +55,7 @@ class Submission(object):
         """
         indicators = [i.serialize() for i in indicators]
         content = {"indicators": indicators}
-        self.set_payload_param("content", content)
-
+        self.set_custom_param("content", content)
 
     def set_enclave_id(self, enclave_id):
         """Adds enclaveId param to set of params.
@@ -76,9 +63,7 @@ class Submission(object):
         :param enclave_id: field value.
         :returns: self.
         """
-        self.set_payload_param("enclaveGuid", enclave_id)
-        self.set_query_param("enclaveGuid", enclave_id)
-
+        self.set_custom_param("enclaveGuid", enclave_id)
 
     def set_external_id(self, external_id):
         """Adds externalId param to set of params.
@@ -86,8 +71,7 @@ class Submission(object):
         :param external_id: field value.
         :returns: self.
         """
-        self.set_payload_param("externalId", external_id)
-
+        self.set_custom_param("externalId", external_id)
 
     def set_external_url(self, external_url):
         """Adds externalUrl param to set of params.
@@ -95,8 +79,7 @@ class Submission(object):
         :param external_url: field value.
         :returns: self.
         """
-        self.set_payload_param("externalUrl", external_url)
-
+        self.set_custom_param("externalUrl", external_url)
 
     def set_tags(self, tags=None):
         """Adds tags param to set of params.
@@ -106,8 +89,7 @@ class Submission(object):
         """
         if not tags:
             tags = []
-        self.set_payload_param("tags", tags)
-
+        self.set_custom_param("tags", tags)
 
     def set_id_type_as_external(self, external=False):
         """Sets idType to EXTERNAL if 'external' parameter is True.
@@ -116,8 +98,7 @@ class Submission(object):
         :returns: self.
         """
         if external:
-            self.set_query_param("idType", "EXTERNAL")
-
+            self.set_custom_param("idType", "EXTERNAL")
 
     def set_include_content(self, content=False):
         """
@@ -126,8 +107,7 @@ class Submission(object):
         :param content: field value.
         :returns: self.
         """
-        self.set_query_param("includeContent", content)
-
+        self.set_custom_param("includeContent", content)
 
     def set_timestamp(self, timestamp):
         """Adds timestamp param to set of params.
@@ -138,8 +118,7 @@ class Submission(object):
         if not isinstance(timestamp, int):
             timestamp = get_timestamp(timestamp)
 
-        self.set_payload_param("timestamp", timestamp)
-
+        self.set_custom_param("timestamp", timestamp)
 
     def set_raw_content(self, raw_content):
         """Adds rawContent param to set of params.
@@ -147,8 +126,7 @@ class Submission(object):
         :param raw_content: field value.
         :returns: self.
         """
-        self.set_payload_param("rawContent", raw_content)
-
+        self.set_custom_param("rawContent", raw_content)
 
     def set_submission_version(self, version):
         """Adds submissionVersion param to set of params.
@@ -156,66 +134,60 @@ class Submission(object):
         :param version: field value.
         :returns: self.
         """
-        self.set_payload_param("submissionVersion", version)
-
+        self.set_custom_param("submissionVersion", version)
 
     def set_trustar_config(self, trustar_config):
         self.config = trustar_config
 
     @property
-    def query_string_params(self):
-        query_params = self.query_params.serialize()
+    def query_params(self):
+        query_params = {
+            p.key: p.value
+            for p in self.params
+            if p.key in ("id", "idType", "enclaveGuid", "includeContent")
+        }
+
         if self.should_use_external_id():
-            query_params["id"] = self.payload_params.get("externalId")
+            query_params["id"] = self.params.get("externalId")
 
         return query_params
 
-
     def should_use_external_id(self):
         """Returns True if params are set to retrieve a submission by external id"""
-        return "idType" in self.query_params and "externalId" in self.payload_params
+        return "idType" in self.params and "externalId" in self.params
 
-
-    def create_query(self, method, specific_endpoint=""):
+    def create_query(self, method):
         """Returns a new instance of a Query object according config, endpoint and method."""
-        endpoint = self.endpoint + specific_endpoint
-        return Query(self.config, endpoint, method)
+        return Query(self.config, self.endpoint, method)
 
-
-    def _raise_without_id(self):
-        if not "id" in self.query_string_params:
-            raise AttributeError(
-                "You need to set an id, or an external id marking the id type as external"
-            )
-
+    def create(self):
+        """Creates a new submission according to params set before."""
+        for k in self.NEW_SUBMISSION_MANDATORY_FIELDS:
+            if k not in self.params:
+                raise AttributeError("{} field should be in your submission".format(k))
+        return self.create_query(Methods.POST).set_params(self.params).fetch_one()
 
     def delete(self):
         """Deletes a submission according to query_params set before."""
-        self._raise_without_id()
         return (
             self.create_query(Methods.DELETE)
-            .set_query_string(self.query_string_params)
+            .set_query_string(self.query_params)
             .fetch_one()
         )
 
     def get(self):
         """Retrieves a submission according to query_params set before."""
-        self._raise_without_id()
         return (
             self.create_query(Methods.GET)
-            .set_query_string(self.query_string_params)
+            .set_query_string(self.query_params)
             .fetch_one()
         )
 
-    def upsert(self):
-        """Update a submission if it already exists or create a new one if it doesn't."""
-        for k in self.SUBMISSION_MANDATORY_FIELDS:
-            if k not in self.payload_params:
-                raise AttributeError("{} field should be in your submission".format(k))
-
+    def update(self):
+        """Updates a submission according to query_params set before."""
         return (
-            self.create_query(Methods.POST, specific_endpoint="/upsert")
-            .set_params(self.payload_params)
-            .set_query_string(self.query_string_params)
+            self.create_query(Methods.PUT)
+            .set_params(self.params)
+            .set_query_string(self.query_params)
             .fetch_one()
         )
