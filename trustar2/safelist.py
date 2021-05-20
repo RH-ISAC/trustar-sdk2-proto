@@ -95,8 +95,6 @@ class Safelist(object):
     def get_safelist_libraries(self):
         """Retrieves safelist details given a library guid. 
 
-        You have to call 'set_library_guid' before calling this method.
-
         :returns: HTTP response with safelist library summaries in it's content.
         """
         return Query(self.config, self.summaries_endpoint, Methods.GET).set_params(self.params).fetch_one()
