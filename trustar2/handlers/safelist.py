@@ -1,32 +1,21 @@
-
 from __future__ import unicode_literals
 
-from .base import fluent, Methods, ParamsSerializer, Param, get_timestamp
-from .query import Query
-from .trustar_enums import ObservableTypes
+from trustar2.base import fluent, Methods, ParamsSerializer, Param, get_timestamp
+from trustar2.handlers.base_handler import BaseHandler
+from trustar2.query import Query
+from trustar2.trustar_enums import ObservableTypes
 
 
 @fluent
-class Safelist(object):
+class Safelist(BaseHandler): # FALTA
 
     summaries = "/safelist-libraries"
     details =  summaries + "/{}"
     extract = summaries + "/extract"
 
     def __init__(self, trustar_config=None):
-        self.config = trustar_config
-        self.params = ParamsSerializer()
+        super(Safelist, self).__init__(trustar_config)
         self.library_guid = None
-
-
-    def set_custom_param(self, key, value):
-        """Adds a new param to set of params."""
-        param = Param(key=key, value=value)
-        self.params.add(param)
-
-
-    def set_trustar_config(self, trustar_config):
-        self.config = trustar_config
 
 
     @property
@@ -70,21 +59,21 @@ class Safelist(object):
         for entry in entries:
             self._verify_entry(entry)
 
-        self.set_custom_param("entries", entries)
+        self.set_payload_param("entries", entries)
 
 
     def set_library_name(self, library_name):
         if not isinstance(library_name, type("")):
             raise AttributeError("Library name must be a string.")
 
-        self.set_custom_param("name", library_name)
+        self.set_payload_param("name", library_name)
 
     
     def set_text_to_be_extracted(self, text):
         if not isinstance(text, type("")):
             raise AttributeError("You can only submit a text for extraction.")
 
-        self.set_custom_param("text", text)
+        self.set_payload_param("text", text)
 
 
     def _validate_library_guid_is_present(self):
@@ -95,9 +84,11 @@ class Safelist(object):
     def get_safelist_libraries(self):
         """Retrieves safelist details given a library guid. 
 
+        You have to call 'set_library_guid' before calling this method.
+
         :returns: HTTP response with safelist library summaries in it's content.
         """
-        return Query(self.config, self.summaries_endpoint, Methods.GET).set_params(self.params).fetch_one()
+        return Query(self.config, self.summaries_endpoint, Methods.GET).set_params(self.payload_params).fetch_one()
     
 
     def get_safelist_details(self):
@@ -108,7 +99,7 @@ class Safelist(object):
         :returns: HTTP response with Safelist Library Details in it's content.
         """
         self._validate_library_guid_is_present()
-        return Query(self.config, self.details_endpoint, Methods.GET).set_params(self.params).fetch_one()
+        return Query(self.config, self.details_endpoint, Methods.GET).set_params(self.payload_params).fetch_one()
 
 
     def create_entries(self):
@@ -120,12 +111,12 @@ class Safelist(object):
         :returns: HTTP response with Safelist Library Details in it's content.
         """
         self._validate_library_guid_is_present()
-        if not self.params.get("entries"):
+        if not self.payload_params.get("entries"):
             raise AttributeError(
                 "You must call the 'set_safelist_entries' method before calling this method."
             )
 
-        return Query(self.config, self.details_endpoint, Methods.PATCH).set_params(self.params).fetch_one()
+        return Query(self.config, self.details_endpoint, Methods.PATCH).set_params(self.payload_params).fetch_one()
 
 
     def create_safelist(self):
@@ -135,12 +126,12 @@ class Safelist(object):
         
         :returns: HTTP response with safelist library summaries in it's content.
         """
-        if not self.params.get("name"):
+        if not self.payload_params.get("name"):
             raise AttributeError(
                 "You must provide a name for the new library. Call the 'set_library_name' method before."
             )
 
-        return Query(self.config, self.summaries_endpoint, Methods.POST).set_params(self.params).fetch_one()
+        return Query(self.config, self.summaries_endpoint, Methods.POST).set_params(self.payload_params).fetch_one()
 
 
     def delete_entry(self, entry_guid):
@@ -152,14 +143,14 @@ class Safelist(object):
         """
         self._validate_library_guid_is_present()
         endpoint = self.details_endpoint + "/" + entry_guid
-        return Query(self.config, endpoint, Methods.DELETE).set_params(self.params).fetch_one()
+        return Query(self.config, endpoint, Methods.DELETE).set_params(self.payload_params).fetch_one()
     
 
     def delete_safelist(self):
         """Deletes a safelist library. You have to call 'set_library_guid' before
         calling this method."""
         self._validate_library_guid_is_present()
-        return Query(self.config, self.details_endpoint, Methods.DELETE).set_params(self.params).fetch_one()
+        return Query(self.config, self.details_endpoint, Methods.DELETE).set_params(self.payload_params).fetch_one()
 
 
     def extract_terms(self):
@@ -169,9 +160,9 @@ class Safelist(object):
 
         :returns: HTTP response with parsed entities in its content.
         """
-        if not self.params.get("text"):
+        if not self.payload_params.get("text"):
             raise AttributeError(
                 "You did not set any text for entities extraction. Call 'set_text_to_be_extracted' before."
             )
 
-        return Query(self.config, self.extract_endpoint, Methods.POST).set_params(self.params).fetch_one()
+        return Query(self.config, self.extract_endpoint, Methods.POST).set_params(self.payload_params).fetch_one()

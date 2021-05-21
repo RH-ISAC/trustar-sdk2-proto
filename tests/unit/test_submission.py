@@ -3,8 +3,7 @@ from __future__ import unicode_literals
 import json
 import pytest
 
-from trustar2.submission import Submission
-from trustar2.trustar import TruStar
+from trustar2 import Submission, TruStar
 from trustar2.models import Indicator, Entity
 
 from tests.unit.resources import submission_example_request
@@ -115,7 +114,7 @@ def test_create_fails_without_mandatory_fields(submission, indicators):
     submission.set_enclave_id("TEST-ENCLAVE_ID")
     submission.set_content_indicators(indicators)
     with pytest.raises(AttributeError):
-        submission.upsert()
+        submission.create()
 
 
 @pytest.fixture
@@ -166,7 +165,6 @@ def full_submission(submission, complex_indicator):
         .set_content_indicators(complex_indicator)
         .set_enclave_id("c0f07a9f-76e4-48df-a0d4-c63ed2edccf0")
         .set_external_id("external-1234")
-        .set_id_type_as_external(True)
         .set_external_url("externalUrlValue")
         .set_timestamp(1607102497000)
         .set_tags(["random_tag"])
@@ -178,31 +176,7 @@ def test_submission_ok_json(full_submission):
     assert full_submission.payload_params.serialize() == json.loads(submission_example_request)
 
 
-def test_ok_submission_ok(mocked_request, full_submission):
-    expected_url = "https://api.trustar.co/api/2.0/submissions/indicators/upsert"
-    mocked_request.post(url=expected_url, json={"id": "TEST-ID", "submissionVersion": 1})
-    response = full_submission.upsert()
-    assert response.json().get("submissionVersion") == 1
-    mocked_request.post(url=expected_url, json={"id": "TEST-ID", "submissionVersion": 2})
-    response = full_submission.upsert()
-    assert response.json().get("submissionVersion") == 2
-
-
-def test_get_submission_with_content_ok(mocked_request, submission):
-    external_id = "external-1234"
-    enclave_id = "c0f07a9f-76e4-48df-a0d4-c63ed2edccf0"
-    submission.set_external_id(external_id)
-    submission.set_id_type_as_external(True)
-    submission.set_enclave_id(enclave_id)
-    submission.set_include_content(True)
-    query_string = "?id={}&idType=EXTERNAL&enclaveGuid={}&includeContent=true".format(external_id, enclave_id)
-    expected_url = "https://api.trustar.co/api/2.0/submissions/indicators" + query_string
-    mocked_request.get(expected_url, json=json.loads(submission_example_request))
-    response = submission.get()
-    assert response.json().get("title") == "Report, complex test"
-    assert response.json().get("tags") == ["random_tag"]
-
-
-def test_get_submission_without_id(submission):
-    with pytest.raises(AttributeError):
-        submission.get()
+# def test_ok_submission_ok(mocked_request, full_submission):
+#     expected_url = "https://api.trustar.co/api/2.0/submissions/indicators"
+#     mocked_request.post(url=expected_url, json={})
+#     full_submission.create()
