@@ -166,7 +166,6 @@ def test_query_will_not_work_due_to_invalid_dates(search_indicator):
         search_indicator.search()
 
 
-@pytest.mark.skip(reason="No Idea why is failing")
 def test_ok_query(search_indicator):
     attribute = [{"type": "THREAT_ACTOR", "value": "BAD PANDA"}]
     p = ("cursor", "eyJwYWdlTnVtYmVyIjoxLCJwYWdlU2l6ZSI6Miwib2Zmc2V0Ijo0fQ==")
@@ -179,7 +178,7 @@ def test_ok_query(search_indicator):
         .set_to(1598308171000)
         .set_sort_column("PROCESSED_AT")
         .set_attributes(attribute)
-        # .set_payload_param(*p)
+        .set_payload_param(*p)
         .search()
     )
     assert q.params.serialize() == json.loads(indicators_example_request)
