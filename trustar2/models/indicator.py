@@ -20,8 +20,8 @@ class Indicator(Base):
         else:
             self.related_observables.append(related_obs)
 
-        if len(self.related_observables) > MaxValues.RELATED_OBSERVABLES:
-            self.related_observables = self.related_observables[:MaxValues.RELATED_OBSERVABLES]
+        if len(self.related_observables) > MaxValues.RELATED_OBSERVABLES.value:
+            self.related_observables = self.related_observables[:MaxValues.RELATED_OBSERVABLES.value]
 
     def set_attributes(self, related_attribute):
         if isinstance(related_attribute, list):
@@ -29,8 +29,8 @@ class Indicator(Base):
         else:
             self.attributes.append(related_attribute)
 
-        if len(self.attributes) > MaxValues.ATTRIBUTES:
-            self.attributes = self.attributes[:MaxValues.ATTRIBUTES]
+        if len(self.attributes) > MaxValues.ATTRIBUTES.value:
+            self.attributes = self.attributes[:MaxValues.ATTRIBUTES.value]
 
     def set_valid_to(self, valid_to):
         self.observable.set_valid_to(valid_to)
@@ -53,8 +53,8 @@ class Indicator(Base):
         else:
             self.tags.append(tag)
 
-        if len(self.tags) > MaxValues.TAGS:
-            self.tags = self.tags[:MaxValues.TAGS]
+        if len(self.tags) > MaxValues.TAGS.value:
+            self.tags = self.tags[:MaxValues.TAGS.value]
 
     def serialize(self):
         serialized = {}

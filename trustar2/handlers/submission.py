@@ -54,8 +54,8 @@ class Submission(BaseHandler):
         :returns: self.
         """
         indicators = [i.serialize() for i in indicators]
-        if len(indicators) > MaxValues.INDICATORS:
-            indicators = indicators[:MaxValues.INDICATORS]
+        if len(indicators) > MaxValues.INDICATORS.value:
+            indicators = indicators[:MaxValues.INDICATORS.value]
 
         content = {"indicators": indicators}
         self.set_payload_param("content", content)
@@ -98,8 +98,8 @@ class Submission(BaseHandler):
         if not tags:
             tags = []
 
-        if len(tags) > MaxValues.TAGS:
-            tags = tags[:MaxValues.TAGS]
+        if len(tags) > MaxValues.TAGS.value:
+            tags = tags[:MaxValues.TAGS.value]
 
         self.set_payload_param("tags", tags)
 
