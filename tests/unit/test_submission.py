@@ -174,9 +174,3 @@ def full_submission(submission, complex_indicator):
 
 def test_submission_ok_json(full_submission):
     assert full_submission.payload_params.serialize() == json.loads(submission_example_request)
-
-
-# def test_ok_submission_ok(mocked_request, full_submission):
-#     expected_url = "https://api.trustar.co/api/2.0/submissions/indicators"
-#     mocked_request.post(url=expected_url, json={})
-#     full_submission.create()
