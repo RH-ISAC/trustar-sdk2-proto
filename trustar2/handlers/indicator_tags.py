@@ -62,5 +62,5 @@ class TagIndicator(BaseHandler):
         return (
             self.create_query(Methods.POST, endpoint)
             .set_params(self.payload_params)
-            .fetch_one()
+            .execute()
         )

@@ -157,8 +157,11 @@ class ApiClient(object):
         trace_id = response.headers.get("Trace-Id")
         return trace_id if trace_id is not None else None
 
-    def fetch(self, query):
-        payload = query.params.serialize() if query.params else None
+    def fetch(self, query, use_empty_payload=False):
+        payload = query.params.serialize()
+        if not payload and not use_empty_payload:
+            payload = None
+
         return self._request(
             query.method.name, query.endpoint, payload, params=query.query_string
         )

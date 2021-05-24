@@ -187,7 +187,7 @@ class Submission(BaseHandler):
         return (
             self.create_query(Methods.DELETE)
             .set_query_string(self.query_string_params)
-            .fetch_one()
+            .execute()
         )
 
     def get(self):
@@ -196,7 +196,7 @@ class Submission(BaseHandler):
         return (
             self.create_query(Methods.GET)
             .set_query_string(self.query_string_params)
-            .fetch_one()
+            .execute()
         )
 
     def upsert(self):
@@ -209,5 +209,5 @@ class Submission(BaseHandler):
             self.create_query(Methods.POST, specific_endpoint="/upsert")
             .set_params(self.payload_params)
             .set_query_string(self.query_string_params)
-            .fetch_one()
+            .execute()
         )
