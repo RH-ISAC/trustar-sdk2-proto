@@ -1,11 +1,12 @@
-from collections import namedtuple
-import dateparser
-from datetime import datetime
 import pytz
-import functools
 import inspect
+import functools
+import dateparser
 
 from enum import Enum
+from datetime import datetime
+from collections import namedtuple
+
 
 
 def get_timestamp(date):

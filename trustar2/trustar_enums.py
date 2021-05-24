@@ -51,3 +51,11 @@ class TruStarUrls(TSEnum):
     API = "https://api.trustar.co/api/2.0"
     AUTH_TOKEN = "https://api.trustar.co/oauth/token"
     STATION = "https://station.trustar.co"
+
+
+class MaxValues(TSEnum):
+
+    TAGS = 20
+    RELATED_OBSERVABLES = 50
+    ATTRIBUTES = 50
+    INDICATORS = 2000

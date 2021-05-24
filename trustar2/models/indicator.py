@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from .base import Base
 from .entity import Entity
 from trustar2.base import fluent
-from trustar2.trustar_enums import ObservableTypes
+from trustar2.trustar_enums import ObservableTypes, MaxValues
 
 
 @fluent
@@ -20,11 +20,17 @@ class Indicator(Base):
         else:
             self.related_observables.append(related_obs)
 
+        if len(self.related_observables) > MaxValues.RELATED_OBSERVABLES:
+            self.related_observables = self.related_observables[:MaxValues.RELATED_OBSERVABLES]
+
     def set_attributes(self, related_attribute):
         if isinstance(related_attribute, list):
             self.attributes += related_attribute
         else:
             self.attributes.append(related_attribute)
+
+        if len(self.attributes) > MaxValues.ATTRIBUTES:
+            self.attributes = self.attributes[:MaxValues.ATTRIBUTES]
 
     def set_valid_to(self, valid_to):
         self.observable.set_valid_to(valid_to)
@@ -46,6 +52,9 @@ class Indicator(Base):
             self.tags += tag
         else:
             self.tags.append(tag)
+
+        if len(self.tags) > MaxValues.TAGS:
+            self.tags = self.tags[:MaxValues.TAGS]
 
     def serialize(self):
         serialized = {}
