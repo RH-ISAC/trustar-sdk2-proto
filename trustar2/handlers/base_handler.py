@@ -11,13 +11,13 @@ class BaseHandler(object):
 
 
     def set_payload_param(self, key, value):
-        """Adds a new param to set of params."""
+        """Adds a new param to set of payload params."""
         param = Param(key=key, value=value)
         self.payload_params.add(param)
 
 
     def set_query_param(self, key, value):
-        """Adds a new param to set of params."""
+        """Adds a new param to set of query params."""
         param = Param(key=key, value=value)
         self.query_params.add(param)
 
