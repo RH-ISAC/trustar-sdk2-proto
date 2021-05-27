@@ -35,11 +35,11 @@ class Query:
 
     def next(self):
         if not self.stop:
-            result = self.api.fetch(self)
+            result = self.api.fetch(self, use_empty_payload=True)
             self._update_params_from_response(result.json())
             return result
         else:
             raise StopIteration
 
-    def fetch_one(self):
-        return self.api.fetch(self)
+    def execute(self, use_empty_paylaod=False):
+        return self.api.fetch(self, use_empty_paylaod)

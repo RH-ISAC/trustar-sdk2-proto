@@ -23,6 +23,7 @@ setup(
                       'pytz',
                       'requests',
                       'configparser',
+                      'dateparser',
                       'unicodecsv',
                       'tzlocal',
                       'PyYAML',

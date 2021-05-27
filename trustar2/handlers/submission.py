@@ -1,19 +1,19 @@
 from __future__ import unicode_literals
 
-from .base import fluent, Methods, ParamsSerializer, Param, get_timestamp
-from .query import Query
+from trustar2.query import Query
+from trustar2.trustar_enums import MaxValues
+from trustar2.handlers.base_handler import BaseHandler
+from trustar2.base import fluent, Methods, ParamsSerializer, Param, get_timestamp
 
 
 @fluent
-class Submission(object):
+class Submission(BaseHandler):
 
     SUBMISSION_MANDATORY_FIELDS = ("title", "content", "enclaveGuid")
     path = "/submissions/indicators"
 
     def __init__(self, config=None):
-        self.config = config
-        self.payload_params = ParamsSerializer()
-        self.query_params = ParamsSerializer()
+        super(Submission, self).__init__(config)
         for func in (self.set_tags,):
             func()
 
@@ -26,18 +26,6 @@ class Submission(object):
     @property
     def endpoint(self):
         return self.config.request_details.get("api_endpoint") + self.path
-
-
-    def set_payload_param(self, key, value):
-        """Adds a new param to set of params."""
-        param = Param(key=key, value=value)
-        self.payload_params.add(param)
-
-    
-    def set_query_param(self, key, value):
-        """Adds a new param to set of params."""
-        param = Param(key=key, value=value)
-        self.query_params.add(param)
 
 
     def set_id(self, submission_id):
@@ -66,6 +54,9 @@ class Submission(object):
         :returns: self.
         """
         indicators = [i.serialize() for i in indicators]
+        if len(indicators) > MaxValues.INDICATORS.value:
+            indicators = indicators[:MaxValues.INDICATORS.value]
+
         content = {"indicators": indicators}
         self.set_payload_param("content", content)
 
@@ -106,6 +97,10 @@ class Submission(object):
         """
         if not tags:
             tags = []
+
+        if len(tags) > MaxValues.TAGS.value:
+            tags = tags[:MaxValues.TAGS.value]
+
         self.set_payload_param("tags", tags)
 
 
@@ -159,9 +154,6 @@ class Submission(object):
         self.set_payload_param("submissionVersion", version)
 
 
-    def set_trustar_config(self, trustar_config):
-        self.config = trustar_config
-
     @property
     def query_string_params(self):
         query_params = self.query_params.serialize()
@@ -195,7 +187,7 @@ class Submission(object):
         return (
             self.create_query(Methods.DELETE)
             .set_query_string(self.query_string_params)
-            .fetch_one()
+            .execute()
         )
 
     def get(self):
@@ -204,7 +196,7 @@ class Submission(object):
         return (
             self.create_query(Methods.GET)
             .set_query_string(self.query_string_params)
-            .fetch_one()
+            .execute()
         )
 
     def upsert(self):
@@ -217,5 +209,5 @@ class Submission(object):
             self.create_query(Methods.POST, specific_endpoint="/upsert")
             .set_params(self.payload_params)
             .set_query_string(self.query_string_params)
-            .fetch_one()
+            .execute()
         )
