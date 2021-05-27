@@ -7,7 +7,7 @@ from trustar2.trustar_enums import ObservableTypes
 
 
 @fluent
-class Safelist(BaseHandler): # FALTA
+class Safelist(BaseHandler):
 
     summaries = "/safelist-libraries"
     details =  summaries + "/{}"
