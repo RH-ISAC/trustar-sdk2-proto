@@ -3,7 +3,7 @@ import json
 from os import name
 
 from .log import get_logger
-from trustar2 import SearchIndicator, Submission, Safelist
+from trustar2 import SearchIndicator, Submission, Safelist, Workflows
 from trustar2.trustar_enums import TruStarUrls
 from .version import __version__
 
@@ -61,3 +61,6 @@ class TruStar:
 
     def safelist(self):
         return Safelist(self)
+
+    def workflows(self):
+        return Workflows(self)

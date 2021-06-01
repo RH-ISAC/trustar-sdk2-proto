@@ -2,7 +2,7 @@ class Base(object):
 
     @staticmethod
     def _get_camelcase(attribute):
-        if attribute == "_entity_type":
+        if attribute in ("_entity_type", "workflow_type"):
             return "type"
 
         tmp = attribute.split("_")

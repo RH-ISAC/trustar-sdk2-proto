@@ -59,3 +59,10 @@ class MaxValues(TSEnum):
     RELATED_OBSERVABLES = 50
     ATTRIBUTES = 50
     INDICATORS = 2000
+
+
+class WorkflowDestinations(TSEnum):
+
+    QRADAR = "QRADAR"
+    ENCLAVE = "ENCLAVE"
+    UNKNOWN = "UNKNOWN"
