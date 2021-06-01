@@ -6,10 +6,20 @@
  - [Search Indicators](#search-indicators)
  - [Safelists](#safelists)
  - [Data Model](#data-model)
+ - [Workflows](#worklows-management)
 
+# Config
+
+To use the SDK you will need a json config file. 
+
+You can find a template of `trustar_config.json` [here](trustar_config.json)
 
 # Submissions
-## Create new submissions in TruSTAR
+## Create / Update submissions in TruSTAR
+
+The `upsert` method will create a new submission in TruSTAR if the external id does not exist, or will update the existing one if it can find it.
+
+## Create
 
 ```python
 from trustar2 import TruStar
@@ -29,12 +39,11 @@ TruStar.config_from_file("trustar_config.json", "station")\
     .set_content_indicators([indicator])\
     .set_external_id("12345")\
     .set_enclave_id("<your-enclave-id>")\
-    .set_submission_version(0)\
-    .create()
+    .upsert()
 ```
-You can find a template of `trustar_config.json` [here](trustar_config.json)
 
-## Update submission in TruSTAR
+
+## Update 
 
 ```python
 from trustar2 import TruStar
@@ -49,8 +58,7 @@ TruStar.config_from_file("trustar_config.json", "station")\
     .set_external_id("12345")\
     .set_enclave_id("<your-enclave-id>")\
     .set_id_type_as_external(True)\
-    .set_submission_version(1)\ # new submissions version
-    .update()
+    .upsert()
 ```
 
 
@@ -180,6 +188,83 @@ text_blob = "8.8.8.8 - example@domain.com" # This can be any unstructured text c
 response = ts.safelist().set_text_to_be_extracted(text_blob).extract_terms()
 ```
 
+# Workflows Management
+
+## Creating a new workflow
+
+```python
+wsc1 = WorkflowSourceConfig("<enclave-id-1>", 5)
+wsc2 = WorkflowSourceConfig("<enclave-id-2>", 3)
+wsc3 = WorkflowSourceConfig("<enclave-id-3>", 4)
+
+wc = WorkflowConfig()
+wc.set_source_configs([wsc1, wsc2, wsc3])
+wc.set_destination_configs(("<destination-enclave-id>", "ENCLAVE"))
+wc.set_priority_scores(["MEDIUM", "HIGH"])
+wc.set_observable_types(["URL", "IP4", "IP6", "SHA256"])
+
+response = (TruStar.config_from_file("trustar_config.json", "station")
+                .workflows()
+                .set_name("<WORKFLOW-TITLE>")
+                .set_workflow_config(wc)
+                .set_safelist_ids(["<safelist-guid>"])
+                .create()
+)
+```
+
+## Updating a workflow
+
+```python
+wsc1 = WorkflowSourceConfig("<enclave-id-1>", 5)
+wsc2 = WorkflowSourceConfig("<enclave-id-2>", 3)
+wsc3 = WorkflowSourceConfig("<enclave-id-3>", 4)
+
+wc = WorkflowConfig()
+wc.set_source_configs([wsc1, wsc2, wsc3])
+wc.set_destination_configs(("<destination-enclave-id>", "ENCLAVE"))
+wc.set_priority_scores(["HIGH"]) # Updating Scores
+wc.set_observable_types(["IP4", "IP6", "SHA256", "SHA1"]) # Updating Types
+
+response = (TruStar.config_from_file("trustar_config.json", "station")
+                .workflows()
+                .set_name("<WORKFLOW-TITLE>")
+                .set_workflow_config(wc)
+                .set_safelist_ids(["<safelist-guid>"])
+                .set_workflow_id("<workflow-id>")
+                .update()
+)
+```
+
+## Getting all workflows
+
+```python
+response = (TruStar.config_from_file("trustar_config.json", "station")
+                .workflows()
+                .get()
+)
+```
+
+## Getting a workflow by ID
+
+```python
+response = (TruStar.config_from_file("trustar_config.json", "station")
+                .workflows()
+                .set_workflow_id("<workflow-id>")
+                .get()
+)
+```
+
+
+## Deleting a workflow
+
+```python
+response = (TruStar.config_from_file("trustar_config.json", "station")
+                .workflows()
+                .set_workflow_id("<workflow-id>")
+                .delete())
+```
+
+
 
 # Data Model
 
@@ -241,6 +326,34 @@ Other setters are not mandatory, but if you want to filter the returned IOCs, yo
 | `.set_confidence_score` | String ("LOW", "MEDIUM", "HIGH") |
 | `.set_valid_from` | Int (unix timestamp) or python Date |
 | `.set_valid_to` | Int (unix timestamp) or python Date |
+
+
+## WorkflowConfig 
+
+| Attribute / Setter | Param Type |
+| :----------------: | :----: |
+| `.set_source_configs` | The parameter can be a single element or a list of one of the following types: [**WorkflowSourceConfig**](#workflowsourceconfig) / **tuple** - `(enclave_guid, weight)` / **dict**  - `{"enclave_guid": enclave_guid, "weight": weight}`|
+| `.set_destination_configs` | The parameter can be a single element or a list of one of the following types: [**WorkflowDestinationConfig**](#workflowdestinationconfig) / **tuple** - `(enclave_guid, destinationType)` / **dict**  - `{"enclave_guid": enclave_guid, "destination_type": destination_type}` |
+| `.set_priority_scores` | List of strings ("BENIGN", "LOW", "MEDIUM", "HIGH") |
+| `.set_observable_types` | List of strings or [Enums](trustar2/trustar_enums.py#L18)|
+
+
+
+## WorkflowSourceConfig 
+
+| Attribute / Setter | Param Type |
+| :----------------: | :----: |
+| `enclave_guid` | String |
+| `weight` | int |
+
+
+## WorkflowDestinationConfig 
+
+| Attribute / Setter | Param Type |
+| :----------------: | :----: |
+| `enclave_guid` | String |
+| `destination_type` | String / [Enum](trustar2/trustar_enums.py#L64) |
+
 
 ## Attribute 
 
