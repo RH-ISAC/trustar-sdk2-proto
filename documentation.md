@@ -6,7 +6,7 @@
  - [Search Indicators](#search-indicators)
  - [Safelists](#safelists)
  - [Data Model](#data-model)
- - [Workflows](#worklows-management)
+ - [Workflows](#workflows-management)
 
 # Config
 
@@ -198,10 +198,10 @@ wsc2 = WorkflowSourceConfig("<enclave-id-2>", 3)
 wsc3 = WorkflowSourceConfig("<enclave-id-3>", 4)
 
 wc = WorkflowConfig()
-wc.set_source_configs([wsc1, wsc2, wsc3])
-wc.set_destination_configs(("<destination-enclave-id>", "ENCLAVE"))
+wc.set_source_configs([wsc1, wsc2, wsc3]) # This method accepts different kind of parameters. Check WorkflowConfig data model at the end of this doc.
 wc.set_priority_scores(["MEDIUM", "HIGH"])
 wc.set_observable_types(["URL", "IP4", "IP6", "SHA256"])
+wc.set_destination_configs(("<destination-enclave-id>", "ENCLAVE")) # This method accepts different kind of parameters. Check WorkflowConfig data model at the end of this doc.
 
 response = (TruStar.config_from_file("trustar_config.json", "station")
                 .workflows()
