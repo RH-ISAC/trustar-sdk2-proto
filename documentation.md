@@ -193,6 +193,9 @@ response = ts.safelist().set_text_to_be_extracted(text_blob).extract_terms()
 ## Creating a new workflow
 
 ```python
+from trustar2 import TruStar
+from trustar2.models import WorkflowSourceConfig, WorkflowConfig
+
 wsc1 = WorkflowSourceConfig("<enclave-id-1>", 5)
 wsc2 = WorkflowSourceConfig("<enclave-id-2>", 3)
 wsc3 = WorkflowSourceConfig("<enclave-id-3>", 4)
@@ -215,6 +218,9 @@ response = (TruStar.config_from_file("trustar_config.json", "station")
 ## Updating a workflow
 
 ```python
+from trustar2 import TruStar
+from trustar2.models import WorkflowSourceConfig, WorkflowConfig
+
 wsc1 = WorkflowSourceConfig("<enclave-id-1>", 5)
 wsc2 = WorkflowSourceConfig("<enclave-id-2>", 3)
 wsc3 = WorkflowSourceConfig("<enclave-id-3>", 4)
@@ -238,6 +244,8 @@ response = (TruStar.config_from_file("trustar_config.json", "station")
 ## Getting all workflows
 
 ```python
+from trustar2 import TruStar
+
 response = (TruStar.config_from_file("trustar_config.json", "station")
                 .workflows()
                 .get()
@@ -247,6 +255,8 @@ response = (TruStar.config_from_file("trustar_config.json", "station")
 ## Getting a workflow by ID
 
 ```python
+from trustar2 import TruStar
+
 response = (TruStar.config_from_file("trustar_config.json", "station")
                 .workflows()
                 .set_workflow_id("<workflow-id>")
@@ -258,6 +268,8 @@ response = (TruStar.config_from_file("trustar_config.json", "station")
 ## Deleting a workflow
 
 ```python
+from trustar2 import TruStar
+
 response = (TruStar.config_from_file("trustar_config.json", "station")
                 .workflows()
                 .set_workflow_id("<workflow-id>")
