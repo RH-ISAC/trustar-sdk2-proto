@@ -307,9 +307,9 @@ response = (TruStar.config_from_file("trustar_config.json", "station")
 |`.set_priority_scores`| List of Integers between -1 and 3|
 |`.set_sort_column`| String / [Enum](trustar2/trustar_enums.py#L11)|
 |`.set_enclave_ids`| Single or List of Strings|
-|`.set_observable_types`| List of Strings or [Enums](trustar2/trustar_enums.py#L18)|
+|`.set_observable_types`| List of Strings or [Enums](trustar2/trustar_enums.py#L23)|
 |`.set_attributes`| List of Strings or [Enums](trustar2/trustar_enums.py#L35)|
-|`.set_related_observables`|List of Strings or [Enums](trustar2/trustar_enums.py#L18)|
+|`.set_related_observables`|List of Strings or [Enums](trustar2/trustar_enums.py#L23)|
 
 Only mandatory setter is `.set_enclave_ids` .
 
@@ -319,7 +319,7 @@ Other setters are not mandatory, but if you want to filter the returned IOCs, yo
 
 | Attribute / Setter | Param Type |
 | :----------------: | :----: |
-| Observable Type | String  / [Enum](trustar2/trustar_enums.py#L18)|
+| Observable Type | String  / [Enum](trustar2/trustar_enums.py#L23)|
 | Observable Value | String |
 | `.set_related_observables` | List of / or single [Observable](#observable) entity |
 | `.set_attributes`| List of / or single [Attribute](#attribute) entity|
@@ -333,7 +333,7 @@ Other setters are not mandatory, but if you want to filter the returned IOCs, yo
 
 | Attribute / Setter | Param Type |
 | :----------------: | :----: |
-| Observable Type | String  / [Enum](trustar2/trustar_enums.py#L18)|
+| Observable Type | String  / [Enum](trustar2/trustar_enums.py#L23)|
 | Observable Value | String |
 | `.set_confidence_score` | String ("LOW", "MEDIUM", "HIGH") |
 | `.set_valid_from` | Int (unix timestamp) or python Date |
@@ -347,7 +347,7 @@ Other setters are not mandatory, but if you want to filter the returned IOCs, yo
 | `.set_source_configs` | The parameter can be a single element or a list of one of the following types: [**WorkflowSourceConfig**](#workflowsourceconfig) / **tuple** - `(enclave_guid, weight)` / **dict**  - `{"enclave_guid": enclave_guid, "weight": weight}`|
 | `.set_destination_configs` | The parameter can be a single element or a list of one of the following types: [**WorkflowDestinationConfig**](#workflowdestinationconfig) / **tuple** - `(enclave_guid, destinationType)` / **dict**  - `{"enclave_guid": enclave_guid, "destination_type": destination_type}` |
 | `.set_priority_scores` | List of strings ("BENIGN", "LOW", "MEDIUM", "HIGH") |
-| `.set_observable_types` | List of strings or [Enums](trustar2/trustar_enums.py#L18)|
+| `.set_observable_types` | List of strings or [Enums](trustar2/trustar_enums.py#L23)|
 
 
 
@@ -377,7 +377,7 @@ Other setters are not mandatory, but if you want to filter the returned IOCs, yo
 | `.set_valid_from` | Int (unix timestamp) or python Date |
 | `.set_valid_to` | Int (unix timestamp) or python Date |
 
-[Valid observable / attribute types](trustar2/trustar_enums.py#L18): 
+[Valid observable / attribute types](trustar2/trustar_enums.py#L23): 
 
 Attribute: 
 - THREAT_ACTOR
