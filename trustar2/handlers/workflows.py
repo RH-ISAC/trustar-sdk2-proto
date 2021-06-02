@@ -83,6 +83,19 @@ class Workflows(BaseHandler):
         return Query(self.config, endpoint, method)
 
 
+    def _raise_if_payload_is_not_set_up(self):
+        name = self.payload_params.get("name")
+        workflow_config = self.payload_params.get("workflowConfig")
+        safelist = self.payload_params.get("safelistGuids")
+        if not name or not workflow_config or not safelist:
+            raise AttributeError("You have to set the name, workflow_config and safelist_ids for the workflow.")
+
+
+    def _raise_if_workflow_id_is_not_set_up(self):
+        if self.workflow_guid is None:
+            raise AttributeError("You have to set up the workflow id.")
+
+    
     def create(self):
         """
         Creates a new workflow in TruSTAR platform.
@@ -90,6 +103,7 @@ class Workflows(BaseHandler):
         You'll need to call 'set_name', 'set_workflow_config' and 'set_safelist_ids' before 
         calling to this method.
         """
+        self._raise_if_payload_is_not_set_up()
         return self.create_query(Methods.POST).set_params(self.payload_params).execute()
 
 
@@ -104,6 +118,7 @@ class Workflows(BaseHandler):
             _ set_updated_from
             - set_updated_to
         """
+        self._raise_if_workflow_id_is_not_set_up()
         return (
             self.create_query(Methods.GET)
             .set_query_string(self.query_params.serialize())
@@ -116,6 +131,7 @@ class Workflows(BaseHandler):
         """Gets a specific workflow by ID in TruSTAR platform.
         You'll need to call to 'set_workflow_id' before calling this method.
         """
+        self._raise_if_workflow_id_is_not_set_up()
         return (
             self.create_query(Methods.GET, "/{}".format(self.workflow_guid))
             .set_params(self.payload_params)
@@ -127,6 +143,7 @@ class Workflows(BaseHandler):
         """Deletes a specific workflow by ID in TruSTAR platform.
         You'll need to call to 'set_workflow_id' before calling this method.
         """
+        self._raise_if_workflow_id_is_not_set_up()
         return (
             self.create_query(Methods.DELETE, "/{}".format(self.workflow_guid))
             .set_params(self.payload_params)
@@ -143,6 +160,8 @@ class Workflows(BaseHandler):
             - set_safelist_ids
             - set_workflow_id
         """
+        self._raise_if_payload_is_not_set_up()
+        self._raise_if_workflow_id_is_not_set_up()
         return (
             self.create_query(Methods.PUT, "/{}".format(self.workflow_guid))
             .set_params(self.payload_params)

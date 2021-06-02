@@ -98,3 +98,8 @@ def test_set_workflow_config(workflows, workflow_config):
     workflows.set_workflow_config(workflow_config)
     assert len(workflows.payload_params) == 1
     assert workflows.payload_params.get("workflowConfig") == json.loads(serialized_workflow_config)
+
+
+
+# TODO: missing tests mocking and checking the HTTP requests are well formed
+
