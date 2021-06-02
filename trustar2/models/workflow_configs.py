@@ -37,7 +37,9 @@ class WorkflowConfig(Base):
         if isinstance(source_config, dict):
             return self._get_source_config_obj_from_dict(source_config)
 
-        raise AttributeError("Valid types to create a source config are: WorkflowSourceConfig, tuple, dict")
+        raise AttributeError(
+            "Valid types to create a source config are: WorkflowSourceConfig, tuple, dict"
+        )
 
 
     def _get_destination_config_obj_from_tuple(self, destination_config):
@@ -63,7 +65,9 @@ class WorkflowConfig(Base):
         if isinstance(destination_config, dict):
             return self._get_destination_config_obj_from_dict(destination_config)
 
-        raise AttributeError("Valid types to create a destination config are: WorkflowDestinationConfig, tuple, dict")
+        raise AttributeError(
+            "Valid types to create a destination config are: WorkflowDestinationConfig, tuple, dict"
+        )
 
 
     def _handle_list(self, source_config_list):
@@ -71,7 +75,14 @@ class WorkflowConfig(Base):
             
 
     def set_source_configs(self, source_config):
-        """
+        """Sets the source configuration for a workflow config. 
+
+        The parameter can be a single element or a list of one of the following:
+
+            - WorkflowSourceConfig.
+            - tuple: With first element an enclave_guid (string) and the second 
+              a weight (int between 1 and 5)
+            - dict: With 'enclave_guid' and 'weight' fields populated
         """
         if isinstance(source_config, list):
             self.workflow_source += self._handle_list(source_config)
@@ -81,19 +92,30 @@ class WorkflowConfig(Base):
 
 
     def set_destination_configs(self, destination_config):
-        """
+        """Sets the destination configuration for a workflow config. 
+
+        The parameter can be a single element or a list of one of the following:
+
+            - WorkflowDestinationConfig.
+            - tuple: With first element an enclave_guid (string) and the second 
+              a destination_type (string - QRADAR or ENCLAVE)
+            - dict: With 'enclave_guid' and 'destination_type' fields populated
         """
         self.workflow_destination.append(self._get_destination_config_obj(destination_config))
 
 
     def set_priority_scores(self, priority_scores):
-        """
+        """Sets the priority scores for a workflow config. 
+
+        The parameter has to be a list of strings (BENIGN, LOW, MEDIUM, HIGH).
         """
         self.priority_scores += priority_scores
 
     
     def set_observable_types(self, observable_types):
-        """
+        """Sets the observable types for a workflow config. 
+
+        The parameter has to be a list of strings or enums with valid TruSTAR observable types.
         """
         if not isinstance(observable_types, list):
             raise AttributeError("'observable_types' should be a list")

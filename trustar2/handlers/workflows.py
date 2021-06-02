@@ -84,12 +84,25 @@ class Workflows(BaseHandler):
 
 
     def create(self):
-        """"""
+        """
+        Creates a new workflow in TruSTAR platform.
+        
+        You'll need to call 'set_name', 'set_workflow_config' and 'set_safelist_ids' before 
+        calling to this method.
+        """
         return self.create_query(Methods.POST).set_params(self.payload_params).execute()
 
 
     def get(self):
         """
+        Gets all workflows in TruSTAR platform.
+        You can optionally call any of the following methods to filter the results:
+            - set_type
+            - set_name
+            - set_created_from
+            - set_created_to
+            _ set_updated_from
+            - set_updated_to
         """
         return (
             self.create_query(Methods.GET)
@@ -100,7 +113,8 @@ class Workflows(BaseHandler):
 
 
     def get_by_id(self):
-        """
+        """Gets a specific workflow by ID in TruSTAR platform.
+        You'll need to call to 'set_workflow_id' before calling this method.
         """
         return (
             self.create_query(Methods.GET, "/{}".format(self.workflow_guid))
@@ -110,7 +124,8 @@ class Workflows(BaseHandler):
 
 
     def delete(self):
-        """
+        """Deletes a specific workflow by ID in TruSTAR platform.
+        You'll need to call to 'set_workflow_id' before calling this method.
         """
         return (
             self.create_query(Methods.DELETE, "/{}".format(self.workflow_guid))
@@ -120,7 +135,13 @@ class Workflows(BaseHandler):
 
 
     def update(self):
-        """
+        """Updates a workflow in TruSTAR platform.
+        
+        You'll need to call to the following methods calling to this method: 
+            - set_name
+            - set_workflow_config
+            - set_safelist_ids
+            - set_workflow_id
         """
         return (
             self.create_query(Methods.PUT, "/{}".format(self.workflow_guid))
