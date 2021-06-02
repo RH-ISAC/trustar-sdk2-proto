@@ -77,7 +77,7 @@ class WorkflowConfig(Base):
     def set_source_configs(self, source_config):
         """Sets the source configuration for a workflow config. 
 
-        The parameter can be a single element or a list of one of the following:
+        :param source_config: This can be a single element or a list of one of the following:
 
             - WorkflowSourceConfig.
             - tuple: With first element an enclave_guid (string) and the second 
@@ -94,7 +94,7 @@ class WorkflowConfig(Base):
     def set_destination_configs(self, destination_config):
         """Sets the destination configuration for a workflow config. 
 
-        The parameter can be a single element or a list of one of the following:
+        :param destination_config: This can be a single element or a list of one of the following:
 
             - WorkflowDestinationConfig.
             - tuple: With first element an enclave_guid (string) and the second 
@@ -107,7 +107,7 @@ class WorkflowConfig(Base):
     def set_priority_scores(self, priority_scores):
         """Sets the priority scores for a workflow config. 
 
-        The parameter has to be a list of strings (BENIGN, LOW, MEDIUM, HIGH).
+        :param priority_scores: has to be a list of strings (BENIGN, LOW, MEDIUM, HIGH).
         """
         self.priority_scores += priority_scores
 
@@ -115,7 +115,7 @@ class WorkflowConfig(Base):
     def set_observable_types(self, observable_types):
         """Sets the observable types for a workflow config. 
 
-        The parameter has to be a list of strings or enums with valid TruSTAR observable types.
+        :param observable_types: has to be a list of strings or enums with valid TruSTAR observable types.
         """
         if not isinstance(observable_types, list):
             raise AttributeError("'observable_types' should be a list")
