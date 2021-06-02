@@ -87,7 +87,7 @@ class Workflows(BaseHandler):
         name = self.payload_params.get("name")
         workflow_config = self.payload_params.get("workflowConfig")
         safelist = self.payload_params.get("safelistGuids")
-        if not name or not workflow_config or not safelist:
+        if name is None or workflow_config is None or safelist is None:
             raise AttributeError("You have to set the name, workflow_config and safelist_ids for the workflow.")
 
 
@@ -118,7 +118,6 @@ class Workflows(BaseHandler):
             _ set_updated_from
             - set_updated_to
         """
-        self._raise_if_workflow_id_is_not_set_up()
         return (
             self.create_query(Methods.GET)
             .set_query_string(self.query_params.serialize())
