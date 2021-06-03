@@ -12,6 +12,8 @@ class Workflows(BaseHandler):
     def __init__(self, config=None):
         super(Workflows, self).__init__(config)
         self.workflow_guid = None
+        for func in (self.set_safelist_ids,):
+            func()
 
 
     @property
@@ -70,7 +72,7 @@ class Workflows(BaseHandler):
         self.set_payload_param("workflowConfig", workflow_config.serialize())
 
     
-    def set_safelist_ids(self, safelist_ids):
+    def set_safelist_ids(self, safelist_ids=[]):
         if not isinstance(safelist_ids, list):
             raise AttributeError("'safelist_ids' must be a list of safelist_guids (strings).")
 
@@ -100,7 +102,7 @@ class Workflows(BaseHandler):
         """
         Creates a new workflow in TruSTAR platform.
         
-        You'll need to call 'set_name', 'set_workflow_config' and 'set_safelist_ids' before 
+        You'll need to call 'set_name' and 'set_workflow_config' before 
         calling to this method.
         """
         self._raise_if_payload_is_not_set_up()
