@@ -7,7 +7,7 @@ from trustar2.base import fluent, Methods, get_timestamp
 @fluent
 class Workflows(BaseHandler):
 
-    path = "/workflows"
+    _path = "/workflows"
 
     def __init__(self, config=None):
         super(Workflows, self).__init__(config)
@@ -16,7 +16,7 @@ class Workflows(BaseHandler):
 
     @property
     def endpoint(self):
-        return self.config.request_details.get("api_endpoint") + self.path
+        return self.config.request_details.get("api_endpoint") + self._path
 
 
     def set_type(self, type):
