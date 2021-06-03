@@ -7,7 +7,7 @@ from tests.unit.resources import serialized_workflow_config
 
 URL = "https://api.trustar.co/api/2.0/workflows"
 TIMESTAMP = 1583960400000
-
+DEFAULT_PARAMS = 1
 
 @pytest.fixture
 def workflows():
@@ -48,7 +48,7 @@ def wf_response(serialized_wf_config):
 
 
 def test_workflows_is_initially_empty(workflows):
-    assert len(workflows.payload_params) == 0
+    assert len(workflows.payload_params) == 0 + DEFAULT_PARAMS
     assert len(workflows.query_params) == 0
 
 
@@ -61,7 +61,7 @@ def test_set_type(workflows):
 def test_set_name(workflows):
     workflows.set_name("TEST-WORKFLOW-NAME")
     assert len(workflows.query_params) == 1
-    assert len(workflows.payload_params) == 1
+    assert len(workflows.payload_params) == 1 + DEFAULT_PARAMS
     assert workflows.query_params.get("name") == "TEST-WORKFLOW-NAME"
     assert workflows.payload_params.get("name") == "TEST-WORKFLOW-NAME" 
 
@@ -115,7 +115,7 @@ def test_set_safelist_ids(workflows):
 
 def test_set_workflow_config(workflows, workflow_config):
     workflows.set_workflow_config(workflow_config)
-    assert len(workflows.payload_params) == 1
+    assert len(workflows.payload_params) == 1 + DEFAULT_PARAMS
     assert workflows.payload_params.get("workflowConfig") == json.loads(serialized_workflow_config)
 
 
