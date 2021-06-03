@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 import json
 import pytest
 
@@ -24,7 +26,7 @@ def test_ping_successfully(account, mocked_request):
     mocked_request.get(URL + "/ping", status_code=200, text="pong\n")
     response = account.ping()
     assert response.status_code == 200
-    assert response.content == "pong\n"
+    assert response.text == "pong\n"
 
 
 def test_get_enclaves_successfully(account, mocked_request, enclaves_response):
