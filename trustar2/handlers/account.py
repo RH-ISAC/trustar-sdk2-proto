@@ -23,14 +23,10 @@ class Account(BaseHandler):
 
 
     def ping(self):
-        return (
-            self.create_query(Methods.GET, specific_endpoint="/ping")
-            .execute()
-        )
+        """Tests connectiviy against TruSTAR API."""
+        return self.create_query(Methods.GET, specific_endpoint="/ping").execute()
 
 
     def get_enclaves(self):
-        return (
-            self.create_query(Methods.GET, specific_endpoint="/enclaves")
-            .execute()
-        )
+        """Returns all user enclaves with according permissions."""
+        return self.create_query(Methods.GET, specific_endpoint="/enclaves").execute()
