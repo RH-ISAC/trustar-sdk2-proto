@@ -1,11 +1,11 @@
 from __future__ import unicode_literals
-from trustar2.base import fluent, Methods, ParamsSerializer, Param, get_timestamp
 
 from datetime import datetime
 from trustar2.query import Query
-from trustar2.trustar_enums import ObservableTypes, SortColumns, SortOrder, AttributeTypes
 from trustar2.handlers.base_handler import BaseHandler
+from trustar2.base import fluent, Methods, get_timestamp
 from trustar2.handlers.indicator_tags import TagIndicator
+from trustar2.trustar_enums import ObservableTypes, SortColumns, SortOrder, AttributeTypes
 from trustar2.models import Entity
 
 
