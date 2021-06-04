@@ -3,6 +3,9 @@ from trustar2.handlers.base_handler import BaseHandler
 from trustar2.base import fluent, Methods, get_timestamp
 
 
+MIN_NAME_LEN = 3
+MAX_NAME_LEN = 120
+
 
 @fluent
 class Workflow(BaseHandler):
@@ -12,8 +15,7 @@ class Workflow(BaseHandler):
     def __init__(self, config=None):
         super(Workflow, self).__init__(config)
         self.workflow_guid = None
-        for func in (self.set_safelist_ids,):
-            func()
+        self.set_safelist_ids()
 
 
     @property
@@ -26,8 +28,10 @@ class Workflow(BaseHandler):
 
 
     def set_name(self, name):
-        if len(name) < 3 or len(name) > 120:
-            raise AttributeError("Workflow name's length must be between 3 and 120 characters")
+        if len(name) < MIN_NAME_LEN or len(name) > MAX_NAME_LEN:
+            raise AttributeError("Workflow name's length must be between {} and {} characters".format(
+                MIN_NAME_LEN, MAX_NAME_LEN
+            ))
 
         self.set_query_param("name", name)
         self.set_payload_param("name", name)

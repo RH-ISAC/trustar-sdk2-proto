@@ -2,6 +2,10 @@ from .base import Base
 from trustar2.base import fluent
 from trustar2.trustar_enums import WorkflowDestinations, ObservableTypes
 
+MIN_WEIGHT = 1
+MAX_WEIGHT = 5
+
+
 
 @fluent
 class WorkflowConfig(Base):
@@ -149,8 +153,10 @@ class WorkflowSourceConfig(Base):
 
 
     def _validate_weight(self, weight):
-        if weight > 5 or weight < 1:
-            raise AttributeError("Workflow source config weights have to be within 1 and 5.")
+        if weight > MAX_WEIGHT or weight < MIN_WEIGHT:
+            raise AttributeError(
+                "Workflow source config weights have to be within {} and {}.".format(MIN_WEIGHT, MAX_WEIGHT)
+            )
 
     
     def _validate_enclave_guid(self, enclave_guid):
