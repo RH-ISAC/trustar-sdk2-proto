@@ -89,7 +89,7 @@ class WorkflowConfig(Base):
             - dict: With 'enclave_guid' and 'weight' fields populated
         """
         if isinstance(source_config, list):
-            self.workflow_source += self._handle_list(source_config)
+            self.workflow_source.extend(self._handle_list(source_config))
 
         else: 
             self.workflow_source.append(self._get_source_config_obj(source_config))
@@ -113,7 +113,7 @@ class WorkflowConfig(Base):
 
         :param priority_scores: has to be a list of strings (BENIGN, LOW, MEDIUM, HIGH).
         """
-        self.priority_scores += priority_scores
+        self.priority_scores.extend(priority_scores)
 
     
     def set_observable_types(self, observable_types):
@@ -130,7 +130,7 @@ class WorkflowConfig(Base):
                 "Observable Types can only be within the following set: {}".format(possible_types)
             )
 
-        self.observable_types += observable_types
+        self.observable_types.extend(observable_types)
 
 
     def serialize(self):
