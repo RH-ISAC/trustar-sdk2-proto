@@ -154,6 +154,31 @@ entities_extraction = """
 ]
 """
 
+enclaves = """
+[
+  {
+      "name": "test_name_1",
+      "templateName": "Private Enclave",
+      "workflowSupported": false,
+      "read": true,
+      "create": true,
+      "update": true,
+      "id": "test-id-1",
+      "type": "INTERNAL"
+  },
+  {
+      "name": "test_name_2",
+      "templateName": "Private Enclave",
+      "workflowSupported": false,
+      "read": true,
+      "create": true,
+      "update": true,
+      "id": "test-id-2",
+      "type": "INTERNAL"
+  }
+]
+"""
+
 serialized_workflow_config = """
 {
   "type": "INDICATOR_PRIORITIZATION",
