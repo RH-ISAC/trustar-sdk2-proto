@@ -5,12 +5,12 @@ from trustar2.base import fluent, Methods, get_timestamp
 
 
 @fluent
-class Workflows(BaseHandler):
+class Workflow(BaseHandler):
 
     _path = "/workflows"
 
     def __init__(self, config=None):
-        super(Workflows, self).__init__(config)
+        super(Workflow, self).__init__(config)
         self.workflow_guid = None
         for func in (self.set_safelist_ids,):
             func()

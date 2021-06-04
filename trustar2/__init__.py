@@ -5,7 +5,7 @@ from trustar2.handlers import (
     Submission, 
     Safelist, 
     TagIndicator, 
-    Workflows
+    Workflow
 )
 
 from trustar2.trustar import TruStar
