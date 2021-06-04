@@ -153,3 +153,39 @@ entities_extraction = """
   }
 ]
 """
+
+serialized_workflow_config = """
+{
+  "type": "INDICATOR_PRIORITIZATION",
+  "priorityScores": ["MEDIUM", "HIGH"],
+  "observableTypes": ["URL", "IP4", "IP6", "SHA256"],
+  "workflowSource": {
+    "enclaveSourceConfig": [
+      {
+        "enclaveGuid": "test-enclave-id",
+        "weight": 3
+      },
+      {
+        "enclaveGuid": "test-enclave-id2",
+        "weight": 3
+      },
+      {
+        "enclaveGuid": "test-enclave-id3",
+        "weight": 1
+      },
+      {
+        "enclaveGuid": "test-enclave-id4",
+        "weight": 5
+      }
+    ]
+  },
+  "workflowDestination": {
+    "enclaveDestinationConfigs": [
+      {
+        "enclaveGuid": "test-enclave-id",
+        "destinationType": "ENCLAVE"
+      }
+    ]
+  }
+}
+"""
