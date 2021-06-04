@@ -6,7 +6,6 @@ MIN_WEIGHT = 1
 MAX_WEIGHT = 5
 
 
-
 @fluent
 class WorkflowConfig(Base):
 
@@ -76,6 +75,14 @@ class WorkflowConfig(Base):
 
     def _handle_list(self, source_config_list):
         return [self._get_source_config_obj(source) for source in source_config_list]
+
+    
+    def _raise_if_observables_are_not_valid(self, observable_types):
+        possible_types = set(ObservableTypes.members())
+        if set(observable_types) - possible_types:
+            raise AttributeError(
+                "Observable Types can only be within the following set: {}".format(possible_types)
+            )
             
 
     def set_source_configs(self, source_config):
@@ -124,12 +131,7 @@ class WorkflowConfig(Base):
         if not isinstance(observable_types, list):
             raise AttributeError("'observable_types' should be a list")
 
-        possible_types = set(ObservableTypes.members())
-        if set(observable_types) - possible_types:
-            raise AttributeError(
-                "Observable Types can only be within the following set: {}".format(possible_types)
-            )
-
+        self._raise_if_observables_are_not_valid(observable_types)
         self.observable_types.extend(observable_types)
 
 
