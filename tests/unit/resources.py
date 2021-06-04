@@ -177,6 +177,7 @@ enclaves = """
       "type": "INTERNAL"
   }
 ]
+"""
 
 serialized_workflow_config = """
 {
