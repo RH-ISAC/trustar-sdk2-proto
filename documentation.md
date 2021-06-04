@@ -207,7 +207,7 @@ wc.set_observable_types(["URL", "IP4", "IP6", "SHA256"])
 wc.set_destination_configs(("<destination-enclave-id>", "ENCLAVE")) # This method accepts different kind of parameters. Check WorkflowConfig data model at the end of this doc.
 
 response = (TruStar.config_from_file("trustar_config.json", "station")
-                .workflows()
+                .workflow()
                 .set_name("<WORKFLOW-TITLE>")
                 .set_workflow_config(wc)
                 .set_safelist_ids(["<safelist-guid>"])
@@ -232,7 +232,7 @@ wc.set_priority_scores(["HIGH"]) # Updating Scores
 wc.set_observable_types(["IP4", "IP6", "SHA256", "SHA1"]) # Updating Types
 
 response = (TruStar.config_from_file("trustar_config.json", "station")
-                .workflows()
+                .workflow()
                 .set_name("<WORKFLOW-TITLE>")
                 .set_workflow_config(wc)
                 .set_safelist_ids(["<safelist-guid>"])
@@ -247,7 +247,7 @@ response = (TruStar.config_from_file("trustar_config.json", "station")
 from trustar2 import TruStar
 
 response = (TruStar.config_from_file("trustar_config.json", "station")
-                .workflows()
+                .workflow()
                 .get()
 )
 ```
@@ -258,7 +258,7 @@ response = (TruStar.config_from_file("trustar_config.json", "station")
 from trustar2 import TruStar
 
 response = (TruStar.config_from_file("trustar_config.json", "station")
-                .workflows()
+                .workflow()
                 .set_workflow_id("<workflow-id>")
                 .get()
 )
@@ -271,7 +271,7 @@ response = (TruStar.config_from_file("trustar_config.json", "station")
 from trustar2 import TruStar
 
 response = (TruStar.config_from_file("trustar_config.json", "station")
-                .workflows()
+                .workflow()
                 .set_workflow_id("<workflow-id>")
                 .delete())
 ```
