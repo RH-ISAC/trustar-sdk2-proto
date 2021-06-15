@@ -29,9 +29,9 @@ class TagBase(BaseHandler):
                 "Either 'addedTags' or 'removedTags' values are required for altering tags of {}".format(self._url)
             )
 
-        if "enclaveGuid" not in self.payload_params: # chequear
+        if "enclaveGuid" not in self.payload_params and "enclaveId" not in self.payload_params: 
             raise AttributeError(
-                "Enclave id value is required for altering tags of an indicator submission"
+                "Enclave id value is required for altering tags on {}".format(self._url)
             )
 
         return self.base_url + "/{}/alter-tags".format(self.guid)
