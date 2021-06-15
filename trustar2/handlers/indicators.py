@@ -1,6 +1,5 @@
 from __future__ import unicode_literals
 
-from datetime import datetime
 from trustar2.query import Query
 from trustar2.handlers.base_handler import BaseHandler
 from trustar2.base import fluent, Methods, get_timestamp
@@ -22,24 +21,6 @@ class SearchIndicator(BaseHandler):
     @property
     def base_url(self):
         return self.config.request_details.get("api_endpoint") + self.url
-
-
-    def _validate_dates(self):
-        from_date = self.payload_params.get("from")
-        to_date = self.payload_params.get("to")
-        if from_date and to_date:
-            from_date_dt = datetime.fromtimestamp(from_date / 1000)
-            to_date_dt = datetime.fromtimestamp(to_date / 1000)
-            if (to_date_dt - from_date_dt).days > 364:
-                raise AttributeError("Time window can not be greater than 1 year.")
-
-            if (from_date_dt > to_date_dt):
-                raise AttributeError("'from' can not be a date after 'to'.")
-
-        if from_date and not to_date:
-            from_date_dt = datetime.fromtimestamp(from_date / 1000)
-            if (datetime.today() - from_date_dt).days > 364:
-                raise AttributeError("Time window can not be greater than 1 year.")
 
         
     @staticmethod

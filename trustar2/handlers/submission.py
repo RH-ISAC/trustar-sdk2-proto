@@ -10,12 +10,12 @@ from trustar2.base import fluent, Methods, get_timestamp
 class Submission(BaseHandler):
 
     SUBMISSION_MANDATORY_FIELDS = ("title", "content", "enclaveGuid")
-    path = "/submissions/indicators"
+    _path = "/submissions"
+    _submission_category = "/indicators"
 
     def __init__(self, config=None):
         super(Submission, self).__init__(config)
-        for func in (self.set_tags,):
-            func()
+        self.set_tags()
 
     def __str__(self):
         return "Submission <{}> with external Id <{}>".format(
@@ -25,7 +25,7 @@ class Submission(BaseHandler):
 
     @property
     def endpoint(self):
-        return self.config.request_details.get("api_endpoint") + self.path
+        return self.config.request_details.get("api_endpoint") + self._path
 
 
     def set_id(self, submission_id):
@@ -53,11 +53,32 @@ class Submission(BaseHandler):
         :param indicators: field value. List of Indicator objects.
         :returns: self.
         """
+        self._submission_category = "/indicators"
         indicators = [i.serialize() for i in indicators]
         if len(indicators) > MaxValues.INDICATORS.value:
             indicators = indicators[:MaxValues.INDICATORS.value]
 
         content = {"indicators": indicators}
+        self.set_payload_param("content", content)
+
+
+    def set_content_events(self, content):
+        """Adds content param to set of params.
+
+        :param indicators: field value. List of Indicator objects.
+        :returns: self.
+        """
+        self._submission_category = "/events"
+        self.set_payload_param("content", content)
+
+
+    def set_content_intelligence(self, content):
+        """Adds content param to set of params.
+
+        :param indicators: field value. List of Indicator objects.
+        :returns: self.
+        """
+        self._submission_category = "/intelligence"
         self.set_payload_param("content", content)
 
 
@@ -163,6 +184,50 @@ class Submission(BaseHandler):
         return query_params
 
 
+    def set_page_size(self, page_size):
+        self.set_query_param("pageSize", page_size)
+
+    
+    def set_query_term(self, query):
+        self.set_payload_param("queryTerm", query)
+
+
+    def set_from(self, from_date):
+        if not isinstance(from_date, int):
+            from_date = get_timestamp(from_date)
+        self.set_payload_param("from", from_date)
+
+
+    def set_to(self, to_date):
+        if not isinstance(to_date, int):
+            to_date = get_timestamp(to_date)
+
+        self.set_payload_param("to", to_date)
+
+
+    def set_enclave_ids(self, enclave_guids):
+        if not isinstance(enclave_guids, list):
+            enclave_guids = [enclave_guids]
+        self.set_payload_param("enclaveGuids", enclave_guids)
+
+    
+    def set_included_tags(self, tags):
+        if not isinstance(tags, list):
+            tags = [tags]
+        self.set_payload_param("includedTags", tags)
+
+
+    def set_excluded_tags(self, tags):
+        if not isinstance(tags, list):
+            tags = [tags]
+        self.set_payload_param("excludedTags", tags)
+        
+
+    def set_sort_column(self, column):
+        column = self._get_value(column, SortColumns)
+        self.set_payload_param("sortColumn", column)
+
+
     def should_use_external_id(self):
         """Returns True if params are set to retrieve a submission by external id"""
         return "idType" in self.query_params and "externalId" in self.payload_params
@@ -185,19 +250,22 @@ class Submission(BaseHandler):
         """Deletes a submission according to query_params set before."""
         self._raise_without_id()
         return (
-            self.create_query(Methods.DELETE)
+            self.create_query(Methods.DELETE, specific_endpoint=self._submission_category)
             .set_query_string(self.query_string_params)
             .execute()
         )
 
-    def get(self):
+
+    def get(self, structured_indicators=True):
         """Retrieves a submission according to query_params set before."""
+        self._submission_category = "/events" if not structured_indicators else "/indicators"
         self._raise_without_id()
         return (
-            self.create_query(Methods.GET)
+            self.create_query(Methods.GET, specific_endpoint=self._submission_category)
             .set_query_string(self.query_string_params)
             .execute()
         )
+
 
     def upsert(self):
         """Update a submission if it already exists or create a new one if it doesn't."""
@@ -206,8 +274,27 @@ class Submission(BaseHandler):
                 raise AttributeError("{} field should be in your submission".format(k))
 
         return (
-            self.create_query(Methods.POST, specific_endpoint="/upsert")
+            self.create_query(Methods.POST, specific_endpoint=self._submission_category + "/upsert")
             .set_params(self.payload_params)
             .set_query_string(self.query_string_params)
             .execute()
         )
+
+
+    def search(self):
+        self._validate_dates()
+        endpoint = "/search"
+        return (
+            self.create_query(Methods.POST, specific_endpoint=endpoint)
+            .set_params(self.payload_params)
+            .set_query_string({"pageSize": self.query_params.get("pageSize", 25)})
+        )
+
+
+    def get_submission_status(self, submission_id):
+        endpoint = "/{}/status".format(submission_id)
+        return self.create_query(Methods.GET, specific_endpoint=endpoint).execute()
+
+
+    def tags(self):
+        return TagIndicator(self.config)
