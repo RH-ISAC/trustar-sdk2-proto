@@ -66,3 +66,8 @@ class WorkflowDestinations(TSEnum):
     QRADAR = "QRADAR"
     ENCLAVE = "ENCLAVE"
     UNKNOWN = "UNKNOWN"
+
+class ID_Types(TSEnum):
+    INTERNAL = "INTERNAL"
+    EXTERNAL = "EXTERNAL"
+    UNRECOGNIZED = "UNRECOGNIZED"
