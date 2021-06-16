@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+from enum import Enum
 
 from trustar2.query import Query
 from trustar2.base import fluent, Methods
@@ -13,7 +14,6 @@ class ObservablesHandler(SearchHandler):
     
     _get_from_submission_endpoint = ""
     _search_endpoint = "/search"
-    _alter_tags_endpoint = "/alter-tags"
 
     def __init__(self, config=None):
         super(ObservablesHandler, self).__init__(config)
@@ -21,23 +21,6 @@ class ObservablesHandler(SearchHandler):
     @property
     def base_url(self):
         return self.config.request_details.get("api_endpoint") + self._base_endpoint
-
-    def set_search_types(self, types):
-        types = list(map(lambda t: self._get_value(t, ObservableTypes), set(types)))
-        self.set_payload_param("types", types)
-
-
-    def _validate_tags_length(self):
-        MAX_TAG_LENGTH = 20
-        included_tags = self.payload_params.get("includedTags", [])
-        excluded_tags = self.payload_params.get("excludedTags", [])
-        if (len(included_tags) > MAX_TAG_LENGTH) or\
-            (len(excluded_tags) > MAX_TAG_LENGTH):
-            raise AttributeError("Tags are limited to {} per observable".format(MAX_TAG_LENGTH))
-
-    def _validate_search_params(self):
-        self._validate_dates()
-        self._validate_tags_length()
 
     def search(self):
         self._validate_search_params()
@@ -52,5 +35,27 @@ class ObservablesHandler(SearchHandler):
         self.set_query_param("idType", id_type)
         return query.set_query_string(self.query_params)
 
+    def set_search_types(self, types):
+        types = list(map(lambda t: self._get_value(t, ObservableTypes), set(types)))
+        self.set_payload_param("types", types)
+    
+    def set_sort_column(self, column):
+        class ObservableSortColumns(Enum):
+            FIRST_SEEN = "FIRST_SEEN"
+            LAST_SEEN = "LAST_SEEN"
+        return super(ObservablesHandler, self).set_sort_column(column, ObservableSortColumns)
+
     def tags(self):
         return TagObservable(self.config)
+
+    def _validate_tags_length(self):
+        MAX_TAG_LENGTH = 20
+        included_tags = self.payload_params.get("includedTags", [])
+        excluded_tags = self.payload_params.get("excludedTags", [])
+        if (len(included_tags) > MAX_TAG_LENGTH) or\
+            (len(excluded_tags) > MAX_TAG_LENGTH):
+            raise AttributeError("Tags are limited to {} per observable".format(MAX_TAG_LENGTH))
+
+    def _validate_search_params(self):
+        self._validate_dates()
+        self._validate_tags_length()

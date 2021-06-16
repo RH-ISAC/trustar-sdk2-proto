@@ -70,8 +70,8 @@ class SearchHandler(BaseHandler):
         self.set_payload_param("excludedTags", list(set(tags)))
         
 
-    def set_sort_column(self, column):
-        column = self._get_value(column, SortColumns)
+    def set_sort_column(self, column, options = SortColumns):
+        column = self._get_value(column, options)
         self.set_payload_param("sortColumn", column)
 
 
