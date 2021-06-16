@@ -1,9 +1,9 @@
 from __future__ import unicode_literals
 
 from datetime import datetime
-from trustar2.base import fluent, Methods, get_timestamp
+from trustar2.base import fluent, get_timestamp
+from trustar2.trustar_enums import  SortColumns
 from trustar2.handlers.base_handler import BaseHandler
-from trustar2.trustar_enums import ObservableTypes, SortColumns, SortOrder, AttributeTypes
 
 
 @fluent
@@ -11,7 +11,6 @@ class SearchHandler(BaseHandler):
 
     def __init__(self, config=None):
         super(SearchHandler, self).__init__(config)
-        pass
 
 
     @staticmethod
