@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 from trustar2.query import Query
 from trustar2.handlers.base_handler import BaseHandler
-from trustar2.base import Methods, Param, ParamsSerializer, fluent
+from trustar2.base import Methods, fluent
 
 
 @fluent
@@ -17,8 +17,7 @@ class TagBase(BaseHandler):
     def base_url(self):
         return self.config.request_details.get("api_endpoint") + "/{}".format(self._url)
 
-    @property
-    def tag_endpoint(self):
+    def _validate_payload(self):
         if self.guid is None:
             raise AttributeError(
                 "Id value is required for altering tags of {}".format(self._url)
@@ -34,37 +33,36 @@ class TagBase(BaseHandler):
                 "Enclave id value is required for altering tags on {}".format(self._url)
             )
 
+
+    @property
+    def tag_endpoint(self):
+        self._validate_payload()
         return self.base_url + "/{}/alter-tags".format(self.guid)
 
+    def _validate_tags(self, tags):
+        iterables = (list, tuple, set)
+        if type(tags) not in iterables:
+            raise AttributeError(u"addedTags {} should be a list of string values".format(tags))
 
     def set_added_tags(self, added_tags):
-        if not isinstance(added_tags, list):
-            raise AttributeError(u"addedTags {} should be a list of string values".format(added_tags))
+        self._validate_tags(added_tags)
         self.set_payload_param("addedTags", added_tags)
 
 
     def set_removed_tags(self, removed_tags):
-        if not isinstance(removed_tags, list):
-            raise AttributeError(u"removed_tags {} should be a list of string values".format(removed_tags))
+        self._validate_tags(removed_tags)
         self.set_payload_param("removedTags", removed_tags)
 
 
     def set_enclave_id(self, enclave_guid):
-        if self._url == "indicators":
-            self.set_payload_param("enclaveGuid", enclave_guid)
-        
-        else:
+        if self._url == "submissions":
             self.set_payload_param("enclaveId", enclave_guid)
-
-        
-    def create_query(self, method, endpoint):
-        return Query(self.config, endpoint, method)
-
+        else:
+            self.set_payload_param("enclaveGuid", enclave_guid)
 
     def alter_tags(self):
-        endpoint = self.tag_endpoint
         return (
-            self.create_query(Methods.POST, endpoint)
+            Query(self.config, self.tag_endpoint, Methods.POST)
             .set_params(self.payload_params)
             .execute()
         )
@@ -94,3 +92,19 @@ class TagSubmission(TagBase):
 
     def set_id_type_as_external(self, external):
         self.set_payload_param("idType", "EXTERNAL" if external else "INTERNAL")
+
+@fluent
+class TagObservable(TagBase):
+
+    def __init__(self, config=None):
+        super(TagObservable, self).__init__("observables", config)
+
+
+    def set_observable_value(self, value):
+        self.guid = value
+        self.set_payload_param("observableValue", value)
+
+    @property
+    def tag_endpoint(self):
+        self._validate_payload()
+        return "{}{}".format(self.base_url, "/alter-tags")

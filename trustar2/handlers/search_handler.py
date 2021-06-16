@@ -78,14 +78,7 @@ class SearchHandler(BaseHandler):
     def set_sort_order(self, order):
         order = self._get_value(order, SortOrder)
         self.set_payload_param("sortOrder", order)
-    
-    def set_cursor(self, cursor):
-        self.set_payload_param("cursor", cursor)
-    
-    def set_page(self, page):
-        page = int(page)
-        self.set_payload_param("pageNumber", page)
-    
+
 
 
 

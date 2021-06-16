@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 from trustar2.query import Query
 from trustar2.base import fluent, Methods
-from trustar2.handlers.tags import TagIndicator
+from trustar2.handlers.tags import TagIndicator, TagObservable
 from trustar2.handlers.search_handler import SearchHandler
 from trustar2.trustar_enums import ID_Types, ObservableTypes
  
@@ -53,4 +53,4 @@ class ObservablesHandler(SearchHandler):
         return query.set_query_string(self.query_params)
 
     def tags(self):
-        return TagIndicator(self.config)
+        return TagObservable(self.config)
