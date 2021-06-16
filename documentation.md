@@ -306,10 +306,13 @@ response = (TruStar.config_from_file("trustar_config.json", "station")
 |`.set_to`|Int (unix timestamp) or python Date|
 |`.set_priority_scores`| List of Integers between -1 and 3|
 |`.set_sort_column`| String / [Enum](trustar2/trustar_enums.py#L11)|
+|`.set_sort_order`| String / [Enum](trustar2/trustar_enums.py#L18)|
 |`.set_enclave_ids`| Single or List of Strings|
 |`.set_observable_types`| List of Strings or [Enums](trustar2/trustar_enums.py#L23)|
 |`.set_attributes`| List of Strings or [Enums](trustar2/trustar_enums.py#L35)|
 |`.set_related_observables`|List of Strings or [Enums](trustar2/trustar_enums.py#L23)|
+|`.set_cursor`| String |
+|`.set_page`| Number |
 
 Only mandatory setter is `.set_enclave_ids` .
 
