@@ -2,10 +2,9 @@ from __future__ import unicode_literals
 
 from trustar2.query import Query
 from trustar2.trustar_enums import MaxValues
-from trustar2.handlers.base_handler import BaseHandler # remove
-from trustar2.handlers.search_handler import SearchHandler
 from trustar2.handlers.tags import TagSubmission
 from trustar2.base import fluent, Methods, get_timestamp
+from trustar2.handlers.search_handler import SearchHandler
 
 
 @fluent
@@ -240,6 +239,7 @@ class Submission(SearchHandler):
 
 
     def search(self):
+        """Search for submissions (intel, events and indicators)"""
         self._validate_dates()
         endpoint = "/search"
         return (
@@ -250,9 +250,11 @@ class Submission(SearchHandler):
 
 
     def get_submission_status(self, submission_id):
+        """Returns submission status for a given submission id"""
         endpoint = "/{}/status".format(submission_id)
         return self.create_query(Methods.GET, specific_endpoint=endpoint).execute()
 
 
     def tags(self):
+        """Returns a TagSubmission handler that will let you alter-tags on a submission"""
         return TagSubmission(self.config)

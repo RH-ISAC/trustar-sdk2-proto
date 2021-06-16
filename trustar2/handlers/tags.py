@@ -33,7 +33,7 @@ class TagBase(BaseHandler):
             raise AttributeError(
                 "Enclave id value is required for altering tags on {}".format(self._url)
             )
-
+            
         return self.base_url + "/{}/alter-tags".format(self.guid)
 
 
@@ -50,11 +50,11 @@ class TagBase(BaseHandler):
 
 
     def set_enclave_id(self, enclave_guid):
-        if self._url == "indicators":
-            self.set_payload_param("enclaveGuid", enclave_guid)
+        if self._url == "submissions":
+            self.set_payload_param("enclaveId", enclave_guid)
         
         else:
-            self.set_payload_param("enclaveId", enclave_guid)
+            self.set_payload_param("enclaveGuid", enclave_guid)
 
         
     def create_query(self, method, endpoint):
