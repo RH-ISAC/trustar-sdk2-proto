@@ -5,7 +5,7 @@ from trustar2.models import Entity
 from trustar2.base import fluent, Methods
 from trustar2.handlers.tags import TagIndicator
 from trustar2.handlers.search_handler import SearchHandler
-from trustar2.trustar_enums import ObservableTypes, SortColumns, SortOrder, AttributeTypes
+from trustar2.trustar_enums import ObservableTypes, SortOrder, AttributeTypes
 
  
 

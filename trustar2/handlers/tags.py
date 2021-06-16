@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 from trustar2.query import Query
 from trustar2.handlers.base_handler import BaseHandler
-from trustar2.base import Methods, Param, ParamsSerializer, fluent
+from trustar2.base import Methods, fluent
 
 
 @fluent
