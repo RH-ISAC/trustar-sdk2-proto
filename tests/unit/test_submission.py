@@ -335,7 +335,7 @@ def test_get_non_structured_submissions(submission, mocked_request):
 
 
 def test_get_submission_status(submission, mocked_request):
-    json_response = {"id": "d11513f4-0dc9-4aab-b993-e925225d4c68", "status": "SUBMISSION_SUCCESS"}
+    json_response = {"id": "test-submission-id", "status": "SUBMISSION_SUCCESS"}
     expected_url = BASE_URL.format("/test-submission-id/status")
     mocked_request.get(expected_url, json=json_response)
     response = submission.get_submission_status("test-submission-id")
