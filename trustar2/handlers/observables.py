@@ -55,7 +55,8 @@ class ObservablesHandler(SearchHandler):
         :param types: Array of ObesrvableTypes Values
         :returns: self.
         """
-        types = list(map(lambda t: self._get_value(t, ObservableTypes), set(types)))
+        types = self._argument_to_unique_list(types)
+        types = list(map(lambda t: self._get_value(t, ObservableTypes), types))
         self.set_payload_param("types", types)
     
     def set_sort_column(self, column):
