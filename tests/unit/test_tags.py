@@ -27,9 +27,14 @@ def tag_submission():
     )
 
 
-@pytest.mark.parametrize("added_tags,removed_tags", [(["important", "tag"], []),
-                                                     ([], ["not_important", "tag"]),
-                                                     (["important", "tag"], ["not_important"])])
+@pytest.mark.parametrize(
+    ("added_tags, removed_tags"),
+    (
+        (["important", "tag"], []),
+        ([], ["not_important", "tag"]),
+        (["important", "tag"], ["not_important"])
+    )
+)
 def test_ok_alter_tags_indicators(tag_indicator, mocked_request, added_tags, removed_tags):
     
     mocked_request.post(url=EXPECTED_URL.format("indicators"), json={})
