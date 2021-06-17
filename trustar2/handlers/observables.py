@@ -52,7 +52,7 @@ class ObservablesHandler(SearchHandler):
         """
         Adds types to the search filters.
 
-        :param types: Array of ObesrvableTypes Values
+        :param types: Array of ObservableTypes Values
         :returns: self.
         """
         types = self._argument_to_unique_list(types)
