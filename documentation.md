@@ -263,7 +263,7 @@ response = (TruStar.config_from_file("trustar_config.json", "station")
                 .get()
 )
 ```
-
+# Observables
 ## Getting observables from a submission
 
 ```python
@@ -293,6 +293,7 @@ observables_handler.set_search_types(["SOFTWARE", "MD5"])
 observables_handler.set_included_tags(["TAG1", "TAG2"])
 observables_handler.set_excluded_tags(["TAG3"])
 observables_handler.set_sort_order("FIRST_SEEN")
+
 pages = observables_handler.search()
 
 for page in pages:
