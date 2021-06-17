@@ -263,6 +263,19 @@ response = (TruStar.config_from_file("trustar_config.json", "station")
                 .get()
 )
 ```
+
+## Deleting a workflow
+
+```python
+from trustar2 import TruStar
+
+response = (TruStar.config_from_file("trustar_config.json", "station")
+                .workflow()
+                .set_workflow_id("<workflow-id>")
+                .delete())
+```
+
+
 # Observables
 ## Getting observables from a submission
 
@@ -318,17 +331,6 @@ tags.set_added_tags(["TAG2", "TAG3", "TAG1"])
 tags.set_removed_tags(["TAG4"])
 
 tags.alter_tags()
-```
-
-## Deleting a workflow
-
-```python
-from trustar2 import TruStar
-
-response = (TruStar.config_from_file("trustar_config.json", "station")
-                .workflow()
-                .set_workflow_id("<workflow-id>")
-                .delete())
 ```
 
 
