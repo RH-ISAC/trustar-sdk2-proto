@@ -15,16 +15,6 @@ OBSERVABLE_VALUE = "b1fa0ef4930abc0c681081ef2d2f834b3b2fbbbd"
 BASE_URL = "https://api.trustar.co/api/2.0/"
 EXPECTED_URL = BASE_URL + "{}" + "/{}/alter-tags".format(IOC_SUBMISSION_GUID)
 
-
-
-@pytest.fixture
-def ts():
-    return TruStar(
-        api_key="xxxx",
-        api_secret="xxx",
-        client_metatag="test_env"
-    )
-
 @pytest.fixture
 def tag_indicator(ts):
     return TagIndicator(ts)

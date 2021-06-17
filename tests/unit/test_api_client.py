@@ -6,7 +6,7 @@ from trustar2.version import __version__
 
 
 @pytest.fixture
-def api_client():
+def api_client(ts):
     return ApiClient(TruStar("API_KEY", "API_SECRET", "TEST_METATAG"))
 
 

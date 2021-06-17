@@ -9,10 +9,8 @@ URL = "https://api.trustar.co/api/2.0"
 
 
 @pytest.fixture
-def account():
-    return Account(
-        TruStar(api_key="xxxx", api_secret="xxx", client_metatag="test_env")
-    )
+def account(ts):
+    return Account(ts)
 
 
 @pytest.fixture

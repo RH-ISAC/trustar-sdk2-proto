@@ -10,10 +10,8 @@ from .resources import indicators_example_request
 
 
 @pytest.fixture
-def search_indicator():
-    return SearchIndicator(
-        TruStar(api_key="xxxx", api_secret="xxx", client_metatag="test_env")
-    )
+def search_indicator(ts):
+    return SearchIndicator(ts)
 
 
 def test_search_indicators_is_empty(search_indicator):

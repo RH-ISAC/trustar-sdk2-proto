@@ -21,10 +21,8 @@ TIMESTAMP = 1583960400000
 
 
 @pytest.fixture
-def submission():
-    return Submission(
-        TruStar(api_key="xxxx", api_secret="xxx", client_metatag="test_env")
-    )
+def submission(ts):
+    return Submission(ts)
 
 
 @pytest.fixture
