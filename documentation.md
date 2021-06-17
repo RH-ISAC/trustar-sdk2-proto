@@ -314,6 +314,7 @@ tags.set_enclave_id("<enclave_id>")
 tags.set_observable_value("<observable_value>")
 tags.set_added_tags(["TAG2", "TAG3", "TAG1"])
 tags.set_removed_tags(["TAG4"])
+
 tags.alter_tags()
 ```
 
