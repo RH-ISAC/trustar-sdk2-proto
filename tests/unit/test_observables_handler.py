@@ -88,4 +88,4 @@ def test_search(observables_handler):
 def test_get_from_submission(observables_handler):
     submission_id = "2d87abca-3b6c-4bdc-b9dd-0a3e29901bbb"
     q = observables_handler.get_from_submission(submission_id)
-    assert(q.query_string.get("submissionId") ==  submission_id)    
+    assert(q.query_string.get("submissionId") ==  submission_id)
