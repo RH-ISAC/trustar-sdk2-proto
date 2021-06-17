@@ -18,13 +18,15 @@ class SearchHandler(BaseHandler):
         if isinstance(arg, enum):
             return arg.value
 
+        if isinstance(arg, str) and arg in enum.members():
+            return arg
+
         if isinstance(arg, type("")) and arg in enum.members():
             return arg  # For py2 and py3 compatibility
 
         raise AttributeError(
             "Possible value types are: {}".format(list(enum.members()))
         )
-
 
     def _validate_dates(self):
         from_date = self.payload_params.get("from")
