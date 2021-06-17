@@ -34,7 +34,7 @@ def tag_submission(ts):
     return TagSubmission(ts)
 
 @pytest.fixture
-def tag_submission(ts):
+def tag_observable(ts):
     return TagObservable(ts)
 
 ## Indicator Tags
@@ -154,7 +154,7 @@ def test_ok_alter_tags_observables(tag_observable, mocked_request, added_tags, r
         "removedTags": removed_tags
     })
 
-    request = (tag_indicator
+    request = (tag_observable
                .set_added_tags(added_tags)
                .set_removed_tags(removed_tags)
                .set_enclave_id(ENCLAVE_ID)
@@ -169,26 +169,34 @@ def test_ok_alter_tags_observables(tag_observable, mocked_request, added_tags, r
     assert params.get("removedTags") == removed_tags
 
 
-# def test_alter_tag_indicators_incomplete_with_missing_indicator_id(tag_indicator):
-#     with pytest.raises(AttributeError):
-#         q = (tag_indicator
-#              .set_added_tags(["tag"])
-#              .set_enclave_ids(ENCLAVE_ID)
-#              .alter_tags())
+def test_alter_tag_observables_incomplete_with_missing_observable_value(tag_observable):
+    with pytest.raises(AttributeError):
+        q = (tag_observable
+                .set_added_tags(["tag"])
+                .set_enclave_id(ENCLAVE_ID)
+                .alter_tags())
 
 
-# def test_alter_tag_indicators_incomplete_with_missing_enclave_id(tag_indicator):
-#     # Missing enclave guid
-#     with pytest.raises(AttributeError):
-#         q = (tag_indicator
-#              .set_added_tags(["tag"])
-#              .set_indicator_id(IOC_SUBMISSION_GUID)
-#              .alter_tags())
+def test_alter_tag_observables_incomplete_with_missing_enclave_id(tag_observable):
+    with pytest.raises(AttributeError):
+        q = (tag_observable
+             .set_added_tags(["tag"])
+             .set_observable_value(OBSERVABLE_VALUE)
+             .alter_tags())
 
 
-# def test_alter_tag_indicators_incomplete_with_missing_tags(tag_indicator):
-#     with pytest.raises(AttributeError):
-#         q = (tag_indicator
-#              .set_enclave_id(ENCLAVE_ID)
-#              .set_indicator_id(IOC_SUBMISSION_GUID)
-#              .alter_tags())
+def test_alter_tag_observables_incomplete_with_missing_tags(tag_observable):
+    with pytest.raises(AttributeError):
+        q = (tag_observable
+             .set_enclave_id(ENCLAVE_ID)
+             .set_observable_value(IOC_SUBMISSION_GUID)
+             .alter_tags())
+
+def test_alter_tag_observables_incomplete_with_empty_tags(tag_observable):
+    with pytest.raises(AttributeError):
+        q = (tag_observable
+                .set_enclave_id(ENCLAVE_ID)
+                .set_observable_value(IOC_SUBMISSION_GUID)
+                .set_added_tags([])
+                .set_removed_tags([])
+                .alter_tags())

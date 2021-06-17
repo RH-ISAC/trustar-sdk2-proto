@@ -22,8 +22,11 @@ class TagBase(BaseHandler):
             raise AttributeError(
                 "Id value is required for altering tags of {}".format(self._url)
             )
+        
+        added_tags = self.payload_params.get("addedTags", [])
+        removed_tags = self.payload_params.get("removedTags", [])
 
-        if "addedTags" not in self.payload_params and "removedTags" not in self.payload_params:
+        if len(added_tags) == 0 and len(removed_tags) == 0:
             raise AttributeError(
                 "Either 'addedTags' or 'removedTags' values are required for altering tags of {}".format(self._url)
             )
