@@ -264,6 +264,57 @@ response = (TruStar.config_from_file("trustar_config.json", "station")
 )
 ```
 
+## Getting observables from a submission
+
+```python
+from trustar2 import TruStar
+
+ts = TruStar.config_from_file("trustar_config.json", "station")
+observables_handler = ObservablesHandler(ts)
+
+pages = observables_handler.get_from_submission("<submission_id>")
+
+for page in pages:
+    response = page.json()
+    pprint(response)
+)
+```
+
+## Searching observables
+
+```python
+from trustar2 import TruStar
+
+ts = TruStar.config_from_file("trustar_config.json", "station")
+observables_handler = ObservablesHandler(ts)
+
+observables_handler.set_enclave_ids(["<enclave_id_1>", "<enclave_id_2>"])
+observables_handler.set_search_types(["SOFTWARE", "MD5"])
+observables_handler.set_included_tags(["TAG1", "TAG2"])
+observables_handler.set_excluded_tags(["TAG3"])
+observables_handler.set_sort_order("FIRST_SEEN")
+pages = observables_handler.search()
+
+for page in pages:
+    response = page.json()
+    pprint(response)
+)
+```
+
+## Altering tags from observable
+
+```python
+from trustar2 import TruStar
+
+ts = TruStar.config_from_file("trustar_config.json", "station")
+observables_handler = ObservablesHandler(ts)
+
+tags.set_enclave_id("<enclave_id>")
+tags.set_observable_value("<observable_value>")
+tags.set_added_tags(["TAG2", "TAG3", "TAG1"])
+tags.set_removed_tags(["TAG4"])
+tags.alter_tags()
+```
 
 ## Deleting a workflow
 
