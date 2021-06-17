@@ -45,26 +45,16 @@ class SearchHandler(BaseHandler):
             if (datetime.today() - from_date_dt).days > 364:
                 raise AttributeError("Time window can not be greater than 1 year.")
 
-    def _argument_to_list(self, arg):
-        iterables = (list, tuple, set)
-        return arg if isinstance(arg, iterables) else [arg]
-    
-    def _argument_to_unique_list(self, arg):
-        return list(set(self._argument_to_list(arg)))
-
-    def _process_date(self, date):
-        return date if isinstance(date, int) else get_timestamp(date)
-
     def set_query_term(self, query):
         self.set_payload_param("queryTerm", query)
 
 
     def set_from(self, from_date):
-        self.set_payload_param("from", self._process_date(from_date))
+        self.set_payload_param("from", get_timestamp(from_date))
 
 
     def set_to(self, to_date):
-        self.set_payload_param("to", self._process_date(to_date))
+        self.set_payload_param("to", get_timestamp(to_date))
 
 
     def set_enclave_ids(self, enclave_guids):

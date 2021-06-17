@@ -24,3 +24,10 @@ class BaseHandler(object):
 
     def set_trustar_config(self, trustar_config):
         self.config = trustar_config
+
+    def _argument_to_list(self, arg):
+        iterables = (list, tuple, set)
+        return arg if isinstance(arg, iterables) else [arg]
+    
+    def _argument_to_unique_list(self, arg):
+        return list(set(self._argument_to_list(arg)))

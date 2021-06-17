@@ -10,6 +10,8 @@ from collections import namedtuple
 
 
 def get_timestamp(date):
+    if isinstance(date, int):
+        return date
     dt_obj = dateparser.parse(
         date, settings={"TIMEZONE": "UTC", "RETURN_AS_TIMEZONE_AWARE": True}
     )
