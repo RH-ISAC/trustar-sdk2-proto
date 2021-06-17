@@ -3,9 +3,9 @@ from __future__ import unicode_literals
 import json
 import pytest
 
+from trustar2.models import Entity
 from trustar2 import SearchIndicator, TruStar
 from trustar2.trustar_enums import ObservableTypes
-from trustar2.models import Entity
 from .resources import indicators_example_request
 
 

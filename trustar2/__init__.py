@@ -4,7 +4,8 @@ from trustar2.handlers import (
     SearchIndicator, 
     Submission, 
     Safelist, 
-    TagIndicator, 
+    TagIndicator,
+    TagSubmission, 
     Workflow,
     Account
 )

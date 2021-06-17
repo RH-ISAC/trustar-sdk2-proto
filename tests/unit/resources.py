@@ -21,7 +21,7 @@ indicators_example_request = """{
    "cursor":"eyJwYWdlTnVtYmVyIjoxLCJwYWdlU2l6ZSI6Miwib2Zmc2V0Ijo0fQ=="
 }"""
 
-submission_example_request = """
+indicators_submission_example_request = """
 {
   "title": "Report, complex test",
   "content": {
@@ -93,6 +93,19 @@ submission_example_request = """
   "rawContent": "blob of text"
 }
 """
+
+non_structured_submission_example_request = """
+{
+  "title": "Report, complex test",
+  "content": "MALICIOUS IP: 8.8.8.8",
+  "enclaveGuid": "c0f07a9f-76e4-48df-a0d4-c63ed2edccf0",
+  "externalId": "external-1234",
+  "externalUrl": "externalUrlValue",
+  "timestamp": 1607102497000,
+  "tags": ["random_tag"]
+}
+"""
+
 
 safelist_summaries = """
 [

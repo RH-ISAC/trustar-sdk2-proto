@@ -2,20 +2,21 @@ from __future__ import unicode_literals
 
 from trustar2.query import Query
 from trustar2.trustar_enums import MaxValues
-from trustar2.handlers.base_handler import BaseHandler
+from trustar2.handlers.tags import TagSubmission
 from trustar2.base import fluent, Methods, get_timestamp
+from trustar2.handlers.search_handler import SearchHandler
 
 
 @fluent
-class Submission(BaseHandler):
+class Submission(SearchHandler):
 
     SUBMISSION_MANDATORY_FIELDS = ("title", "content", "enclaveGuid")
-    path = "/submissions/indicators"
+    _path = "/submissions"
+    _submission_category = "/indicators"
 
     def __init__(self, config=None):
         super(Submission, self).__init__(config)
-        for func in (self.set_tags,):
-            func()
+        self.set_tags()
 
     def __str__(self):
         return "Submission <{}> with external Id <{}>".format(
@@ -25,7 +26,7 @@ class Submission(BaseHandler):
 
     @property
     def endpoint(self):
-        return self.config.request_details.get("api_endpoint") + self.path
+        return self.config.request_details.get("api_endpoint") + self._path
 
 
     def set_id(self, submission_id):
@@ -53,11 +54,32 @@ class Submission(BaseHandler):
         :param indicators: field value. List of Indicator objects.
         :returns: self.
         """
+        self._submission_category = "/indicators"
         indicators = [i.serialize() for i in indicators]
         if len(indicators) > MaxValues.INDICATORS.value:
             indicators = indicators[:MaxValues.INDICATORS.value]
 
         content = {"indicators": indicators}
+        self.set_payload_param("content", content)
+
+
+    def set_content_events(self, content):
+        """Adds content param to set of params.
+
+        :param indicators: field value. List of Indicator objects.
+        :returns: self.
+        """
+        self._submission_category = "/events"
+        self.set_payload_param("content", content)
+
+
+    def set_content_intelligence(self, content):
+        """Adds content param to set of params.
+
+        :param indicators: field value. List of Indicator objects.
+        :returns: self.
+        """
+        self._submission_category = "/intelligence"
         self.set_payload_param("content", content)
 
 
@@ -185,19 +207,22 @@ class Submission(BaseHandler):
         """Deletes a submission according to query_params set before."""
         self._raise_without_id()
         return (
-            self.create_query(Methods.DELETE)
+            self.create_query(Methods.DELETE, specific_endpoint=self._submission_category)
             .set_query_string(self.query_string_params)
             .execute()
         )
 
-    def get(self):
+
+    def get(self, structured_indicators=True):
         """Retrieves a submission according to query_params set before."""
+        self._submission_category = "/events" if not structured_indicators else "/indicators"
         self._raise_without_id()
         return (
-            self.create_query(Methods.GET)
+            self.create_query(Methods.GET, specific_endpoint=self._submission_category)
             .set_query_string(self.query_string_params)
             .execute()
         )
+
 
     def upsert(self):
         """Update a submission if it already exists or create a new one if it doesn't."""
@@ -206,8 +231,30 @@ class Submission(BaseHandler):
                 raise AttributeError("{} field should be in your submission".format(k))
 
         return (
-            self.create_query(Methods.POST, specific_endpoint="/upsert")
+            self.create_query(Methods.POST, specific_endpoint=self._submission_category + "/upsert")
             .set_params(self.payload_params)
             .set_query_string(self.query_string_params)
             .execute()
         )
+
+
+    def search(self):
+        """Search for submissions (intel, events and indicators)"""
+        self._validate_dates()
+        endpoint = "/search"
+        return (
+            self.create_query(Methods.POST, specific_endpoint=endpoint)
+            .set_params(self.payload_params)
+            .set_query_string({"pageSize": self.query_params.get("pageSize", 25)})
+        )
+
+
+    def get_submission_status(self, submission_id):
+        """Returns submission status for a given submission id"""
+        endpoint = "/{}/status".format(submission_id)
+        return self.create_query(Methods.GET, specific_endpoint=endpoint).execute()
+
+
+    def tags(self):
+        """Returns a TagSubmission handler that will let you alter-tags on a submission"""
+        return TagSubmission(self.config)
