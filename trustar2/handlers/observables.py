@@ -1,11 +1,10 @@
 from __future__ import unicode_literals
-from enum import Enum
 
 from trustar2.query import Query
 from trustar2.base import fluent, Methods
 from trustar2.handlers.tags import TagObservable
 from trustar2.handlers.search_handler import SearchHandler
-from trustar2.trustar_enums import ID_Types, ObservableTypes
+from trustar2.trustar_enums import ID_Types, ObservableTypes, TSEnum
  
 @fluent
 class ObservablesHandler(SearchHandler):
@@ -64,7 +63,7 @@ class ObservablesHandler(SearchHandler):
         :param column: 'FIRST_SEEN' | 'LAST_SEEN'
         :returns: self.
         """
-        class ObservableSortColumns(Enum):
+        class ObservableSortColumns(TSEnum):
             FIRST_SEEN = "FIRST_SEEN"
             LAST_SEEN = "LAST_SEEN"
         return super(ObservablesHandler, self).set_sort_column(column, ObservableSortColumns)

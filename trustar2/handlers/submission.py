@@ -259,5 +259,5 @@ class Submission(SearchHandler):
         """Returns a TagSubmission handler that will let you alter-tags on a submission"""
         return TagSubmission(self.config)
 
-    def set_sort_order(self):
+    def set_sort_order(self, order):
         raise NotImplementedError("Submissions dont support sort order")

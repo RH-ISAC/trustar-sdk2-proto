@@ -46,13 +46,16 @@ class SearchHandler(BaseHandler):
     def _argument_to_list(self, arg):
         iterables = (list, tuple, set)
         return arg if isinstance(arg, iterables) else [arg]
+    
+    def _argument_to_unique_list(self, arg):
+        return list(set(self._argument_to_list(arg)))
 
+    def _process_date(self, date):
+        return date if isinstance(date, int) else get_timestamp(date)
 
     def set_query_term(self, query):
         self.set_payload_param("queryTerm", query)
 
-    def _process_date(self, date):
-        return date if isinstance(date, int) else get_timestamp(date)
 
     def set_from(self, from_date):
         self.set_payload_param("from", self._process_date(from_date))
@@ -63,15 +66,15 @@ class SearchHandler(BaseHandler):
 
 
     def set_enclave_ids(self, enclave_guids):
-        self.set_payload_param("enclaveGuids", self._argument_to_list(enclave_guids))
+        self.set_payload_param("enclaveGuids", self._argument_to_unique_list(enclave_guids))
 
 
     def set_included_tags(self, tags):
-        self.set_payload_param("includedTags", self._argument_to_list(tags))
+        self.set_payload_param("includedTags", self._argument_to_unique_list(tags))
 
 
     def set_excluded_tags(self, tags):
-        self.set_payload_param("excludedTags", self._argument_to_list(tags))
+        self.set_payload_param("excludedTags", self._argument_to_unique_list(tags))
         
 
     def set_sort_column(self, column, options = SortColumns):
