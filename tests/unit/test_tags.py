@@ -77,9 +77,14 @@ def test_alter_tag_indicators_incomplete_with_missing_tags(tag_indicator):
              .alter_tags())
 
 
-@pytest.mark.parametrize("added_tags,removed_tags", [(["important", "tag"], []),
-                                                     ([], ["not_important", "tag"]),
-                                                     (["important", "tag"], ["not_important"])])
+@pytest.mark.parametrize(
+    ("added_tags, removed_tags"),
+    (
+        (["important", "tag"], []),
+        ([], ["not_important", "tag"]),
+        (["important", "tag"], ["not_important"])
+    )
+)
 def test_ok_alter_tags_submissions(tag_submission, mocked_request, added_tags, removed_tags):
     
     mocked_request.post(url=EXPECTED_URL.format("submissions"), json={})
