@@ -310,6 +310,8 @@ from trustar2 import TruStar
 ts = TruStar.config_from_file("trustar_config.json", "station")
 observables_handler = ObservablesHandler(ts)
 
+tags = observables_handler.tags()
+
 tags.set_enclave_id("<enclave_id>")
 tags.set_observable_value("<observable_value>")
 tags.set_added_tags(["TAG2", "TAG3", "TAG1"])
