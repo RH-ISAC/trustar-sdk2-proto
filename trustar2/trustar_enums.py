@@ -71,3 +71,7 @@ class ID_Types(TSEnum):
     INTERNAL = "INTERNAL"
     EXTERNAL = "EXTERNAL"
     UNRECOGNIZED = "UNRECOGNIZED"
+
+class ObservableSortColumns(TSEnum):
+    FIRST_SEEN = "FIRST_SEEN"
+    LAST_SEEN = "LAST_SEEN"

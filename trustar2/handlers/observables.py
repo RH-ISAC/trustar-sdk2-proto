@@ -4,7 +4,7 @@ from trustar2.query import Query
 from trustar2.base import fluent, Methods
 from trustar2.handlers.tags import TagObservable
 from trustar2.handlers.search_handler import SearchHandler
-from trustar2.trustar_enums import ID_Types, ObservableTypes, TSEnum, MaxValues
+from trustar2.trustar_enums import ID_Types, ObservableSortColumns, ObservableTypes, MaxValues
 
 MAX_TAGS = MaxValues.TAGS.value 
 
@@ -65,9 +65,6 @@ class ObservablesHandler(SearchHandler):
         :param column: 'FIRST_SEEN' | 'LAST_SEEN'
         :returns: self.
         """
-        class ObservableSortColumns(TSEnum):
-            FIRST_SEEN = "FIRST_SEEN"
-            LAST_SEEN = "LAST_SEEN"
         return super(ObservablesHandler, self).set_sort_column(column, ObservableSortColumns)
 
     def tags(self):
