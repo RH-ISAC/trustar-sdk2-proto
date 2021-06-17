@@ -8,12 +8,10 @@ from trustar2 import TagIndicator, TagSubmission
 
 from tests.conftest import BASE_URL
 
-
 ENCLAVE_ID = "3a93fab3-f87a-407a-9376-8eb3fae99b4e"
 IOC_SUBMISSION_GUID = "cc12a5c6-e575-3879-8e41-2bf240cc6fce"
 OBSERVABLE_VALUE = "b1fa0ef4930abc0c681081ef2d2f834b3b2fbbbd"
-BASE_URL = "https://api.trustar.co/api/2.0/"
-EXPECTED_URL = BASE_URL + "{}" + "/{}/alter-tags".format(IOC_SUBMISSION_GUID)
+EXPECTED_URL = BASE_URL.format("/{}/cc12a5c6-e575-3879-8e41-2bf240cc6fce/alter-tags")
 
 @pytest.fixture
 def tag_indicator(ts):
@@ -142,7 +140,7 @@ def test_alter_tag_submissions_incomplete_with_missing_enclave_id(tag_submission
 )
 def test_ok_alter_tags_observables(tag_observable, mocked_request, added_tags, removed_tags):
 
-    EXPECTED_URL = "{}{}/{}".format(BASE_URL, "observables", "alter-tags")
+    EXPECTED_URL = BASE_URL.format("/observables/alter-tags")
 
     mocked_request.post(url=EXPECTED_URL, json={
         "addedTags": added_tags,
