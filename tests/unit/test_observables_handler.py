@@ -3,10 +3,12 @@ import json
 from .resources import observables_search_example_request
 from trustar2.handlers.observables import ObservablesHandler
 from trustar2.handlers.tags import TagObservable
+from trustar2.trustar_enums import MaxValues
 import pytest
 
 
 TEST_DATE = [1583960400000, "2020-03-11T21:00:00"]
+MAX_TAGS = MaxValues.TAGS.value
 
 @pytest.fixture
 def observables_handler(ts):
@@ -46,14 +48,12 @@ def tags(observables_handler):
     assert(isinstance(tags, TagObservable))
 
 def test_search_too_many_included_tags(observables_handler):
-    MAX_TAGS = 20
     tags = list(range(0, MAX_TAGS + 1))
     observables_handler.set_included_tags(tags)
     with pytest.raises(AttributeError):
         observables_handler.search()
 
 def test_search_too_many_excluded_tags(observables_handler):
-    MAX_TAGS = 20
     tags = list(range(0, MAX_TAGS + 1))
     observables_handler.set_excluded_tags(tags)
     with pytest.raises(AttributeError):

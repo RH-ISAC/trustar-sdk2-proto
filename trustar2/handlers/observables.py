@@ -4,8 +4,10 @@ from trustar2.query import Query
 from trustar2.base import fluent, Methods
 from trustar2.handlers.tags import TagObservable
 from trustar2.handlers.search_handler import SearchHandler
-from trustar2.trustar_enums import ID_Types, ObservableTypes, TSEnum
- 
+from trustar2.trustar_enums import ID_Types, ObservableTypes, TSEnum, MaxValues
+
+MAX_TAGS = MaxValues.TAGS.value 
+
 @fluent
 class ObservablesHandler(SearchHandler):
 
@@ -77,12 +79,11 @@ class ObservablesHandler(SearchHandler):
         return TagObservable(self.config)
 
     def _validate_tags_length(self):
-        MAX_TAG_LENGTH = 20
         included_tags = self.payload_params.get("includedTags", [])
         excluded_tags = self.payload_params.get("excludedTags", [])
-        are_too_may_tags = (len(included_tags) > MAX_TAG_LENGTH) or (len(excluded_tags) > MAX_TAG_LENGTH)
+        are_too_may_tags = (len(included_tags) > MAX_TAGS) or (len(excluded_tags) > MAX_TAGS)
         if are_too_may_tags:
-            raise AttributeError("Tags are limited to {} per observable".format(MAX_TAG_LENGTH))
+            raise AttributeError("Tags are limited to {} per observable".format(MAX_TAGS))
 
     def _validate_search_params(self):
         self._validate_dates()
