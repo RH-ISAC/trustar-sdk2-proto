@@ -87,7 +87,3 @@ class SearchHandler(BaseHandler):
     def set_sort_order(self, order):
         order = self._get_value(order, SortOrder)
         self.set_payload_param("sortOrder", order)
-
-
-
-
