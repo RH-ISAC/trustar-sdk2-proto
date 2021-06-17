@@ -7,6 +7,7 @@
  - [Safelists](#safelists)
  - [Data Model](#data-model)
  - [Workflows](#workflows-management)
+ - [Observables](#observables)
 
 # Config
 
