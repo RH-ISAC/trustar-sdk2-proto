@@ -132,9 +132,14 @@ def test_alter_tag_submissions_incomplete_with_missing_enclave_id(tag_submission
 
 ## Observable Tags
 
-@pytest.mark.parametrize("added_tags,removed_tags", [(["important", "tag"], []),
-                                                     ([], ["not_important", "tag"]),
-                                                     (["important", "tag"], ["not_important"])])
+@pytest.mark.parametrize(
+    ("added_tags, removed_tags"),
+    (
+        (["important", "tag"], []),
+        ([], ["not_important", "tag"]),
+        (["important", "tag"], ["not_important"])
+    )
+)
 def test_ok_alter_tags_observables(tag_observable, mocked_request, added_tags, removed_tags):
 
     EXPECTED_URL = "{}{}/{}".format(BASE_URL, "observables", "alter-tags")
