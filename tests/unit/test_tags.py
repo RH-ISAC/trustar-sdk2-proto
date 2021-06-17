@@ -5,10 +5,12 @@ import pytest
 from trustar2.trustar import TruStar
 from trustar2 import TagIndicator, TagSubmission
 
+from tests.conftest import BASE_URL
+
 
 ENCLAVE_ID = "3a93fab3-f87a-407a-9376-8eb3fae99b4e"
 IOC_SUBMISSION_GUID = "cc12a5c6-e575-3879-8e41-2bf240cc6fce"
-EXPECTED_URL = "https://api.trustar.co/api/2.0/{}/cc12a5c6-e575-3879-8e41-2bf240cc6fce/alter-tags"
+EXPECTED_URL = BASE_URL.format("/{}/cc12a5c6-e575-3879-8e41-2bf240cc6fce/alter-tags")
 
 
 @pytest.fixture

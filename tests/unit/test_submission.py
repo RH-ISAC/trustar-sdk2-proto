@@ -11,9 +11,11 @@ from tests.unit.resources import (
     non_structured_submission_example_request
 )
 
+from tests.conftest import BASE_URL
+
 
 TOTAL_DEFAULT_PARAMS = 1
-BASE_URL = "https://api.trustar.co/api/2.0/submissions{}"
+BASE_SUBMISSIONS = BASE_URL.format("/submissions{}")
 ENCLAVE_ID = "c0f07a9f-76e4-48df-a0d4-c63ed2edccf0"
 TIMESTAMP = 1583960400000
 
@@ -264,7 +266,7 @@ def test_non_structured_submission_ok_json(full_events_submission, full_intellig
 
 
 def test_indicators_submission_ok(mocked_request, full_iocs_submission):
-    expected_url = BASE_URL.format("/indicators/upsert")
+    expected_url = BASE_SUBMISSIONS.format("/indicators/upsert")
     mocked_request.post(url=expected_url, json={"id": "TEST-ID", "submissionVersion": 1})
     response = full_iocs_submission.upsert()
     assert response.json().get("submissionVersion") == 1
@@ -274,7 +276,7 @@ def test_indicators_submission_ok(mocked_request, full_iocs_submission):
 
 
 def test_events_submission_ok(mocked_request, full_events_submission):
-    expected_url = BASE_URL.format("/events/upsert")
+    expected_url = BASE_SUBMISSIONS.format("/events/upsert")
     mocked_request.post(url=expected_url, json={"id": "TEST-ID", "submissionVersion": 1})
     response = full_events_submission.upsert()
     assert response.json().get("submissionVersion") == 1
@@ -284,7 +286,7 @@ def test_events_submission_ok(mocked_request, full_events_submission):
 
 
 def test_intelligence_submission_ok(mocked_request, full_intelligence_submission):
-    expected_url = BASE_URL.format("/intelligence/upsert")
+    expected_url = BASE_SUBMISSIONS.format("/intelligence/upsert")
     mocked_request.post(url=expected_url, json={"id": "TEST-ID", "submissionVersion": 1})
     response = full_intelligence_submission.upsert()
     assert response.json().get("submissionVersion") == 1
@@ -307,7 +309,7 @@ def test_changing_content_will_change_url(full_submission):
 def test_get_structured_indicators_submissions(submission, mocked_request):
     json_response = json.loads(indicators_submission_example_request)
     endpoint = "/indicators?id=external-1234&idType=EXTERNAL&enclaveGuid={}&includeContent=true".format(ENCLAVE_ID)
-    expected_url = BASE_URL.format(endpoint)
+    expected_url = BASE_SUBMISSIONS.format(endpoint)
     mocked_request.get(expected_url, json=json_response)
 
     submission.set_enclave_id(ENCLAVE_ID)
@@ -322,7 +324,7 @@ def test_get_structured_indicators_submissions(submission, mocked_request):
 def test_get_non_structured_submissions(submission, mocked_request):
     json_response = json.loads(non_structured_submission_example_request)
     endpoint = "/events?id=external-1234&idType=EXTERNAL&enclaveGuid={}&includeContent=true".format(ENCLAVE_ID)
-    expected_url = BASE_URL.format(endpoint)
+    expected_url = BASE_SUBMISSIONS.format(endpoint)
     mocked_request.get(expected_url, json=json_response)
 
     submission.set_enclave_id(ENCLAVE_ID)
@@ -336,7 +338,7 @@ def test_get_non_structured_submissions(submission, mocked_request):
 
 def test_get_submission_status(submission, mocked_request):
     json_response = {"id": "test-submission-id", "status": "SUBMISSION_SUCCESS"}
-    expected_url = BASE_URL.format("/test-submission-id/status")
+    expected_url = BASE_SUBMISSIONS.format("/test-submission-id/status")
     mocked_request.get(expected_url, json=json_response)
     response = submission.get_submission_status("test-submission-id")
     assert response.json() == json_response

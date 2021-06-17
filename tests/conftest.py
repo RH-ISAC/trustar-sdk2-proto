@@ -3,7 +3,8 @@ import requests_mock
 
 from trustar2.trustar import TruStar
 
-BASE_URL = "/api/2.0"
+BASE_API = "https://api.trustar.co/api/{}"
+BASE_URL = BASE_API.format("2.0{}")
 
 
 @pytest.fixture
