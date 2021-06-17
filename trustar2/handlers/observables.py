@@ -80,8 +80,8 @@ class ObservablesHandler(SearchHandler):
         MAX_TAG_LENGTH = 20
         included_tags = self.payload_params.get("includedTags", [])
         excluded_tags = self.payload_params.get("excludedTags", [])
-        if (len(included_tags) > MAX_TAG_LENGTH) or\
-            (len(excluded_tags) > MAX_TAG_LENGTH):
+        are_too_may_tags = (len(included_tags) > MAX_TAG_LENGTH) or (len(excluded_tags) > MAX_TAG_LENGTH)
+        if are_too_may_tags:
             raise AttributeError("Tags are limited to {} per observable".format(MAX_TAG_LENGTH))
 
     def _validate_search_params(self):

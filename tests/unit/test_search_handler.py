@@ -1,12 +1,9 @@
 from __future__ import unicode_literals
 
-from enum import Enum
-import json
 from trustar2.trustar_enums import TSEnum
 from trustar2.handlers.search_handler import SearchHandler
 import pytest
 
-from tests.conftest import BASE_URL
 
 TEST_DATE = [1583960400000, "2020-03-11T21:00:00"]
 
