@@ -6,7 +6,18 @@ import pytest
 from trustar2 import Submission, TruStar
 from trustar2.models import Indicator, Entity
 
-from tests.unit.resources import submission_example_request
+from tests.unit.resources import (
+    indicators_submission_example_request, 
+    non_structured_submission_example_request
+)
+
+from tests.conftest import BASE_URL
+
+
+TOTAL_DEFAULT_PARAMS = 1
+BASE_SUBMISSIONS = BASE_URL.format("/submissions{}")
+ENCLAVE_ID = "c0f07a9f-76e4-48df-a0d4-c63ed2edccf0"
+TIMESTAMP = 1583960400000
 
 
 @pytest.fixture
@@ -15,8 +26,6 @@ def submission():
         TruStar(api_key="xxxx", api_secret="xxx", client_metatag="test_env")
     )
 
-
-TOTAL_DEFAULT_PARAMS = 1
 
 @pytest.fixture
 def indicators():
@@ -75,6 +84,63 @@ def test_set_external_url(submission):
     assert "TEST-EXTERNAL-URL" in params
 
 
+def test_set_query_term(submission):
+    submission.set_query_term("TEST_TERM")
+    values = [param.value for param in submission.payload_params]
+    assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS + 1
+    assert "TEST_TERM" in values
+
+
+@pytest.mark.parametrize("from_date", [TIMESTAMP, "2020-03-11T21:00:00"])
+def test_set_from(submission, from_date):
+    submission.set_from(from_date)
+    assert submission.payload_params.get("from") == TIMESTAMP
+    assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS + 1
+
+
+def test_set_from_fail(submission):
+    with pytest.raises(TypeError):
+        submission.set_from("XXXX-XX-XX")
+    assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS
+
+
+@pytest.mark.parametrize("to_date", [TIMESTAMP, "2020-03-11T21:00:00+00:00"])
+def test_set_to(submission, to_date):
+    submission.set_to(to_date)
+    assert submission.payload_params.get("to") == TIMESTAMP
+    assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS + 1
+
+
+def test_set_to_fail(submission):
+    with pytest.raises(TypeError):
+        submission.set_to("XXXX-XX-XX")
+    assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS
+
+
+def test_set_sort_column(submission):
+    submission.set_sort_column("UPDATED")
+    assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS + 1
+    assert submission.payload_params.get("sortColumn") == "UPDATED"
+
+
+def test_set_sort_column_fail(submission):
+    with pytest.raises(AttributeError):
+        submission.set_sort_column("INVALID_NAME")
+    assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS
+
+
+def test_set_included_tags(submission):
+    submission.set_included_tags(["test-tag"])
+    assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS + 1
+    assert submission.payload_params.get("includedTags") == ["test-tag"]
+
+
+def test_set_excluded_tags(submission):
+    submission.set_excluded_tags(["test-tag"])
+    assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS + 1
+    assert submission.payload_params.get("excludedTags") == ["test-tag"]
+
+
 def test_set_tags(submission):
     submission.set_tags(["TEST_TAG1", "TEST_TAG2"])
     params = [p.value for p in submission.payload_params]
@@ -103,10 +169,10 @@ def test_set_raw_content(submission):
     assert "RAW CONTENT" in params
 
 
-@pytest.mark.parametrize("date", [1583960400000, "2020-03-11T21:00:00"])
+@pytest.mark.parametrize("date", [TIMESTAMP, "2020-03-11T21:00:00"])
 def test_set_timestamp(submission, date):
     submission.set_timestamp(date)
-    assert submission.payload_params.get("timestamp") == 1583960400000
+    assert submission.payload_params.get("timestamp") == TIMESTAMP
     assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS + 1
 
 
@@ -159,28 +225,120 @@ def complex_indicator():
 
 
 @pytest.fixture
-def full_submission(submission, complex_indicator):
+def full_submission(submission):
     return (
         submission.set_title("Report, complex test")
-        .set_content_indicators(complex_indicator)
-        .set_enclave_id("c0f07a9f-76e4-48df-a0d4-c63ed2edccf0")
+        .set_enclave_id(ENCLAVE_ID)
         .set_external_id("external-1234")
         .set_external_url("externalUrlValue")
         .set_timestamp(1607102497000)
         .set_tags(["random_tag"])
+    )
+
+
+@pytest.fixture
+def full_iocs_submission(full_submission, complex_indicator):
+    return (
+        full_submission.set_content_indicators(complex_indicator)
         .set_raw_content("blob of text")
     )
 
 
-def test_submission_ok_json(full_submission):
-    assert full_submission.payload_params.serialize() == json.loads(submission_example_request)
+@pytest.fixture
+def full_events_submission(full_submission):
+    return full_submission.set_content_events("MALICIOUS IP: 8.8.8.8")
 
 
-def test_ok_submission_ok(mocked_request, full_submission):
-    expected_url = "https://api.trustar.co/api/2.0/submissions/indicators/upsert"
+@pytest.fixture
+def full_intelligence_submission(full_submission):
+    return full_submission.set_content_intelligence("MALICIOUS IP: 8.8.8.8")
+
+
+def test_indicators_submission_ok_json(full_iocs_submission):
+    serialized_submission = json.loads(indicators_submission_example_request)
+    assert full_iocs_submission.payload_params.serialize() == serialized_submission
+
+
+def test_non_structured_submission_ok_json(full_events_submission, full_intelligence_submission):
+    serialized_subnmission = json.loads(non_structured_submission_example_request)
+    assert full_events_submission.payload_params.serialize() == serialized_subnmission
+    assert full_intelligence_submission.payload_params.serialize() == serialized_subnmission
+
+
+def test_indicators_submission_ok(mocked_request, full_iocs_submission):
+    expected_url = BASE_SUBMISSIONS.format("/indicators/upsert")
     mocked_request.post(url=expected_url, json={"id": "TEST-ID", "submissionVersion": 1})
-    response = full_submission.upsert()
+    response = full_iocs_submission.upsert()
     assert response.json().get("submissionVersion") == 1
     mocked_request.post(url=expected_url, json={"id": "TEST-ID", "submissionVersion": 2})
-    response = full_submission.upsert()
+    response = full_iocs_submission.upsert()
     assert response.json().get("submissionVersion") == 2
+
+
+def test_events_submission_ok(mocked_request, full_events_submission):
+    expected_url = BASE_SUBMISSIONS.format("/events/upsert")
+    mocked_request.post(url=expected_url, json={"id": "TEST-ID", "submissionVersion": 1})
+    response = full_events_submission.upsert()
+    assert response.json().get("submissionVersion") == 1
+    mocked_request.post(url=expected_url, json={"id": "TEST-ID", "submissionVersion": 2})
+    response = full_events_submission.upsert()
+    assert response.json().get("submissionVersion") == 2
+
+
+def test_intelligence_submission_ok(mocked_request, full_intelligence_submission):
+    expected_url = BASE_SUBMISSIONS.format("/intelligence/upsert")
+    mocked_request.post(url=expected_url, json={"id": "TEST-ID", "submissionVersion": 1})
+    response = full_intelligence_submission.upsert()
+    assert response.json().get("submissionVersion") == 1
+    mocked_request.post(url=expected_url, json={"id": "TEST-ID", "submissionVersion": 2})
+    response = full_intelligence_submission.upsert()
+    assert response.json().get("submissionVersion") == 2
+
+
+def test_changing_content_will_change_url(full_submission):
+    full_submission.set_content_indicators([Indicator("IP4", "8.8.8.8")])
+    assert full_submission._submission_category == "/indicators"
+    
+    full_submission.set_content_events("test-event")
+    assert full_submission._submission_category == "/events"
+    
+    full_submission.set_content_intelligence("test-intelligence")
+    assert full_submission._submission_category == "/intelligence"
+
+
+def test_get_structured_indicators_submissions(submission, mocked_request):
+    json_response = json.loads(indicators_submission_example_request)
+    endpoint = "/indicators?id=external-1234&idType=EXTERNAL&enclaveGuid={}&includeContent=true".format(ENCLAVE_ID)
+    expected_url = BASE_SUBMISSIONS.format(endpoint)
+    mocked_request.get(expected_url, json=json_response)
+
+    submission.set_enclave_id(ENCLAVE_ID)
+    submission.set_external_id("external-1234")
+    submission.set_id_type_as_external(True)
+    submission.set_include_content(True)
+
+    response = submission.get(structured_indicators=True)
+    assert response.json() == json_response
+
+
+def test_get_non_structured_submissions(submission, mocked_request):
+    json_response = json.loads(non_structured_submission_example_request)
+    endpoint = "/events?id=external-1234&idType=EXTERNAL&enclaveGuid={}&includeContent=true".format(ENCLAVE_ID)
+    expected_url = BASE_SUBMISSIONS.format(endpoint)
+    mocked_request.get(expected_url, json=json_response)
+
+    submission.set_enclave_id(ENCLAVE_ID)
+    submission.set_external_id("external-1234")
+    submission.set_id_type_as_external(True)
+    submission.set_include_content(True)
+
+    response = submission.get(structured_indicators=False)
+    assert response.json() == json_response
+
+
+def test_get_submission_status(submission, mocked_request):
+    json_response = {"id": "test-submission-id", "status": "SUBMISSION_SUCCESS"}
+    expected_url = BASE_SUBMISSIONS.format("/test-submission-id/status")
+    mocked_request.get(expected_url, json=json_response)
+    response = submission.get_submission_status("test-submission-id")
+    assert response.json() == json_response

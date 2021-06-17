@@ -6,6 +6,8 @@ import pytest
 from trustar2.trustar import TruStar
 from trustar2 import TagIndicator, TagSubmission
 
+from tests.conftest import BASE_URL
+
 
 ENCLAVE_ID = "3a93fab3-f87a-407a-9376-8eb3fae99b4e"
 IOC_SUBMISSION_GUID = "cc12a5c6-e575-3879-8e41-2bf240cc6fce"
@@ -37,9 +39,14 @@ def tag_submission(ts):
 
 ## Indicator Tags
 
-@pytest.mark.parametrize("added_tags,removed_tags", [(["important", "tag"], []),
-                                                     ([], ["not_important", "tag"]),
-                                                     (["important", "tag"], ["not_important"])])
+@pytest.mark.parametrize(
+    ("added_tags, removed_tags"),
+    (
+        (["important", "tag"], []),
+        ([], ["not_important", "tag"]),
+        (["important", "tag"], ["not_important"])
+    )
+)
 def test_ok_alter_tags_indicators(tag_indicator, mocked_request, added_tags, removed_tags):
     
     mocked_request.post(url=EXPECTED_URL.format("indicators"), json={})
@@ -81,13 +88,16 @@ def test_alter_tag_indicators_incomplete_with_missing_tags(tag_indicator):
              .set_indicator_id(IOC_SUBMISSION_GUID)
              .alter_tags())
 
+## Submissions Tags
 
-## Submission Tags
-
-
-@pytest.mark.parametrize("added_tags,removed_tags", [(["important", "tag"], []),
-                                                     ([], ["not_important", "tag"]),
-                                                     (["important", "tag"], ["not_important"])])
+@pytest.mark.parametrize(
+    ("added_tags, removed_tags"),
+    (
+        (["important", "tag"], []),
+        ([], ["not_important", "tag"]),
+        (["important", "tag"], ["not_important"])
+    )
+)
 def test_ok_alter_tags_submissions(tag_submission, mocked_request, added_tags, removed_tags):
     
     mocked_request.post(url=EXPECTED_URL.format("submissions"), json={})
