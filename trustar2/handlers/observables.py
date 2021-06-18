@@ -9,7 +9,7 @@ from trustar2.trustar_enums import ID_Types, ObservableSortColumns, ObservableTy
 MAX_TAGS = MaxValues.TAGS.value 
 
 @fluent
-class ObservablesHandler(SearchHandler):
+class Observables(SearchHandler):
 
     _base_endpoint = "/observables"
     
@@ -17,7 +17,7 @@ class ObservablesHandler(SearchHandler):
     _search_endpoint = "/search"
 
     def __init__(self, config=None):
-        super(ObservablesHandler, self).__init__(config)
+        super(Observables, self).__init__(config)
 
     @property
     def base_url(self):
@@ -66,7 +66,7 @@ class ObservablesHandler(SearchHandler):
         :param column: 'FIRST_SEEN' | 'LAST_SEEN'
         :returns: self.
         """
-        return super(ObservablesHandler, self).set_sort_column(column, ObservableSortColumns)
+        return super(Observables, self).set_sort_column(column, ObservableSortColumns)
 
     def tags(self):
         """

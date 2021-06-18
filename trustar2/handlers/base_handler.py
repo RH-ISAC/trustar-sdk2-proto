@@ -21,7 +21,6 @@ class BaseHandler(object):
         param = Param(key=key, value=value)
         self.query_params.add(param)
 
-
     def set_trustar_config(self, trustar_config):
         self.config = trustar_config
 

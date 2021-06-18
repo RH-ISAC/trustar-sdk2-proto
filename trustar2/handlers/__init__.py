@@ -4,4 +4,4 @@ from trustar2.handlers.safelist import Safelist
 from trustar2.handlers.submission import Submission
 from trustar2.handlers.account import Account
 from trustar2.handlers.workflow import Workflow
-from trustar2.handlers.observables import ObservablesHandler
+from trustar2.handlers.observables import Observables

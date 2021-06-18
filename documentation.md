@@ -284,9 +284,9 @@ response = (TruStar.config_from_file("trustar_config.json", "station")
 from trustar2 import TruStar
 
 ts = TruStar.config_from_file("trustar_config.json", "station")
-observables_handler = ObservablesHandler(ts)
+observables = Observables(ts)
 
-pages = observables_handler.get_from_submission("<submission_id>")
+pages = observables.get_from_submission("<submission_id>")
 
 for page in pages:
     response = page.json()
@@ -300,15 +300,15 @@ for page in pages:
 from trustar2 import TruStar
 
 ts = TruStar.config_from_file("trustar_config.json", "station")
-observables_handler = ObservablesHandler(ts)
+observables = Observables(ts)
 
-observables_handler.set_enclave_ids(["<enclave_id_1>", "<enclave_id_2>"])
-observables_handler.set_search_types(["SOFTWARE", "MD5"])
-observables_handler.set_included_tags(["TAG1", "TAG2"])
-observables_handler.set_excluded_tags(["TAG3"])
-observables_handler.set_sort_order("FIRST_SEEN")
+observables.set_enclave_ids(["<enclave_id_1>", "<enclave_id_2>"])
+observables.set_search_types(["SOFTWARE", "MD5"])
+observables.set_included_tags(["TAG1", "TAG2"])
+observables.set_excluded_tags(["TAG3"])
+observables.set_sort_order("FIRST_SEEN")
 
-pages = observables_handler.search()
+pages = observables.search()
 
 for page in pages:
     response = page.json()
@@ -322,9 +322,9 @@ for page in pages:
 from trustar2 import TruStar
 
 ts = TruStar.config_from_file("trustar_config.json", "station")
-observables_handler = ObservablesHandler(ts)
+observables = Observables(ts)
 
-tags = observables_handler.tags()
+tags = observables.tags()
 
 tags.set_enclave_id("<enclave_id>")
 tags.set_observable_value("<observable_value>")
