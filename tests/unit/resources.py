@@ -227,3 +227,13 @@ serialized_workflow_config = """
   }
 }
 """
+
+observables_search_example_request = """{
+    "queryTerm": "query",
+    "from":1596607968000,
+    "to":1598308171000,
+    "sortColumn": "FIRST_SEEN",
+    "sortOrder": "ASC",
+    "enclaveGuids": ["4bdc3f5b-3ed5-4d99-b20c-2d801866ef0b"],
+    "types": ["MD5"]
+}"""

@@ -4,64 +4,17 @@ import json
 import pytest
 
 from trustar2.models import Entity
-from trustar2 import SearchIndicator, TruStar
+from trustar2 import SearchIndicator
 from trustar2.trustar_enums import ObservableTypes
 from .resources import indicators_example_request
 
 
 @pytest.fixture
-def search_indicator():
-    return SearchIndicator(
-        TruStar(api_key="xxxx", api_secret="xxx", client_metatag="test_env")
-    )
+def search_indicator(ts):
+    return SearchIndicator(ts)
 
 
 def test_search_indicators_is_empty(search_indicator):
-    assert len(search_indicator.payload_params) == 0
-
-
-def test_set_query_term(search_indicator):
-    search_indicator.set_query_term("TEST_TERM")
-    values = [param.value for param in search_indicator.payload_params]
-    assert len(search_indicator.payload_params) == 1
-    assert values[0] == "TEST_TERM"
-
-
-@pytest.mark.parametrize("from_date", [1583960400000, "2020-03-11T21:00:00"])
-def test_set_from(search_indicator, from_date):
-    search_indicator.set_from(from_date)
-    assert search_indicator.payload_params.get("from") == 1583960400000
-    assert len(search_indicator.payload_params) == 1
-
-
-def test_set_from_fail(search_indicator):
-    with pytest.raises(TypeError):
-        search_indicator.set_from("XXXX-XX-XX")
-    assert len(search_indicator.payload_params) == 0
-
-
-@pytest.mark.parametrize("to_date", [1583960400000, "2020-03-11T21:00:00+00:00"])
-def test_set_to(search_indicator, to_date):
-    search_indicator.set_to(to_date)
-    assert search_indicator.payload_params.get("to") == 1583960400000
-    assert len(search_indicator.payload_params) == 1
-
-
-def test_set_to_fail(search_indicator):
-    with pytest.raises(TypeError):
-        search_indicator.set_to("XXXX-XX-XX")
-    assert len(search_indicator.payload_params) == 0
-
-
-def test_set_sort_column(search_indicator):
-    search_indicator.set_sort_column("UPDATED")
-    assert len(search_indicator.payload_params) == 1
-    assert search_indicator.payload_params.get("sortColumn") == "UPDATED"
-
-
-def test_set_sort_column_fail(search_indicator):
-    with pytest.raises(AttributeError):
-        search_indicator.set_sort_column("INVALID_NAME")
     assert len(search_indicator.payload_params) == 0
 
 
@@ -77,12 +30,6 @@ def test_set_priority_scores_fail(search_indicator):
     with pytest.raises(AttributeError):
         search_indicator.set_priority_scores(scores)
     assert len(search_indicator.payload_params) == 0
-
-
-def test_set_enclave_ids(search_indicator):
-    search_indicator.set_enclave_ids(["TEST_ENCLAVE_ID"])
-    assert len(search_indicator.payload_params) == 1
-    assert search_indicator.payload_params.get("enclaveGuids") == ["TEST_ENCLAVE_ID"]
 
 
 @pytest.mark.parametrize(
@@ -151,12 +98,6 @@ def test_set_related_observable_fail(search_indicator, observables):
     with pytest.raises(AttributeError):
         search_indicator.set_related_observables(observables)
     assert len(search_indicator.payload_params) == 0
-
-
-def test_set_duplicated_query_terms(search_indicator):
-    search_indicator.set_query_term("TEST_TERM").set_query_term("TEST_TERM2")
-    assert len(search_indicator.payload_params) == 1
-    assert search_indicator.payload_params.get("queryTerm") == "TEST_TERM2"
 
 
 def test_query_will_not_work_due_to_invalid_dates(search_indicator):

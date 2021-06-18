@@ -10,10 +10,8 @@ TIMESTAMP = 1583960400000
 DEFAULT_PARAMS = 1
 
 @pytest.fixture
-def workflow():
-    return Workflow(
-        TruStar(api_key="xxxx", api_secret="xxx", client_metatag="test_env")
-    )
+def workflow(ts):
+    return Workflow(ts)
 
 
 @pytest.fixture

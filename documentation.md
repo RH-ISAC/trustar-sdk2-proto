@@ -7,6 +7,7 @@
  - [Safelists](#safelists)
  - [Data Model](#data-model)
  - [Workflows](#workflows-management)
+ - [Observables](#observables)
 
 # Config
 
@@ -264,7 +265,6 @@ response = (TruStar.config_from_file("trustar_config.json", "station")
 )
 ```
 
-
 ## Deleting a workflow
 
 ```python
@@ -274,6 +274,64 @@ response = (TruStar.config_from_file("trustar_config.json", "station")
                 .workflow()
                 .set_workflow_id("<workflow-id>")
                 .delete())
+```
+
+
+# Observables
+## Getting observables from a submission
+
+```python
+from trustar2 import TruStar
+
+ts = TruStar.config_from_file("trustar_config.json", "station")
+observables = Observables(ts)
+
+pages = observables.get_from_submission("<submission_id>")
+
+for page in pages:
+    response = page.json()
+    pprint(response)
+)
+```
+
+## Searching observables
+
+```python
+from trustar2 import TruStar
+
+ts = TruStar.config_from_file("trustar_config.json", "station")
+observables = Observables(ts)
+
+observables.set_enclave_ids(["<enclave_id_1>", "<enclave_id_2>"])
+observables.set_search_types(["SOFTWARE", "MD5"])
+observables.set_included_tags(["TAG1", "TAG2"])
+observables.set_excluded_tags(["TAG3"])
+observables.set_sort_order("FIRST_SEEN")
+
+pages = observables.search()
+
+for page in pages:
+    response = page.json()
+    pprint(response)
+)
+```
+
+## Altering tags from observable
+
+```python
+from trustar2 import TruStar
+
+ts = TruStar.config_from_file("trustar_config.json", "station")
+observables = Observables(ts)
+
+tags = observables.tags()
+
+tags.set_enclave_id("<enclave_id>")
+tags.set_observable_value("<observable_value>")
+tags.set_added_tags(["TAG2", "TAG3", "TAG1"])
+tags.set_removed_tags(["TAG4"])
+
+tags.alter_tags()
 ```
 
 
@@ -306,6 +364,7 @@ response = (TruStar.config_from_file("trustar_config.json", "station")
 |`.set_to`|Int (unix timestamp) or python Date|
 |`.set_priority_scores`| List of Integers between -1 and 3|
 |`.set_sort_column`| String / [Enum](trustar2/trustar_enums.py#L11)|
+|`.set_sort_order`| String / [Enum](trustar2/trustar_enums.py#L18)|
 |`.set_enclave_ids`| Single or List of Strings|
 |`.set_observable_types`| List of Strings or [Enums](trustar2/trustar_enums.py#L23)|
 |`.set_attributes`| List of Strings or [Enums](trustar2/trustar_enums.py#L35)|

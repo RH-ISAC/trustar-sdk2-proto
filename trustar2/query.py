@@ -26,12 +26,26 @@ class Query:
     def set_params(self, params):
         self.params = params
 
-    def _update_params_from_response(self, response):
-        if response["responseMetadata"]["nextCursor"] != "":
+    def _update_cursor(self, response):
+        if response["responseMetadata"].get("nextCursor", "") != "":
             cursor = Param("cursor", response["responseMetadata"]["nextCursor"])
             self.params.add(cursor)
         else:
             self.stop = True
+
+    def _update_page(self, response):
+        if response["hasNext"]:
+            currentPage = int(response.get("pageNumber", 0))
+            pageNumber = Param("pageNumber", currentPage + 1)
+            self.params.add(pageNumber)
+        else:
+            self.stop = True
+
+    def _update_params_from_response(self, response):
+        if "responseMetadata" in response.keys():
+            self._update_cursor(response)
+        elif "hasNext" in response.keys():
+            self._update_page(response)
 
     def next(self):
         if not self.stop:
@@ -41,5 +55,5 @@ class Query:
         else:
             raise StopIteration
 
-    def execute(self, use_empty_paylaod=False):
-        return self.api.fetch(self, use_empty_paylaod)
+    def execute(self, use_empty_payload=False):
+        return self.api.fetch(self, use_empty_payload)

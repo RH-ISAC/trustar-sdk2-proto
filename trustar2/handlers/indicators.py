@@ -44,11 +44,6 @@ class SearchIndicator(SearchHandler):
         )
 
 
-    def set_sort_order(self, order):
-        order = self._get_value(order, SortOrder)
-        self.set_payload_param("sortOrder", order)
-
-
     def set_priority_scores(self, scores):
         if not isinstance(scores, list) or any([s for s in scores if s > 3 or s < -1]):
             raise AttributeError("scores should be a list of integers between -1 and 3")

@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 import json
 import pytest
 
-from trustar2 import Submission, TruStar
+from trustar2 import Submission
 from trustar2.models import Indicator, Entity
 
 from tests.unit.resources import (
@@ -21,10 +21,8 @@ TIMESTAMP = 1583960400000
 
 
 @pytest.fixture
-def submission():
-    return Submission(
-        TruStar(api_key="xxxx", api_secret="xxx", client_metatag="test_env")
-    )
+def submission(ts):
+    return Submission(ts)
 
 
 @pytest.fixture
@@ -82,63 +80,6 @@ def test_set_external_url(submission):
     params = [p.value for p in submission.payload_params]
     assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS + 1
     assert "TEST-EXTERNAL-URL" in params
-
-
-def test_set_query_term(submission):
-    submission.set_query_term("TEST_TERM")
-    values = [param.value for param in submission.payload_params]
-    assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS + 1
-    assert "TEST_TERM" in values
-
-
-@pytest.mark.parametrize("from_date", [TIMESTAMP, "2020-03-11T21:00:00"])
-def test_set_from(submission, from_date):
-    submission.set_from(from_date)
-    assert submission.payload_params.get("from") == TIMESTAMP
-    assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS + 1
-
-
-def test_set_from_fail(submission):
-    with pytest.raises(TypeError):
-        submission.set_from("XXXX-XX-XX")
-    assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS
-
-
-@pytest.mark.parametrize("to_date", [TIMESTAMP, "2020-03-11T21:00:00+00:00"])
-def test_set_to(submission, to_date):
-    submission.set_to(to_date)
-    assert submission.payload_params.get("to") == TIMESTAMP
-    assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS + 1
-
-
-def test_set_to_fail(submission):
-    with pytest.raises(TypeError):
-        submission.set_to("XXXX-XX-XX")
-    assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS
-
-
-def test_set_sort_column(submission):
-    submission.set_sort_column("UPDATED")
-    assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS + 1
-    assert submission.payload_params.get("sortColumn") == "UPDATED"
-
-
-def test_set_sort_column_fail(submission):
-    with pytest.raises(AttributeError):
-        submission.set_sort_column("INVALID_NAME")
-    assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS
-
-
-def test_set_included_tags(submission):
-    submission.set_included_tags(["test-tag"])
-    assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS + 1
-    assert submission.payload_params.get("includedTags") == ["test-tag"]
-
-
-def test_set_excluded_tags(submission):
-    submission.set_excluded_tags(["test-tag"])
-    assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS + 1
-    assert submission.payload_params.get("excludedTags") == ["test-tag"]
 
 
 def test_set_tags(submission):
@@ -342,3 +283,9 @@ def test_get_submission_status(submission, mocked_request):
     mocked_request.get(expected_url, json=json_response)
     response = submission.get_submission_status("test-submission-id")
     assert response.json() == json_response
+
+def test_set_sort_order_not_implemented(submission):
+    assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS
+    with pytest.raises(NotImplementedError):
+        submission.set_sort_order("ASC")
+    assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS
