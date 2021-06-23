@@ -3,7 +3,7 @@ import json
 from os import name
 
 from .log import get_logger
-from trustar2 import SearchIndicator, Submission, Safelist, Account, Workflow
+from trustar2 import SearchIndicator, Submission, Safelist, Account, Workflow, Observables
 from trustar2.trustar_enums import TruStarUrls
 from .version import __version__
 
@@ -67,3 +67,6 @@ class TruStar:
       
     def workflow(self):
         return Workflow(self)
+
+    def observable(self):
+        return Observables(self)

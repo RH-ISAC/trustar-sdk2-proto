@@ -31,7 +31,7 @@ class Observables(SearchHandler):
         """
         self._validate_search_params()
         url = "{}{}".format(self.base_url, self._search_endpoint)
-        query = Query(self.config, url, Methods.POST)
+        query = Query(self.config, url, Methods.POST, query_string=self.query_params.serialize())
         return query.set_params(self.payload_params)
     
     def get_from_submission(self, submission_id, id_type = ID_Types.INTERNAL.value):
