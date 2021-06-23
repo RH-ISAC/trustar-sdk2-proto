@@ -96,6 +96,7 @@ class TagSubmission(TagBase):
     def set_id_type_as_external(self, external):
         self.set_payload_param("idType", "EXTERNAL" if external else "INTERNAL")
 
+
 @fluent
 class TagObservable(TagBase):
 
