@@ -35,6 +35,7 @@ class ObservableTypes(TSEnum):
     SOFTWARE = "SOFTWARE"
     URL = "URL"
     X_ID = "X_ID"
+    DOMAIN = 'DOMAIN'
 
 
 class AttributeTypes(TSEnum):
