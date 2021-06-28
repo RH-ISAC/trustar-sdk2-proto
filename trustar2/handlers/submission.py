@@ -5,6 +5,7 @@ from trustar2.trustar_enums import MaxValues
 from trustar2.handlers.tags import TagSubmission
 from trustar2.base import fluent, Methods, get_timestamp
 from trustar2.handlers.search_handler import SearchHandler
+from trustar2.models.trustar_response import TruStarResponse
 
 
 @fluent
@@ -206,11 +207,12 @@ class Submission(SearchHandler):
     def delete(self):
         """Deletes a submission according to query_params set before."""
         self._raise_without_id()
-        return (
+        result = (
             self.create_query(Methods.DELETE, specific_endpoint=self._submission_category)
             .set_query_string(self.query_string_params)
             .execute()
         )
+        return TruStarResponse(status_code=result.status_code, content=result.content)
 
 
     def get(self, structured_indicators=True):
@@ -230,12 +232,13 @@ class Submission(SearchHandler):
             if k not in self.payload_params:
                 raise AttributeError("{} field should be in your submission".format(k))
 
-        return (
+        result = (
             self.create_query(Methods.POST, specific_endpoint=self._submission_category + "/upsert")
             .set_params(self.payload_params)
             .set_query_string(self.query_string_params)
             .execute()
         )
+        return TruStarResponse(status_code=result.status_code, content=result.json())
 
 
     def search(self):
@@ -252,7 +255,8 @@ class Submission(SearchHandler):
     def get_submission_status(self, submission_id):
         """Returns submission status for a given submission id"""
         endpoint = "/{}/status".format(submission_id)
-        return self.create_query(Methods.GET, specific_endpoint=endpoint).execute()
+        result = self.create_query(Methods.GET, specific_endpoint=endpoint).execute()
+        return TruStarResponse(status_code=result.status_code, content=result.json())
 
 
     def tags(self):

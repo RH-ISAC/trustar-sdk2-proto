@@ -1,6 +1,10 @@
 from .api_client import ApiClient
 from .base import Param, fluent
 
+from trustar2.models.trustar_response import TruStarResponse
+from trustar2.models.prioritized_indicator import PrioritizedIndicator
+from trustar2.models.prioritized_observable import PrioritizedObservable
+from trustar2.models.submission import Submission # Change to Prioritized Submission?
 
 @fluent
 class Query:
@@ -47,11 +51,28 @@ class Query:
         elif "hasNext" in response.keys():
             self._update_page(response)
 
+
+    def _get_content_from_endpoint(self, result):
+        endpoint_obj = {
+            "indicators": PrioritizedIndicator, 
+            "observables": PrioritizedObservable, 
+            "submissions": Submission
+        }
+        endpoint = self.endpoint.rsplit("/")[-2]
+        obj = endpoint_obj.get(endpoint)
+        return [obj.from_dict(i) for i in result.json().get("items")]
+
+
     def next(self):
         if not self.stop:
             result = self.api.fetch(self, use_empty_payload=True)
             self._update_params_from_response(result.json())
-            return result
+
+            return TruStarResponse(
+                status_code = result.status_code,
+                content=self._get_content_from_endpoint(result)
+            )
+
         else:
             raise StopIteration
 

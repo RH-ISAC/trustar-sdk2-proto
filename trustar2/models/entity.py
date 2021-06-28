@@ -11,6 +11,7 @@ class Entity(Base):
 
     def __init__(self, validator, entity_type, value, alias='entity'):
         self.params = ParamsSerializer()
+        self.validator = validator
         if entity_type not in validator.members():
             raise AttributeError(
                 "Attribute type should be in the following: {}".format(
@@ -19,6 +20,16 @@ class Entity(Base):
         self.key = alias
         self.set_custom_param(self.key, {"value": value, "type": entity_type})
 
+
+    def __str__(self):
+        entity = "Observable" if isinstance(self.validator, ObservableTypes) else "Attribute"
+        return "{}(type={}, value={})".format(entity, self.type, self.value)
+
+
+    def __repr__(self):
+        return str(self)
+
+
     @classmethod
     def attribute(cls, entity_type, value):
         return Entity(AttributeTypes, entity_type, value)
@@ -26,6 +37,14 @@ class Entity(Base):
     @classmethod
     def observable(cls, entity_type, value):
         return Entity(ObservableTypes, entity_type, value)
+
+    @property
+    def type(self):
+        return self.params.get("entity").get("type")
+
+    @property
+    def value(self):
+        return self.params.get("entity").get("value")
 
     def set_valid_from(self, valid_from):
         if not isinstance(valid_from, int):
@@ -61,3 +80,45 @@ class Entity(Base):
 
     def serialize(self):
         return self.params.serialize()
+
+
+    @classmethod
+    def attribute_from_dict(cls, attr_dict):
+        entity = attr_dict.get("entity")
+        attribute_obj = cls.attribute(entity.get("type"), entity.get("value"))
+
+        valid_from = attr_dict.get("validFrom")
+        valid_to = attr_dict.get("validTo")
+        confidence_score = attr_dict.get("confidenceScore")
+
+        if valid_from is not None:
+            self.set_valid_from(valid_from)
+
+        if valid_to is not None:
+            self.set_valid_to(valid_to)
+
+        if confidence_score is not None:
+            self.set_confidence_score(confidence_score)
+
+        return attribute_obj
+
+
+    @classmethod
+    def observable_from_dict(cls, obs_dict):
+        entity = obs_dict.get("entity")
+        observable_obj = cls.observable(entity.get("type"), entity.get("value"))
+
+        valid_from = obs_dict.get("validFrom")
+        valid_to = obs_dict.get("validTo")
+        confidence_score = obs_dict.get("confidenceScore")
+
+        if valid_from is not None:
+            self.set_valid_from(valid_from)
+
+        if valid_to is not None:
+            self.set_valid_to(valid_to)
+
+        if confidence_score is not None:
+            self.set_confidence_score(confidence_score)
+
+        return observable_obj

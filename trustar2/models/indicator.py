@@ -63,3 +63,43 @@ class Indicator(Base):
         serialized.update({"relatedObservables": [attr.serialize() for attr in self.related_observables] if len(self.related_observables) else []})
         serialized.update({"tags": self.tags})
         return serialized
+
+
+    @classmethod
+    def from_dict(self, ioc_dict):
+        observable = ioc_dict.get("observable")
+        indicator = cls(observable.get("type"), observable.get("value"))
+        valid_from = ioc_dict.get("validFrom")
+        valid_to = ioc_dict.get("validTo")
+        malicious_score = ioc_dict.get("maliciousScore")
+        confidence_score = ioc_dict.get("confidenceScore")
+        attributes = ioc_dict.get("attributes")
+        related_observables = ioc_dict.get("relatedObservables")
+        tags = ioc_dict.get("tags")
+        properties = ioc_dict.get("properties")
+        
+        if valid_from is not None:
+            indicator.set_valid_from(valid_from)
+
+        if valid_to is not None:
+            indicator.set_valid_to(valid_to)
+
+        if malicious_score is not None:
+            indicator.set_malicious_score(malicious_score)
+        
+        if confidence_score is not None:
+            indicator.set_confidence_score(confidence_score)
+
+        if len(attributes) > 0:
+            indicator.set_attributes([Entity.attribute_from_dict(a) for a in attributes])
+
+        if len(observables) > 0:
+            indicator.set_related_observables([Entity.observable_from_dict(o) for o in related_observables])
+
+        if len(tags) > 0:
+            indicator.set_tags(tags)
+
+        if properties is not None:
+            indicator.set_properties(properties)
+
+        return indicator
