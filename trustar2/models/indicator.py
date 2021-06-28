@@ -66,7 +66,7 @@ class Indicator(Base):
 
 
     @classmethod
-    def from_dict(self, ioc_dict):
+    def from_dict(cls, ioc_dict):
         observable = ioc_dict.get("observable")
         indicator = cls(observable.get("type"), observable.get("value"))
         valid_from = ioc_dict.get("validFrom")

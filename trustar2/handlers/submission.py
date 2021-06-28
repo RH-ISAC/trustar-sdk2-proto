@@ -6,6 +6,10 @@ from trustar2.handlers.tags import TagSubmission
 from trustar2.base import fluent, Methods, get_timestamp
 from trustar2.handlers.search_handler import SearchHandler
 from trustar2.models.trustar_response import TruStarResponse
+from trustar2.models.submission_details import (
+    StructuredSubmissionDetails, 
+    UnstructuredSubmissionDetails
+)
 
 
 @fluent
@@ -219,10 +223,16 @@ class Submission(SearchHandler):
         """Retrieves a submission according to query_params set before."""
         self._submission_category = "/events" if not structured_indicators else "/indicators"
         self._raise_without_id()
-        return (
+        result = (
             self.create_query(Methods.GET, specific_endpoint=self._submission_category)
             .set_query_string(self.query_string_params)
             .execute()
+        )
+        Submission = StructuredSubmissionDetails if structured_indicators else UnstructuredSubmissionDetails
+
+        return TruStarResponse(
+            status_code=result.status_code, 
+            content=Submission.from_dict(result.json()) if result.status_code < 400 else result.json()
         )
 
 
