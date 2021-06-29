@@ -237,3 +237,54 @@ observables_search_example_request = """{
     "enclaveGuids": ["4bdc3f5b-3ed5-4d99-b20c-2d801866ef0b"],
     "types": ["MD5"]
 }"""
+
+
+prioritized_indicator = """
+{
+  "guid": "test-guid",
+  "enclaveGuid": "test-enclave-guid",
+  "workflowGuid": "test-workflow-guid",
+  "observable": {
+      "value": "2.2.2.2",
+      "type": "IP4"
+  },
+  "priorityScore": "HIGH",
+  "attributes": [
+      {
+          "value": "MalwareName",
+          "type": "MALWARE"
+      }
+  ],
+  "userTags": [],
+  "submissionTags": [
+      "malware"
+  ],
+  "scoreContexts": [
+      {
+          "enclaveGuid": "54debac3-8f3e-42cd-93bb-2daef6f41ec0",
+          "sourceName": "Bambenek C2 IP",
+          "normalizedScore": 3,
+          "weight": 3.0,
+          "properties": {},
+          "enclaveName": "Bambenek C2 IP"
+      }
+  ],
+  "created": 1616176082000,
+  "updated": 1624986245000,
+  "processedAt": 1624990135728,
+  "safelisted": false
+}
+"""
+
+
+searched_observable = """
+{
+  "type": "IP4",
+  "value": "2.2.2.2",
+  "firstSeen": 1623273177255,
+  "lastSeen": 1623701072520,
+  "enclaveGuids": [
+      "test-enclave-guid"
+  ]
+}
+"""

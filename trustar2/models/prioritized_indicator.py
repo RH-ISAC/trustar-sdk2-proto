@@ -6,8 +6,7 @@ class PrioritizedIndicator(object):
 
 
     def __init__(self, guid, enclave_guid, workflow_guid, observable, priority_score, attributes, 
-                 user_tags, submission_tags, score_contexts, created, updated, processed_at, 
-                 valid_from, valid_until, safelisted):
+                 user_tags, submission_tags, score_contexts, created, updated, processed_at, safelisted):
 
         self.guid = guid
         self.enclave_guid = enclave_guid
@@ -21,8 +20,6 @@ class PrioritizedIndicator(object):
         self.created = created
         self.updated = updated
         self.processed_at = processed_at
-        self.valid_from = valid_from
-        self.valid_until = valid_until
         self.safelisted = safelisted
 
 
@@ -60,7 +57,5 @@ class PrioritizedIndicator(object):
             created=ioc_dict.get("created"),
             updated=ioc_dict.get("updated"),
             processed_at=ioc_dict.get("processedAt"),
-            valid_from=ioc_dict.get("validFrom"),
-            valid_until=ioc_dict.get("validUntil"),
             safelisted=ioc_dict.get("safelisted")
         )

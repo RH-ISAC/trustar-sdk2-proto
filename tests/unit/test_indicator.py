@@ -1,12 +1,19 @@
 from __future__ import unicode_literals
 
+import json
 import pytest
 from trustar2.models import Indicator, Entity
+from .resources import indicators_submission_example_request
 
 
 @pytest.fixture
 def indicator():
     return Indicator("URL", "www.badurl.com")
+
+
+@pytest.fixture
+def indicator_json():
+    return json.loads(indicators_submission_example_request).get("content").get("indicators")[0]
 
 
 def test_set_related_observables(indicator):
@@ -68,3 +75,40 @@ def test_set_tags(indicator):
     tag = ["importantTag"]
     indicator.set_tags(tag)
     assert "importantTag" in indicator.tags
+
+
+def test_indicator_deserialization(indicator_json):
+    indicator = Indicator.from_dict(indicator_json)
+    assert indicator.observable.type == "URL"
+    assert indicator.observable.value == "verybadurl"
+    assert indicator.confidence_score == "LOW"
+    assert indicator.malicious_score == "BENIGN"
+    assert indicator.properties == {"propertyKey": "propertyValue"}
+    assert indicator.valid_from == 1604510497000
+    assert indicator.valid_to == 1607102497000
+
+    assert indicator.attributes[0].type == "THREAT_ACTOR"
+    assert indicator.attributes[0].value == "ActorName"
+    assert indicator.attributes[0].valid_from == 1604510497000
+    assert indicator.attributes[0].valid_to == 1607102497000
+    assert indicator.attributes[0].confidence_score == "LOW"
+    
+    assert indicator.attributes[1].type == "MALWARE"
+    assert indicator.attributes[1].value == "MalwareName"
+    assert indicator.attributes[1].valid_from == 1604510497000
+    assert indicator.attributes[1].valid_to == 1607102497000
+    assert indicator.attributes[1].confidence_score == "MEDIUM"
+
+    assert indicator.related_observables[0].type == "IP4"
+    assert indicator.related_observables[0].value == "2.2.2.2"
+    assert indicator.related_observables[0].valid_from == 1604510497000
+    assert indicator.related_observables[0].valid_to == 1607102497000
+    assert indicator.related_observables[0].confidence_score == "LOW"
+
+    assert indicator.related_observables[1].type == "URL"
+    assert indicator.related_observables[1].value == "wwww.relatedUrl.com"
+    assert indicator.related_observables[1].valid_from == 1604510497000
+    assert indicator.related_observables[1].valid_to == 1607102497000
+    assert indicator.related_observables[1].confidence_score == "HIGH"
+
+    assert indicator.tags == ["importantTag", "anotherTag"]
