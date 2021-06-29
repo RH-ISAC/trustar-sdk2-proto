@@ -47,6 +47,27 @@ class Indicator(Base):
     def set_properties(self, properties):
         self.observable.set_properties(properties)
 
+    @property
+    def valid_to(self):
+        return self.observable.valid_to
+
+    @property
+    def valid_from(self):
+        return self.observable.valid_from
+
+    @property
+    def malicious_score(self):
+        return self.observable.malicious_score
+
+    @property
+    def confidence_score(self):
+        return self.observable.confidence_score
+
+    @property
+    def properties(self):
+        return self.observable.properties
+
+
     def set_tags(self, tag):
         if isinstance(tag, list):
             self.tags += tag

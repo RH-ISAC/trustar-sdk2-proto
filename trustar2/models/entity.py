@@ -40,11 +40,31 @@ class Entity(Base):
 
     @property
     def type(self):
-        return self.params.get("entity").get("type")
+        return self.params.get(self.key).get("type")
 
     @property
     def value(self):
-        return self.params.get("entity").get("value")
+        return self.params.get(self.key).get("value")
+
+    @property
+    def valid_to(self):
+        return self.params.get("validTo")
+
+    @property
+    def valid_from(self):
+        return self.params.get("validFrom")
+
+    @property
+    def malicious_score(self):
+        return self.params.get("maliciousScore")
+
+    @property
+    def confidence_score(self):
+        return self.params.get("confidenceScore")
+
+    @property
+    def properties(self):
+        return self.params.get("properties")
 
     def set_valid_from(self, valid_from):
         if not isinstance(valid_from, int):
@@ -92,13 +112,13 @@ class Entity(Base):
         confidence_score = attr_dict.get("confidenceScore")
 
         if valid_from is not None:
-            self.set_valid_from(valid_from)
+            attribute_obj.set_valid_from(valid_from)
 
         if valid_to is not None:
-            self.set_valid_to(valid_to)
+            attribute_obj.set_valid_to(valid_to)
 
         if confidence_score is not None:
-            self.set_confidence_score(confidence_score)
+            attribute_obj.set_confidence_score(confidence_score)
 
         return attribute_obj
 
@@ -113,12 +133,12 @@ class Entity(Base):
         confidence_score = obs_dict.get("confidenceScore")
 
         if valid_from is not None:
-            self.set_valid_from(valid_from)
+            observable_obj.set_valid_from(valid_from)
 
         if valid_to is not None:
-            self.set_valid_to(valid_to)
+            observable_obj.set_valid_to(valid_to)
 
         if confidence_score is not None:
-            self.set_confidence_score(confidence_score)
+            observable_obj.set_confidence_score(confidence_score)
 
         return observable_obj
