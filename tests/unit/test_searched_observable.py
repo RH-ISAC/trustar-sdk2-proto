@@ -17,3 +17,4 @@ def test_searched_observable_deserialization(searched_observable_json):
     assert searched_observable.first_seen == 1623273177255
     assert searched_observable.last_seen == 1623701072520
     assert searched_observable.enclave_guids == ["test-enclave-guid"]
+    assert searched_observable.tags == ["test-tag"]

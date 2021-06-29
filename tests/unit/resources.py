@@ -285,6 +285,19 @@ searched_observable = """
   "lastSeen": 1623701072520,
   "enclaveGuids": [
       "test-enclave-guid"
-  ]
+  ],
+  "tags": ["test-tag"]
+}
+"""
+
+
+searched_submission = """
+{
+  "guid": "test-guid",
+  "enclaveGuid": "test-enclave-guid",
+  "title": "Test Submission Title",
+  "created": 1624980621003,
+  "updated": 1624980621003,
+  "tags": []
 }
 """
