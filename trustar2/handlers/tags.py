@@ -70,7 +70,7 @@ class TagBase(BaseHandler):
             .set_params(self.payload_params)
             .execute()
         )
-        return TruStarResponse(status_code=result.status_code, content=result.json())
+        return TruStarResponse(status_code=result.status_code, data=result.json())
 
 
 @fluent

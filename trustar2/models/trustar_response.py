@@ -6,7 +6,7 @@
 class TruStarResponse(object):
 
 
-    def __init__(self, status_code, content, extra_args={}):
+    def __init__(self, status_code, data, extra_args={}):
         self.status_code = status_code
-        self.content = content
+        self.data = data
         self.extra_args = extra_args 

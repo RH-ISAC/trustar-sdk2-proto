@@ -93,7 +93,7 @@ class Indicator(Base):
         if len(attributes) > 0:
             indicator.set_attributes([Entity.attribute_from_dict(a) for a in attributes])
 
-        if len(observables) > 0:
+        if len(related_observables) > 0:
             indicator.set_related_observables([Entity.observable_from_dict(o) for o in related_observables])
 
         if len(tags) > 0:

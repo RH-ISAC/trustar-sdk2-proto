@@ -22,6 +22,7 @@ class Submission(SearchHandler):
     def __init__(self, config=None):
         super(Submission, self).__init__(config)
         self.set_tags()
+        self.set_include_content()
 
     def __str__(self):
         return "Submission <{}> with external Id <{}>".format(
@@ -141,7 +142,7 @@ class Submission(SearchHandler):
             self.set_query_param("idType", "EXTERNAL")
 
 
-    def set_include_content(self, content=False):
+    def set_include_content(self, content=True):
         """
         Adds includeContent param to set of params.
 
@@ -216,7 +217,7 @@ class Submission(SearchHandler):
             .set_query_string(self.query_string_params)
             .execute()
         )
-        return TruStarResponse(status_code=result.status_code, content=result.content)
+        return TruStarResponse(status_code=result.status_code, data=result.content)
 
 
     def get(self, structured_indicators=True):
@@ -229,10 +230,13 @@ class Submission(SearchHandler):
             .execute()
         )
         Submission = StructuredSubmissionDetails if structured_indicators else UnstructuredSubmissionDetails
-
         return TruStarResponse(
             status_code=result.status_code, 
-            content=Submission.from_dict(result.json()) if result.status_code < 400 else result.json()
+            data=(
+                Submission.from_dict(result.json()) 
+                if result.status_code < 400 and self.query_params.get("includeContent") 
+                else result.json()
+            )
         )
 
 
@@ -248,7 +252,7 @@ class Submission(SearchHandler):
             .set_query_string(self.query_string_params)
             .execute()
         )
-        return TruStarResponse(status_code=result.status_code, content=result.json())
+        return TruStarResponse(status_code=result.status_code, data=result.json())
 
 
     def search(self):
@@ -266,7 +270,7 @@ class Submission(SearchHandler):
         """Returns submission status for a given submission id"""
         endpoint = "/{}/status".format(submission_id)
         result = self.create_query(Methods.GET, specific_endpoint=endpoint).execute()
-        return TruStarResponse(status_code=result.status_code, content=result.json())
+        return TruStarResponse(status_code=result.status_code, data=result.json())
 
 
     def tags(self):

@@ -28,7 +28,7 @@ class StructuredSubmissionDetails(SubmissionDetails):
                  timestamp, created, updated, tags, submission_version, raw_content):
 
         content_indicators = [Indicator.from_dict(i) for i in content.get("indicators")]
-        content.updade({"indicators": content_indicators})
+        content.update({"indicators": content_indicators})
         super(StructuredSubmissionDetails, self).__init__(
             id, title, content, enclave_guid, 
             external_id, external_url, timestamp, 
