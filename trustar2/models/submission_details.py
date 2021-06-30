@@ -19,6 +19,13 @@ class SubmissionDetails(object):
         self.submission_version = submission_version
 
 
+    def __str__(self):
+        return "SubmissionDetails(title={})".format(self.title)
+
+    def __repr__(self):
+        return str(self)
+
+
 
 class StructuredSubmissionDetails(SubmissionDetails):
 
