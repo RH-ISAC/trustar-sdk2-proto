@@ -1,7 +1,8 @@
+from trustar2.models.base import Base
 from trustar2.models.indicator import Indicator
 
 
-class SubmissionDetails(object):
+class SubmissionDetails(Base):
 
     def __init__(self, id, title, content, enclave_guid, external_id, external_url, 
                  timestamp, created, updated, tags, submission_version):
@@ -58,6 +59,13 @@ class StructuredSubmissionDetails(SubmissionDetails):
             submission_version=sub_dict.get("submissionVersion"),
             raw_content=sub_dict.get("rawContent")
         )
+
+
+    def serialize(self):
+        serialized = super(StructuredSubmissionDetails, self).serialize()
+        content_indicators = [i.serialize() for i in serialized.get("content").get("indicators")]
+        serialized.update({"content": {"indicators": content_indicators}})
+        return serialized
 
 
 

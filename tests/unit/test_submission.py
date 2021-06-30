@@ -247,34 +247,34 @@ def test_changing_content_will_change_url(full_submission):
     assert full_submission._submission_category == "/intelligence"
 
 
-# def test_get_structured_indicators_submissions(submission, mocked_request):
-#     json_response = json.loads(indicators_submission_example_request)
-#     endpoint = "/indicators?id=external-1234&idType=EXTERNAL&enclaveGuid={}&includeContent=true".format(ENCLAVE_ID)
-#     expected_url = BASE_SUBMISSIONS.format(endpoint)
-#     mocked_request.get(expected_url, json=json_response)
+def test_get_structured_indicators_submissions(submission, mocked_request):
+    json_response = json.loads(indicators_submission_example_request)
+    endpoint = "/indicators?id=external-1234&idType=EXTERNAL&enclaveGuid={}&includeContent=true".format(ENCLAVE_ID)
+    expected_url = BASE_SUBMISSIONS.format(endpoint)
+    mocked_request.get(expected_url, json=json_response)
 
-#     submission.set_enclave_id(ENCLAVE_ID)
-#     submission.set_external_id("external-1234")
-#     submission.set_id_type_as_external(True)
-#     submission.set_include_content(True)
+    submission.set_enclave_id(ENCLAVE_ID)
+    submission.set_external_id("external-1234")
+    submission.set_id_type_as_external(True)
+    submission.set_include_content(True)
 
-#     response = submission.get(structured_indicators=True)
-#     assert response.data.serialize() == json_response
+    response = submission.get(structured_indicators=True)
+    assert response.data.serialize() == json_response
 
 
-# def test_get_non_structured_submissions(submission, mocked_request):
-#     json_response = json.loads(non_structured_submission_example_request)
-#     endpoint = "/events?id=external-1234&idType=EXTERNAL&enclaveGuid={}&includeContent=true".format(ENCLAVE_ID)
-#     expected_url = BASE_SUBMISSIONS.format(endpoint)
-#     mocked_request.get(expected_url, json=json_response)
+def test_get_non_structured_submissions(submission, mocked_request):
+    json_response = json.loads(non_structured_submission_example_request)
+    endpoint = "/events?id=external-1234&idType=EXTERNAL&enclaveGuid={}&includeContent=true".format(ENCLAVE_ID)
+    expected_url = BASE_SUBMISSIONS.format(endpoint)
+    mocked_request.get(expected_url, json=json_response)
 
-#     submission.set_enclave_id(ENCLAVE_ID)
-#     submission.set_external_id("external-1234")
-#     submission.set_id_type_as_external(True)
-#     submission.set_include_content(True)
+    submission.set_enclave_id(ENCLAVE_ID)
+    submission.set_external_id("external-1234")
+    submission.set_id_type_as_external(True)
+    submission.set_include_content(True)
 
-#     response = submission.get(structured_indicators=False)
-#     assert response.data.serialize() == json_response
+    response = submission.get(structured_indicators=False)
+    assert response.data.serialize() == json_response
 
 
 def test_get_submission_status(submission, mocked_request):

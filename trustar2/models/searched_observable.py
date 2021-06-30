@@ -1,4 +1,6 @@
-class SearchedObservable(object):
+from trustar2.models.base import Base
+
+class SearchedObservable(Base):
 
     def __init__(self, type, value, first_seen, last_seen, enclave_guids, tags):
         self.type = type

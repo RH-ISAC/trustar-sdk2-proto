@@ -1,4 +1,6 @@
-class SearchedSubmission(object):
+from trustar2.models.base import Base
+
+class SearchedSubmission(Base):
 
     def __init__(self, guid, enclave_guid, title, created, updated, tags):
         self.guid = guid
