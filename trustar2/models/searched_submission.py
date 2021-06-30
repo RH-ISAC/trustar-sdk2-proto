@@ -1,9 +1,4 @@
-
-
-
-
 class SearchedSubmission(object):
-
 
     def __init__(self, guid, enclave_guid, title, created, updated, tags):
         self.guid = guid

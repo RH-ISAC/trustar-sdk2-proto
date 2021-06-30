@@ -1,9 +1,7 @@
-
 from trustar2.models import Entity
 
 
 class PrioritizedIndicator(object):
-
 
     def __init__(self, guid, enclave_guid, workflow_guid, observable, priority_score, attributes, 
                  user_tags, submission_tags, score_contexts, created, updated, processed_at, safelisted):

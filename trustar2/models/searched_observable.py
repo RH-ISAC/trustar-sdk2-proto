@@ -1,4 +1,3 @@
-
 class SearchedObservable(object):
 
     def __init__(self, type, value, first_seen, last_seen, enclave_guids, tags):

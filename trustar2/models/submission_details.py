@@ -3,7 +3,6 @@ from trustar2.models.indicator import Indicator
 
 class SubmissionDetails(object):
 
-
     def __init__(self, id, title, content, enclave_guid, external_id, external_url, 
                  timestamp, created, updated, tags, submission_version):
 
@@ -22,7 +21,6 @@ class SubmissionDetails(object):
 
 
 class StructuredSubmissionDetails(SubmissionDetails):
-
 
     def __init__(self, id, title, content, enclave_guid, external_id, external_url, 
                  timestamp, created, updated, tags, submission_version, raw_content):
@@ -58,11 +56,10 @@ class StructuredSubmissionDetails(SubmissionDetails):
 
 class UnstructuredSubmissionDetails(SubmissionDetails):
 
-
     def __init__(self, id, title, content, enclave_guid, external_id, external_url, 
                  timestamp, created, updated, tags, submission_version):
 
-        super(StructuredSubmissionDetails, self).__init__(
+        super(UnstructuredSubmissionDetails, self).__init__(
             id, title, content, enclave_guid, 
             external_id, external_url, timestamp, 
             created, updated, tags, submission_version
