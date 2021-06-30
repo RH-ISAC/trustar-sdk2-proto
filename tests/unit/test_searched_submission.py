@@ -40,12 +40,5 @@ def test_searched_submission_deserialization(searched_submission_json):
     assert searched_submission.tags == TAGS
 
 
-def test_searched_submission_serialization(searched_submission_obj):
-    assert searched_submission_obj.serialize() == {
-        "guid": GUID,
-        "title": TITLE,
-        "enclaveGuid": ENCLAVE_GUID,
-        "created": CREATED,
-        "updated": UPDATED,
-        "tags": TAGS,
-    }
+def test_searched_submission_serialization(searched_submission_obj, searched_submission_json):
+    assert searched_submission_obj.serialize() == searched_submission_json

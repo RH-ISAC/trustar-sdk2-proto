@@ -261,12 +261,12 @@ prioritized_indicator = """
   ],
   "scoreContexts": [
       {
-          "enclaveGuid": "54debac3-8f3e-42cd-93bb-2daef6f41ec0",
-          "sourceName": "Bambenek C2 IP",
-          "normalizedScore": 3,
-          "weight": 3.0,
-          "properties": {},
-          "enclaveName": "Bambenek C2 IP"
+        "enclaveGuid": "test-score-context-enclave-guid",
+        "sourceName": "Test Source",
+        "normalizedScore": 3,
+        "weight": 3.0,
+        "properties": {},
+        "enclaveName": "Test Source"
       }
   ],
   "created": 1616176082000,

@@ -1,5 +1,6 @@
 from trustar2.models import Entity
 from trustar2.models.base import Base
+from trustar2.models.score_context import ScoreContext
 
 
 class PrioritizedIndicator(Base):
@@ -43,6 +44,11 @@ class PrioritizedIndicator(Base):
             for e in ioc_dict.get("attributes")
         ]
 
+        score_contexts = [
+            ScoreContext.from_dict(sc) 
+            for sc in ioc_dict.get("scoreContexts")
+        ]
+
         return cls(
             guid=ioc_dict.get("guid"),
             enclave_guid=ioc_dict.get("enclaveGuid"),
@@ -52,9 +58,17 @@ class PrioritizedIndicator(Base):
             attributes=attributes,
             user_tags=ioc_dict.get("userTags"),
             submission_tags=ioc_dict.get("submissionTags"),
-            score_contexts=ioc_dict.get("scoreContexts"),
+            score_contexts=score_contexts,
             created=ioc_dict.get("created"),
             updated=ioc_dict.get("updated"),
             processed_at=ioc_dict.get("processedAt"),
             safelisted=ioc_dict.get("safelisted")
         )
+
+
+    def serialize(self):
+        serialized = super(PrioritizedIndicator, self).serialize()
+        observable = serialized.get("observable").get("entity")
+        attributes = [a.get("entity") for a in serialized.get("attributes")]
+        serialized.update({"observable": observable, "attributes": attributes})
+        return serialized
