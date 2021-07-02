@@ -11,12 +11,8 @@ class SearchedObservable(Base):
         self.tags = tags
 
 
-    def __str__(self):
-        return "SearchedObservable(type={}, value={})".format(self.type, self.value)
-
-
     def __repr__(self):
-        return str(self)
+        return "SearchedObservable(type={}, value={})".format(self.type, self.value)
 
 
     @classmethod

@@ -20,11 +20,8 @@ class SubmissionDetails(Base):
         self.submission_version = submission_version
 
 
-    def __str__(self):
-        return "SubmissionDetails(title={})".format(self.title)
-
     def __repr__(self):
-        return str(self)
+        return "SubmissionDetails(title={})".format(self.title)
 
 
 

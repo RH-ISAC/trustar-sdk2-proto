@@ -23,12 +23,8 @@ class PrioritizedIndicator(Base):
         self.safelisted = safelisted
 
 
-    def __str__(self):
-        return "PrioritizedIndicator(type={}, value={})".format(self.observable.type, self.observable.value)
-
-    
     def __repr__(self):
-        return str(self)
+        return "PrioritizedIndicator(type={}, value={})".format(self.observable.type, self.observable.value)
 
 
     @classmethod

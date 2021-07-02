@@ -11,12 +11,8 @@ class SearchedSubmission(Base):
         self.tags = tags
 
 
-    def __str__(self):
-        return "SearchedSubmission(title={})".format(self.title)
-
-
     def __repr__(self):
-        return str(self)
+        return "SearchedSubmission(title={})".format(self.title)
 
 
     @classmethod
