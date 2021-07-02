@@ -9,6 +9,16 @@ from trustar2.trustar_enums import ObservableTypes, MaxValues
 @fluent
 class Indicator(Base):
 
+    FIELD_METHOD_MAPPING = {
+        "validFrom": "set_valid_from",
+        "validTo": "set_valid_to",
+        "maliciousScore": "set_malicious_score",
+        "confidenceScore": "set_confidence_score",
+        "attributes": "_set_attributes_from_dict",
+        "relatedObservables": "_set_related_obs_from_dict",
+        "tags": "set_tags",
+        "properties": "set_properties"
+    } 
 
     def __init__(self, entity_type, value):
         self.observable = Entity(ObservableTypes, entity_type, value, alias="observable")
@@ -35,16 +45,20 @@ class Indicator(Base):
             self.attributes = self.attributes[:MaxValues.ATTRIBUTES.value]
 
     def set_valid_to(self, valid_to):
-        self.observable.set_valid_to(valid_to)
+        if valid_to is not None:
+            self.observable.set_valid_to(valid_to)
 
     def set_valid_from(self, valid_from):
-        self.observable.set_valid_from(valid_from)
+        if valid_from is not None:
+            self.observable.set_valid_from(valid_from)
 
     def set_malicious_score(self, mal_score):
-        self.observable.set_malicious_score(mal_score)
+        if mal_score is not None:
+            self.observable.set_malicious_score(mal_score)
 
     def set_confidence_score(self, conf_score):
-        self.observable.set_confidence_score(conf_score)
+        if conf_score is not None:
+            self.observable.set_confidence_score(conf_score)
 
     def set_properties(self, properties):
         self.observable.set_properties(properties)
@@ -88,41 +102,25 @@ class Indicator(Base):
         return serialized
 
 
+    def _set_attributes_from_dict(self, attributes):
+        if len(attributes) > 0:
+            self.set_attributes([Entity.from_dict(a) for a in attributes])
+
+
+    def _set_related_obs_from_dict(self, observables):
+        if len(observables) > 0:
+            self.set_related_observables([Entity.from_dict(o) for o in observables])
+
+
     @classmethod
     def from_dict(cls, ioc_dict):
-        observable = ioc_dict.get("observable")
+        observable = ioc_dict.pop("observable")
         indicator = cls(observable.get("type"), observable.get("value"))
-        valid_from = ioc_dict.get("validFrom")
-        valid_to = ioc_dict.get("validTo")
-        malicious_score = ioc_dict.get("maliciousScore")
-        confidence_score = ioc_dict.get("confidenceScore")
-        attributes = ioc_dict.get("attributes")
-        related_observables = ioc_dict.get("relatedObservables")
-        tags = ioc_dict.get("tags")
-        properties = ioc_dict.get("properties")
         
-        if valid_from is not None:
-            indicator.set_valid_from(valid_from)
-
-        if valid_to is not None:
-            indicator.set_valid_to(valid_to)
-
-        if malicious_score is not None:
-            indicator.set_malicious_score(malicious_score)
-        
-        if confidence_score is not None:
-            indicator.set_confidence_score(confidence_score)
-
-        if len(attributes) > 0:
-            indicator.set_attributes([Entity.attribute_from_dict(a) for a in attributes])
-
-        if len(related_observables) > 0:
-            indicator.set_related_observables([Entity.observable_from_dict(o) for o in related_observables])
-
-        if len(tags) > 0:
-            indicator.set_tags(tags)
-
-        if properties is not None:
-            indicator.set_properties(properties)
+        for field, value in ioc_dict.items():
+            method_name = cls.FIELD_METHOD_MAPPING.get(field)
+            if method_name:
+                method = getattr(indicator, method_name)
+                method(value)
 
         return indicator

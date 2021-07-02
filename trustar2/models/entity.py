@@ -9,6 +9,13 @@ from trustar2.trustar_enums import AttributeTypes, ObservableTypes
 @fluent
 class Entity(Base):
 
+    FIELD_METHOD_MAPPING = {
+        "validFrom": "set_valid_from",
+        "validTo": "set_valid_to",
+        "confidenceScore": "set_confidence_score",
+    } 
+
+
     def __init__(self, validator, entity_type, value, alias='entity'):
         self.params = ParamsSerializer()
         self.validator = validator
@@ -21,13 +28,9 @@ class Entity(Base):
         self.set_custom_param(self.key, {"value": value, "type": entity_type})
 
 
-    def __str__(self):
+    def __repr__(self):
         entity = "Observable" if isinstance(self.validator, ObservableTypes) else "Attribute"
         return "{}(type={}, value={})".format(entity, self.type, self.value)
-
-
-    def __repr__(self):
-        return str(self)
 
 
     @classmethod
@@ -67,19 +70,22 @@ class Entity(Base):
         return self.params.get("properties")
 
     def set_valid_from(self, valid_from):
-        if not isinstance(valid_from, int):
-            valid_from = get_timestamp(valid_from)
+        if valid_from is not None:
+            if not isinstance(valid_from, int):
+                valid_from = get_timestamp(valid_from)
 
-        self.set_custom_param("validFrom", valid_from)
+            self.set_custom_param("validFrom", valid_from)
 
     def set_valid_to(self, valid_to):
-        if not isinstance(valid_to, int):
-            valid_to = get_timestamp(valid_to)
-        self.set_custom_param("validTo", valid_to)
+        if valid_to is not None:
+            if not isinstance(valid_to, int):
+                valid_to = get_timestamp(valid_to)
+            
+            self.set_custom_param("validTo", valid_to)
 
     def set_confidence_score(self, confidence_score):
-        # TODO validations
-        self.set_custom_param("confidenceScore", confidence_score)
+        if confidence_score is not None:
+            self.set_custom_param("confidenceScore", confidence_score)
 
     def set_malicious_score(self, malicious_score):
         self.set_custom_param("maliciousScore", malicious_score)
@@ -103,42 +109,23 @@ class Entity(Base):
 
 
     @classmethod
-    def attribute_from_dict(cls, attr_dict):
-        entity = attr_dict.get("entity")
-        attribute_obj = cls.attribute(entity.get("type"), entity.get("value"))
+    def from_dict(cls, entity_dict):
+        entity = entity_dict.pop("entity")
+        entity_type = entity.get("type")
+        if (entity_type not in AttributeTypes.members() and 
+            entity_type not in ObservableTypes.members()):
+            raise AttributeError("Entity type does not correspond to a valid entity type")
 
-        valid_from = attr_dict.get("validFrom")
-        valid_to = attr_dict.get("validTo")
-        confidence_score = attr_dict.get("confidenceScore")
+        entity_obj = (
+            cls.attribute(entity_type, entity.get("value"))
+            if entity_type in AttributeTypes.members()
+            else cls.observable(entity_type, entity.get("value"))
+        )
 
-        if valid_from is not None:
-            attribute_obj.set_valid_from(valid_from)
+        for field, value in entity_dict.items():
+            method_name = cls.FIELD_METHOD_MAPPING.get(field)
+            if method_name:
+                method = getattr(entity_obj, method_name)
+                method(value)
 
-        if valid_to is not None:
-            attribute_obj.set_valid_to(valid_to)
-
-        if confidence_score is not None:
-            attribute_obj.set_confidence_score(confidence_score)
-
-        return attribute_obj
-
-
-    @classmethod
-    def observable_from_dict(cls, obs_dict):
-        entity = obs_dict.get("entity")
-        observable_obj = cls.observable(entity.get("type"), entity.get("value"))
-
-        valid_from = obs_dict.get("validFrom")
-        valid_to = obs_dict.get("validTo")
-        confidence_score = obs_dict.get("confidenceScore")
-
-        if valid_from is not None:
-            observable_obj.set_valid_from(valid_from)
-
-        if valid_to is not None:
-            observable_obj.set_valid_to(valid_to)
-
-        if confidence_score is not None:
-            observable_obj.set_confidence_score(confidence_score)
-
-        return observable_obj
+        return entity_obj
