@@ -6,7 +6,7 @@ from .resources import prioritized_indicator
 from trustar2.models.entity import Entity
 from trustar2.models.score_context import ScoreContext
 from trustar2.models.prioritized_indicator import PrioritizedIndicator
-from trustar2.trustar_enums import ObservableTypes, AttributeTypes
+from trustar2.trustar_enums import ObservableTypes, AttributeTypes, MaliciousScore
 
 
 IOC_GUID = "test-guid"
@@ -14,7 +14,7 @@ ENCLAVE_GUID = "test-enclave-guid"
 WORKFLOW_GUID = "test-workflow-guid"
 OBS_VALUE = "2.2.2.2"
 OBS_TYPE = ObservableTypes.IP4.value
-PRIORITY_SCORE = "HIGH"
+PRIORITY_SCORE = MaliciousScore.HIGH.value
 ATTR_VALUE = "MalwareName"
 ATTR_TYPE = AttributeTypes.MALWARE.value
 USER_TAGS = []

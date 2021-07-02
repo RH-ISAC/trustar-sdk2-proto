@@ -9,15 +9,6 @@ from trustar2.trustar_enums import ObservableTypes, MaxValues
 @fluent
 class Indicator(Base):
 
-    D = {
-        "validFrom": set_valid_from,
-        "validTo"
-    }
-
-    def set_generic(self, field):
-
-        self.D.get(field)()
-
 
     def __init__(self, entity_type, value):
         self.observable = Entity(ObservableTypes, entity_type, value, alias="observable")
