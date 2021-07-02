@@ -6,6 +6,8 @@ from trustar2.models.searched_observable import SearchedObservable
 from trustar2.models.searched_submission import SearchedSubmission
 from trustar2.models.prioritized_indicator import PrioritizedIndicator
 
+ENDPOINT_IDX = -2
+
 
 @fluent
 class Query:
@@ -59,7 +61,7 @@ class Query:
             "observables": SearchedObservable, 
             "submissions": SearchedSubmission
         }
-        endpoint = self.endpoint.rsplit("/")[-2]
+        endpoint = self.endpoint.rsplit("/")[ENDPOINT_IDX]
         obj = endpoint_obj.get(endpoint)
         return [obj.from_dict(i) for i in result.json().get("items")]
 

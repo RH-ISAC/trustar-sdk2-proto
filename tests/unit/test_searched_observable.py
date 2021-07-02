@@ -1,16 +1,17 @@
 import json
+
 import pytest
+
 from .resources import searched_observable
 from trustar2.models.searched_observable import SearchedObservable
-
+from trustar2.trustar_enums import ObservableTypes
 
 VALUE = "2.2.2.2"
-TYPE = "IP4"
+TYPE = ObservableTypes.IP4.value
 FIRST_SEEN = 1623273177255
 LAST_SEEN = 1623701072520
 ENCLAVE_GUIDS = ["test-enclave-guid"]
 TAGS = ["test-tag"]
-
 
 
 @pytest.fixture

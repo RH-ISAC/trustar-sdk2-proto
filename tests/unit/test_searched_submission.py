@@ -1,5 +1,7 @@
 import json
+
 import pytest
+
 from .resources import searched_submission
 from trustar2.models.searched_submission import SearchedSubmission
 
