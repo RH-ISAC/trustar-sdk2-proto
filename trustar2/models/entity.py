@@ -81,17 +81,13 @@ class Entity(Base):
 
     def set_valid_from(self, valid_from):
         if valid_from is not None:
-            if not isinstance(valid_from, int):
-                valid_from = get_timestamp(valid_from)
-
+            valid_from = get_timestamp(valid_from) if not isinstance(valid_from, int) else valid_from
             self.set_custom_param("validFrom", valid_from)
 
 
     def set_valid_to(self, valid_to):
         if valid_to is not None:
-            if not isinstance(valid_to, int):
-                valid_to = get_timestamp(valid_to)
-            
+            valid_to = get_timestamp(valid_to) if not isinstance(valid_to, int) else valid_to
             self.set_custom_param("validTo", valid_to)
 
 
