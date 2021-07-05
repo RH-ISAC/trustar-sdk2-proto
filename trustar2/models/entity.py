@@ -114,9 +114,11 @@ class Entity(Base):
 
         self.set_custom_param("properties", properties)
 
+
     def set_custom_param(self, key, value):
         param = Param(key=key, value=value)
         self.params.add(param)
+
 
     def serialize(self):
         return self.params.serialize()
