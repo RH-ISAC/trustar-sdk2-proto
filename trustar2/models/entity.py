@@ -14,6 +14,7 @@ class Entity(Base):
         "validTo": "set_valid_to",
         "confidenceScore": "set_confidence_score",
     } 
+    VALID_TYPES = list(AttributeTypes.members()) + list(ObservableTypes.members())
 
 
     def __init__(self, validator, entity_type, value, alias='entity'):
@@ -37,37 +38,46 @@ class Entity(Base):
     def attribute(cls, entity_type, value):
         return Entity(AttributeTypes, entity_type, value)
 
+
     @classmethod
     def observable(cls, entity_type, value):
         return Entity(ObservableTypes, entity_type, value)
+
 
     @property
     def type(self):
         return self.params.get(self.key).get("type")
 
+
     @property
     def value(self):
         return self.params.get(self.key).get("value")
+
 
     @property
     def valid_to(self):
         return self.params.get("validTo")
 
+
     @property
     def valid_from(self):
         return self.params.get("validFrom")
+
 
     @property
     def malicious_score(self):
         return self.params.get("maliciousScore")
 
+
     @property
     def confidence_score(self):
         return self.params.get("confidenceScore")
 
+
     @property
     def properties(self):
         return self.params.get("properties")
+
 
     def set_valid_from(self, valid_from):
         if valid_from is not None:
@@ -76,6 +86,7 @@ class Entity(Base):
 
             self.set_custom_param("validFrom", valid_from)
 
+
     def set_valid_to(self, valid_to):
         if valid_to is not None:
             if not isinstance(valid_to, int):
@@ -83,12 +94,15 @@ class Entity(Base):
             
             self.set_custom_param("validTo", valid_to)
 
+
     def set_confidence_score(self, confidence_score):
         if confidence_score is not None:
             self.set_custom_param("confidenceScore", confidence_score)
 
+
     def set_malicious_score(self, malicious_score):
         self.set_custom_param("maliciousScore", malicious_score)
+
 
     def set_properties(self, properties):
         if len(properties) > 20:
@@ -109,19 +123,22 @@ class Entity(Base):
 
 
     @classmethod
-    def from_dict(cls, entity_dict):
-        entity = entity_dict.pop("entity")
-        entity_type = entity.get("type")
-        if (entity_type not in AttributeTypes.members() and 
-            entity_type not in ObservableTypes.members()):
-            raise AttributeError("Entity type does not correspond to a valid entity type")
-
-        entity_obj = (
+    def _get_entity_obj(cls, entity_type, entity):
+        return (
             cls.attribute(entity_type, entity.get("value"))
             if entity_type in AttributeTypes.members()
             else cls.observable(entity_type, entity.get("value"))
         )
 
+
+    @classmethod
+    def from_dict(cls, entity_dict):
+        entity = entity_dict.pop("entity")
+        entity_type = entity.get("type")
+        if entity_type not in cls.VALID_TYPES:
+            raise AttributeError("Entity type does not correspond to a valid entity type")
+
+        entity_obj = cls._get_entity_obj(entity_type, entity)
         for field, value in entity_dict.items():
             method_name = cls.FIELD_METHOD_MAPPING.get(field)
             if method_name:
