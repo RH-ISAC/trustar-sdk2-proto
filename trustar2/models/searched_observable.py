@@ -1,3 +1,4 @@
+from trustar2.base import typename
 from trustar2.models.base import Base
 
 class SearchedObservable(Base):
@@ -12,7 +13,7 @@ class SearchedObservable(Base):
 
 
     def __repr__(self):
-        return "SearchedObservable(type={}, value={})".format(self.type, self.value)
+        return "{}(type={}, value={})".format(typename(self), self.type, self.value)
 
 
     @classmethod

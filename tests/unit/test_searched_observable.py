@@ -44,3 +44,7 @@ def test_searched_observable_deserialization(searched_observable_json):
 
 def test_searched_observable_serialization(searched_observable_obj, searched_observable_json):
     assert searched_observable_obj.serialize() == searched_observable_json
+
+
+def test_searched_observable_repr(searched_observable_obj):
+    assert searched_observable_obj.__repr__() == "SearchedObservable(type=IP4, value=2.2.2.2)"

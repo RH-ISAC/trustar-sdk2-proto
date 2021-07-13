@@ -1,3 +1,4 @@
+from trustar2.base import typename
 from trustar2.models.base import Base
 
 class SearchedSubmission(Base):
@@ -12,7 +13,7 @@ class SearchedSubmission(Base):
 
 
     def __repr__(self):
-        return "SearchedSubmission(title={})".format(self.title)
+        return "{}(title={})".format(typename(self), self.title)
 
 
     @classmethod

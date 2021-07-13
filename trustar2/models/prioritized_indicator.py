@@ -1,7 +1,7 @@
+from trustar2.base import typename
 from trustar2.models import Entity
 from trustar2.models.base import Base
 from trustar2.models.score_context import ScoreContext
-
 
 class PrioritizedIndicator(Base):
 
@@ -24,7 +24,7 @@ class PrioritizedIndicator(Base):
 
 
     def __repr__(self):
-        return "PrioritizedIndicator(type={}, value={})".format(self.observable.type, self.observable.value)
+        return "{}(type={}, value={})".format(typename(self), self.observable.type, self.observable.value)
 
 
     @classmethod

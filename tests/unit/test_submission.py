@@ -259,6 +259,7 @@ def test_get_structured_indicators_submissions(submission, mocked_request):
     submission.set_include_content(True)
 
     response = submission.get(structured_indicators=True)
+    assert response.data.__repr__() == "StructuredSubmissionDetails(title=Report, complex test)"
     assert response.data.serialize() == json_response
 
 
@@ -274,6 +275,7 @@ def test_get_non_structured_submissions(submission, mocked_request):
     submission.set_include_content(True)
 
     response = submission.get(structured_indicators=False)
+    assert response.data.__repr__() == "UnstructuredSubmissionDetails(title=Report, complex test)"
     assert response.data.serialize() == json_response
 
 

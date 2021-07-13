@@ -44,3 +44,7 @@ def test_searched_submission_deserialization(searched_submission_json):
 
 def test_searched_submission_serialization(searched_submission_obj, searched_submission_json):
     assert searched_submission_obj.serialize() == searched_submission_json
+
+
+def test_searched_submission_repr(searched_submission_obj):
+    assert searched_submission_obj.__repr__() == "SearchedSubmission(title={})".format(TITLE)

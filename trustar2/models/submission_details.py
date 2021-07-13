@@ -1,3 +1,4 @@
+from trustar2.base import typename
 from trustar2.models.base import Base
 from trustar2.models.indicator import Indicator
 
@@ -21,7 +22,7 @@ class SubmissionDetails(Base):
 
 
     def __repr__(self):
-        return "SubmissionDetails(title={})".format(self.title)
+        return "{}(title={})".format(typename(self), self.title)
 
 
 
