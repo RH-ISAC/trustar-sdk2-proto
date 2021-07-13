@@ -90,5 +90,5 @@ def test_prioritized_indicator_serialization(prioritized_indicator_obj, prioriti
     assert prioritized_indicator_obj.serialize() == prioritized_indicator_json
 
 
-def test_pripritized_indicator_repr(prioritized_indicator_obj):
+def test_prioritized_indicator_repr(prioritized_indicator_obj):
     assert prioritized_indicator_obj.__repr__() == "PrioritizedIndicator(type=IP4, value=2.2.2.2)"
