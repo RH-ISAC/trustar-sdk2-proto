@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from trustar2.query import Query
 from trustar2.handlers.base_handler import BaseHandler
 from trustar2.base import Methods, fluent
+from trustar2.models.trustar_response import TruStarResponse
 
 
 @fluent
@@ -64,11 +65,12 @@ class TagBase(BaseHandler):
             self.set_payload_param("enclaveGuid", enclave_guid)
 
     def alter_tags(self):
-        return (
+        result = (
             Query(self.config, self.tag_endpoint, Methods.POST)
             .set_params(self.payload_params)
             .execute()
         )
+        return TruStarResponse(status_code=result.status_code, data=result.json())
 
 
 @fluent

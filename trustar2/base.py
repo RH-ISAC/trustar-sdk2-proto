@@ -20,6 +20,10 @@ def get_timestamp(date):
     return int(timestamp)
 
 
+def typename(obj):
+    return obj.__class__.__name__
+
+
 class Methods(Enum):
     POST = 1
     GET = 2
