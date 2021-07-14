@@ -108,16 +108,16 @@ def get_formatter(formatter = None, stash_config = None):
 def get_logging_level():
     return int(os.environ.get(LOGGING_ENV_VAR, logging.INFO))
 
-def get_log_file():
-    filename = os.environ.get(LOGGING_FILENAME_VAR)
+def get_log_file(filename = None):
+    filename = filename or os.environ.get(LOGGING_FILENAME_VAR)
     if not filename:
         return None
-    with open(LOGGING_FILENAME_VAR, "a+"):
+    with open(filename, "a+"):
         return filename
 
-def get_logger(name = None, stash_config = None):
+def get_logger(name = None, stash_config = None, filename = None):
     logger = logging.getLogger(name or __name__)
-    handler = get_handler(filename = get_log_file() ,stash_config = stash_config)
+    handler = get_handler(filename = get_log_file(filename = filename) ,stash_config = stash_config)
     logger.addHandler(handler)
     logger.setLevel(get_logging_level())
     return logger
