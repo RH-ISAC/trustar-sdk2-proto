@@ -210,30 +210,30 @@ def test_indicators_submission_ok(mocked_request, full_iocs_submission):
     expected_url = BASE_SUBMISSIONS.format("/indicators/upsert")
     mocked_request.post(url=expected_url, json={"id": "TEST-ID", "submissionVersion": 1})
     response = full_iocs_submission.upsert()
-    assert response.json().get("submissionVersion") == 1
+    assert response.data.get("submissionVersion") == 1
     mocked_request.post(url=expected_url, json={"id": "TEST-ID", "submissionVersion": 2})
     response = full_iocs_submission.upsert()
-    assert response.json().get("submissionVersion") == 2
+    assert response.data.get("submissionVersion") == 2
 
 
 def test_events_submission_ok(mocked_request, full_events_submission):
     expected_url = BASE_SUBMISSIONS.format("/events/upsert")
     mocked_request.post(url=expected_url, json={"id": "TEST-ID", "submissionVersion": 1})
     response = full_events_submission.upsert()
-    assert response.json().get("submissionVersion") == 1
+    assert response.data.get("submissionVersion") == 1
     mocked_request.post(url=expected_url, json={"id": "TEST-ID", "submissionVersion": 2})
     response = full_events_submission.upsert()
-    assert response.json().get("submissionVersion") == 2
+    assert response.data.get("submissionVersion") == 2
 
 
 def test_intelligence_submission_ok(mocked_request, full_intelligence_submission):
     expected_url = BASE_SUBMISSIONS.format("/intelligence/upsert")
     mocked_request.post(url=expected_url, json={"id": "TEST-ID", "submissionVersion": 1})
     response = full_intelligence_submission.upsert()
-    assert response.json().get("submissionVersion") == 1
+    assert response.data.get("submissionVersion") == 1
     mocked_request.post(url=expected_url, json={"id": "TEST-ID", "submissionVersion": 2})
     response = full_intelligence_submission.upsert()
-    assert response.json().get("submissionVersion") == 2
+    assert response.data.get("submissionVersion") == 2
 
 
 def test_changing_content_will_change_url(full_submission):
@@ -259,7 +259,8 @@ def test_get_structured_indicators_submissions(submission, mocked_request):
     submission.set_include_content(True)
 
     response = submission.get(structured_indicators=True)
-    assert response.json() == json_response
+    assert response.data.__repr__() == "StructuredSubmissionDetails(title=Report, complex test)"
+    assert response.data.serialize() == json_response
 
 
 def test_get_non_structured_submissions(submission, mocked_request):
@@ -274,7 +275,8 @@ def test_get_non_structured_submissions(submission, mocked_request):
     submission.set_include_content(True)
 
     response = submission.get(structured_indicators=False)
-    assert response.json() == json_response
+    assert response.data.__repr__() == "UnstructuredSubmissionDetails(title=Report, complex test)"
+    assert response.data.serialize() == json_response
 
 
 def test_get_submission_status(submission, mocked_request):
@@ -282,7 +284,7 @@ def test_get_submission_status(submission, mocked_request):
     expected_url = BASE_SUBMISSIONS.format("/test-submission-id/status")
     mocked_request.get(expected_url, json=json_response)
     response = submission.get_submission_status("test-submission-id")
-    assert response.json() == json_response
+    assert response.data == json_response
 
 def test_set_sort_order_not_implemented(submission):
     assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS

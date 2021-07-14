@@ -5,6 +5,11 @@ from trustar2.trustar_enums import MaxValues
 from trustar2.handlers.tags import TagSubmission
 from trustar2.base import fluent, Methods, get_timestamp
 from trustar2.handlers.search_handler import SearchHandler
+from trustar2.models.trustar_response import TruStarResponse
+from trustar2.models.submission_details import (
+    StructuredSubmissionDetails, 
+    UnstructuredSubmissionDetails
+)
 
 
 @fluent
@@ -17,6 +22,7 @@ class Submission(SearchHandler):
     def __init__(self, config=None):
         super(Submission, self).__init__(config)
         self.set_tags()
+        self.set_include_content()
 
     def __str__(self):
         return "Submission <{}> with external Id <{}>".format(
@@ -136,7 +142,7 @@ class Submission(SearchHandler):
             self.set_query_param("idType", "EXTERNAL")
 
 
-    def set_include_content(self, content=False):
+    def set_include_content(self, content=True):
         """
         Adds includeContent param to set of params.
 
@@ -206,21 +212,31 @@ class Submission(SearchHandler):
     def delete(self):
         """Deletes a submission according to query_params set before."""
         self._raise_without_id()
-        return (
+        result = (
             self.create_query(Methods.DELETE, specific_endpoint=self._submission_category)
             .set_query_string(self.query_string_params)
             .execute()
         )
+        return TruStarResponse(status_code=result.status_code, data=result.content)
 
 
     def get(self, structured_indicators=True):
         """Retrieves a submission according to query_params set before."""
         self._submission_category = "/events" if not structured_indicators else "/indicators"
         self._raise_without_id()
-        return (
+        result = (
             self.create_query(Methods.GET, specific_endpoint=self._submission_category)
             .set_query_string(self.query_string_params)
             .execute()
+        )
+        Submission = StructuredSubmissionDetails if structured_indicators else UnstructuredSubmissionDetails
+        return TruStarResponse(
+            status_code=result.status_code, 
+            data=(
+                Submission.from_dict(result.json()) 
+                if result.status_code < 400 and self.query_params.get("includeContent") 
+                else result.json()
+            )
         )
 
 
@@ -230,12 +246,13 @@ class Submission(SearchHandler):
             if k not in self.payload_params:
                 raise AttributeError("{} field should be in your submission".format(k))
 
-        return (
+        result = (
             self.create_query(Methods.POST, specific_endpoint=self._submission_category + "/upsert")
             .set_params(self.payload_params)
             .set_query_string(self.query_string_params)
             .execute()
         )
+        return TruStarResponse(status_code=result.status_code, data=result.json())
 
 
     def search(self):
@@ -252,7 +269,8 @@ class Submission(SearchHandler):
     def get_submission_status(self, submission_id):
         """Returns submission status for a given submission id"""
         endpoint = "/{}/status".format(submission_id)
-        return self.create_query(Methods.GET, specific_endpoint=endpoint).execute()
+        result = self.create_query(Methods.GET, specific_endpoint=endpoint).execute()
+        return TruStarResponse(status_code=result.status_code, data=result.json())
 
 
     def tags(self):

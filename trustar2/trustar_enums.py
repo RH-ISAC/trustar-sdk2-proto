@@ -35,6 +35,7 @@ class ObservableTypes(TSEnum):
     SOFTWARE = "SOFTWARE"
     URL = "URL"
     X_ID = "X_ID"
+    DOMAIN = 'DOMAIN'
 
 
 class AttributeTypes(TSEnum):
@@ -67,11 +68,28 @@ class WorkflowDestinations(TSEnum):
     ENCLAVE = "ENCLAVE"
     UNKNOWN = "UNKNOWN"
 
+
 class ID_Types(TSEnum):
+
     INTERNAL = "INTERNAL"
     EXTERNAL = "EXTERNAL"
     UNRECOGNIZED = "UNRECOGNIZED"
 
+
 class ObservableSortColumns(TSEnum):
+
     FIRST_SEEN = "FIRST_SEEN"
     LAST_SEEN = "LAST_SEEN"
+
+
+class MaliciousScore(TSEnum):
+    BENIGN = "BENIGN"
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"
+    HIGH = "HIGH"
+
+
+class ConfidenceScore(TSEnum):
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"
+    HIGH = "HIGH"

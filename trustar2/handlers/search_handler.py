@@ -45,6 +45,7 @@ class SearchHandler(BaseHandler):
             if (datetime.today() - from_date_dt).days > 364:
                 raise AttributeError("Time window can not be greater than 1 year.")
 
+
     def set_query_term(self, query):
         self.set_payload_param("queryTerm", query)
 
@@ -77,3 +78,7 @@ class SearchHandler(BaseHandler):
     def set_sort_order(self, order):
         order = self._get_value(order, SortOrder)
         self.set_payload_param("sortOrder", order)
+
+
+    def set_page_size(self, page_size):
+        self.set_query_param("pageSize", page_size)

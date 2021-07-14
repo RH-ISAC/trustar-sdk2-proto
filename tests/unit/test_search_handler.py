@@ -141,3 +141,10 @@ def test_set_sort_order_with_invalid_options(search_handler):
     with pytest.raises(AttributeError):
         search_handler.set_sort_order("ASCC")
     assert len(search_handler.payload_params) == 0
+
+
+def test_set_page_size(search_handler):
+    assert len(search_handler.query_params) == 0
+    search_handler.set_page_size(999)
+    assert len(search_handler.query_params) == 1
+    assert search_handler.query_params.get("pageSize") == 999

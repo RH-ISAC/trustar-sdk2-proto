@@ -7,7 +7,8 @@ from trustar2.handlers import (
     TagIndicator,
     TagSubmission, 
     Workflow,
-    Account
+    Account, 
+    Observables
 )
 
 from trustar2.trustar import TruStar
