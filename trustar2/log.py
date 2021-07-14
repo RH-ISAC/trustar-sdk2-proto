@@ -106,9 +106,16 @@ def get_formatter(formatter = None, stash_config = None):
 
 
 def get_logging_level():
+    """
+        Returns the logging level    
+    """
     return int(os.environ.get(LOGGING_ENV_VAR, logging.INFO))
 
 def get_log_file(filename = None):
+    """
+        Return the log file filename if its set.
+        It also create the file if it does not exist.
+    """
     filename = filename or os.environ.get(LOGGING_FILENAME_VAR)
     if not filename:
         return None
@@ -117,7 +124,7 @@ def get_log_file(filename = None):
 
 def get_logger(name = None, stash_config = None, filename = None):
     logger = logging.getLogger(name or __name__)
-    handler = get_handler(filename = get_log_file(filename = filename) ,stash_config = stash_config)
+    handler = get_handler(filename = get_log_file(filename = filename) , stash_config = stash_config)
     logger.addHandler(handler)
     logger.setLevel(get_logging_level())
     return logger
