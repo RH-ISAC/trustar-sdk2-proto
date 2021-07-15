@@ -115,7 +115,7 @@ def get_file_handler(filename, formatter):
 
 
 def get_formatter(stash_config=None):
-    return TrustarJSONFormatter(stash_confi=stash_config)
+    return TrustarJSONFormatter(stash_config=stash_config)
 
 def get_log_file(filename=None):
     """
