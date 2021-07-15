@@ -3,6 +3,7 @@ __all__ = ["get_logger", "TrustarJSONFormatter"]
 
 import datetime
 import logging
+import logging.handlers
 import os
 import sys
 
@@ -25,7 +26,7 @@ class TrustarJSONFormatter(json_log_formatter.JSONFormatter):
     Custom class to override the default behaviour of the JSONFormatter
     """
 
-    def __init__(self, stash_config = None):
+    def __init__(self, stash_config=None):
         super(TrustarJSONFormatter, self).__init__()
         self._stash_config = stash_config
 
@@ -103,15 +104,20 @@ def get_stdout_handler(formatter):
     return handler
 
 def get_file_handler(filename, formatter):
-    handler = logging.FileHandler(filename = filename)
+    handler = logging.handlers.RotatingFileHandler(
+                filename=filename,
+                mode='a',
+                maxBytes=8192000,
+                backupCount=10,
+        )
     handler.setFormatter(formatter)
     return handler
 
 
-def get_formatter(stash_config = None):
-    return TrustarJSONFormatter(stash_config = stash_config)
+def get_formatter(stash_config=None):
+    return TrustarJSONFormatter(stash_confi=stash_config)
 
-def get_log_file(filename = None):
+def get_log_file(filename=None):
     """
         Return the log file filename if its set.
         It also create the file if it does not exist.
@@ -123,24 +129,24 @@ def get_log_file(filename = None):
         return filename
 
 def get_logger(
-                name = None,
-                stash_config = None,
-                filename = None,
-                stdout_enabled = True,
-                level = None
+                name=None,
+                stash_config=None,
+                filename=None,
+                stdout_enabled=True,
+                level=None
             ):
     logger = logging.getLogger(name or __name__)
 
     stdout_enabled = stdout_enabled and int(os.environ.get(LOGGING_STDOUT_ENABLED_VAR, 1))
     if stdout_enabled:
-        stdout_formatter = get_formatter(stash_config = stash_config)
-        stdout_handler = get_stdout_handler( formatter = stdout_formatter)
+        stdout_formatter = get_formatter(stash_config=stash_config)
+        stdout_handler = get_stdout_handler( formatter=stdout_formatter)
         logger.addHandler(stdout_handler)
     
     file = get_log_file(filename)
     if file:
-        file_formatter = get_formatter(stash_config = stash_config)
-        file_handler = get_file_handler(file, formatter = file_formatter)
+        file_formatter = get_formatter(stash_config=stash_config)
+        file_handler = get_file_handler(file, formatter=file_formatter)
         logger.addHandler(file_handler)
 
     level = level or int(os.environ.get(LOGGING_LEVEL_VAR, DEFAULT_LOGGING_LEVEL))
