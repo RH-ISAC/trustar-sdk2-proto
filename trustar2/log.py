@@ -9,14 +9,16 @@ import sys
 import json_log_formatter
 
 from .config import (
-    LOGGING_ENV_VAR,
+    LOGGING_LEVEL_VAR,
     LOGGING_SHOW_LEVEL_VAR,
     LOGGING_SHOW_MODULE_VAR,
     LOGGING_SHOW_TIME_VAR,
     LOGGING_SHOW_STASH_INFO_VAR,
     LOGGING_FILENAME_VAR,
+    LOGGING_STDOUT_ENABLED_VAR,
 )
 
+DEFAULT_LOGGING_LEVEL = logging.INFO
 
 class TrustarJSONFormatter(json_log_formatter.JSONFormatter):
     """
@@ -92,24 +94,22 @@ def _json_object_encoder(obj):
         return str(obj)
 
 
-def get_handler(filename = None, stash_config = None):
+def get_stdout_handler(formatter):
     """
     Gets the handler to manage the output of the logger, default: stdout
     """
-    handler = logging.FileHandler(filename = filename) if filename else logging.StreamHandler(sys.stdout)
-    handler.setFormatter(get_formatter(stash_config = stash_config))
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setFormatter(formatter)
+    return handler
+
+def get_file_handler(filename, formatter):
+    handler = logging.FileHandler(filename = filename)
+    handler.setFormatter(formatter)
     return handler
 
 
-def get_formatter(formatter = None, stash_config = None):
-    return formatter() if formatter else TrustarJSONFormatter(stash_config = stash_config)
-
-
-def get_logging_level():
-    """
-        Returns the logging level    
-    """
-    return int(os.environ.get(LOGGING_ENV_VAR, logging.INFO))
+def get_formatter(stash_config = None):
+    return TrustarJSONFormatter(stash_config = stash_config)
 
 def get_log_file(filename = None):
     """
@@ -122,9 +122,27 @@ def get_log_file(filename = None):
     with open(filename, "a+"):
         return filename
 
-def get_logger(name = None, stash_config = None, filename = None):
+def get_logger(
+                name = None,
+                stash_config = None,
+                filename = None,
+                stdout_enabled = True,
+                level = None
+            ):
     logger = logging.getLogger(name or __name__)
-    handler = get_handler(filename = get_log_file(filename = filename) , stash_config = stash_config)
-    logger.addHandler(handler)
-    logger.setLevel(get_logging_level())
+
+    stdout_enabled = stdout_enabled and int(os.environ.get(LOGGING_STDOUT_ENABLED_VAR, 1))
+    if stdout_enabled:
+        stdout_formatter = get_formatter(stash_config = stash_config)
+        stdout_handler = get_stdout_handler( formatter = stdout_formatter)
+        logger.addHandler(stdout_handler)
+    
+    file = get_log_file(filename)
+    if file:
+        file_formatter = get_formatter(stash_config = stash_config)
+        file_handler = get_file_handler(file, formatter = file_formatter)
+        logger.addHandler(file_handler)
+
+    level = level or int(os.environ.get(LOGGING_LEVEL_VAR, DEFAULT_LOGGING_LEVEL))
+    logger.setLevel(level)
     return logger
