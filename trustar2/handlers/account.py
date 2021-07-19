@@ -1,6 +1,7 @@
 from trustar2.query import Query
 from trustar2.base import fluent, Methods
 from trustar2.handlers.base_handler import BaseHandler
+from trustar2.models.trustar_response import TruStarResponse
 
 
 @fluent
@@ -24,9 +25,11 @@ class Account(BaseHandler):
 
     def ping(self):
         """Tests connectiviy against TruSTAR API."""
-        return self.create_query(Methods.GET, specific_endpoint="/ping").execute()
+        result = self.create_query(Methods.GET, specific_endpoint="/ping").execute()
+        return TruStarResponse(status_code=result.status_code, data={"restult": result.text})
 
 
     def get_enclaves(self):
         """Returns all user enclaves with according permissions."""
-        return self.create_query(Methods.GET, specific_endpoint="/enclaves").execute()
+        result = self.create_query(Methods.GET, specific_endpoint="/enclaves").execute()
+        return TruStarResponse(status_code=result.status_code, data=result.json())
