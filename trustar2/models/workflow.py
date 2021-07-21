@@ -12,7 +12,7 @@ class Workflow(Base):
         self.name = name
         self.created = created
         self.updated = updated
-        self.workflow_config = None # TODO: change
+        self.workflow_config = workflow_config
         self.safelist_guids = safelist_guids
 
 

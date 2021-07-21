@@ -124,7 +124,7 @@ def test_workflow_creation_successful(workflow, mocked_request, workflow_config,
     workflow.set_safelist_ids([])
     response = workflow.create()
     assert response.status_code == 200
-    assert response.json() == wf_response
+    assert response.data.serialize() == wf_response
 
 
 def test_workflow_creation_fails_with_missing_payload_field(workflow, workflow_config):
@@ -139,7 +139,7 @@ def test_workflow_get_by_id(workflow, mocked_request, wf_response):
     workflow.set_workflow_id("test-workflow-id")
     response = workflow.get_by_id()
     assert response.status_code == 200
-    assert response.json() == wf_response
+    assert response.data.serialize() == wf_response
 
 
 def test_workflow_get_by_id_fails_with_missing_id(workflow, wf_response):
@@ -148,10 +148,10 @@ def test_workflow_get_by_id_fails_with_missing_id(workflow, wf_response):
 
 
 def test_workflow_get_all_workflows(workflow, mocked_request, wf_response):
-    mocked_request.get(URL, json=[wf_response])
+    mocked_request.get(URL, json={"content": [wf_response]})
     response = workflow.get()
     assert response.status_code == 200
-    assert response.json() == [wf_response]
+    assert [wf.serialize() for wf in response.data] == [wf_response]
 
 
 def test_delete_workflow_by_id(workflow, mocked_request):
@@ -174,7 +174,7 @@ def test_workflow_update_successful(workflow, mocked_request, workflow_config, w
     workflow.set_workflow_id("test-workflow-id")
     response = workflow.update()
     assert response.status_code == 200
-    assert response.json() == wf_response
+    assert response.data.serialize() == wf_response
 
 
 def test_workflow_update_fails_with_missing_id(workflow, workflow_config):

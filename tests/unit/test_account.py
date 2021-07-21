@@ -22,11 +22,11 @@ def test_ping_successfully(account, mocked_request):
     mocked_request.get(URL + "/ping", status_code=200, text="pong\n")
     response = account.ping()
     assert response.status_code == 200
-    assert response.text == "pong\n"
+    assert response.data.get("result") == "pong\n"
 
 
 def test_get_enclaves_successfully(account, mocked_request, enclaves_response):
     mocked_request.get(URL + "/enclaves", json=enclaves_response)
     response = account.get_enclaves()
     assert response.status_code == 200
-    assert response.json() == enclaves_response
+    assert [e.serialize() for e in response.data] == enclaves_response

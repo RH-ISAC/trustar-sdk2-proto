@@ -3,7 +3,7 @@ from trustar2.models.base import Base
 
 
 
-class SafelistLibrary(object):
+class SafelistLibrary(Base):
 
 
     def __init__(self, guid, name, company_guid, excerpt, created_at,
@@ -25,6 +25,7 @@ class SafelistLibrary(object):
 
     @classmethod
     def from_dict(cls, safelist_dict): 
+        entries = safelist_dict.get("entries")
         return cls(
             guid=safelist_dict.get("guid"),
             name=safelist_dict.get("name"),
@@ -34,12 +35,12 @@ class SafelistLibrary(object):
             updated_at=safelist_dict.get("updatedAt"),
             created_by=safelist_dict.get("createdBy"),
             updated_by=safelist_dict.get("updatedBy"),
-            entries=[SafelistEntry.from_dict(e) for e in safelist_dict.get("entries", [])],
+            entries=[SafelistEntry.from_dict(e) for e in entries] if entries is not None else None,
         )
 
 
 
-class SafelistEntry(object):
+class SafelistEntry(Base):
 
 
     def __init__(self, guid, entity, type, created_by, created_at):

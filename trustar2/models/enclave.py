@@ -2,7 +2,7 @@ from trustar2.base import typename
 from trustar2.models.base import Base
 
 
-class Enclave(object):
+class Enclave(Base):
 
 
     def __init__(self, name, template_name, workflow_supported, 

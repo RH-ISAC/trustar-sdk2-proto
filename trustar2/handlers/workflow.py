@@ -1,6 +1,8 @@
 from trustar2.query import Query
 from trustar2.handlers.base_handler import BaseHandler
 from trustar2.base import fluent, Methods, get_timestamp
+from trustar2.models.trustar_response import TruStarResponse
+from trustar2.models.workflow import Workflow as WorkflowModel
 
 
 MIN_NAME_LEN = 3
@@ -110,7 +112,14 @@ class Workflow(BaseHandler):
         calling to this method.
         """
         self._raise_if_payload_is_not_set_up()
-        return self.create_query(Methods.POST).set_params(self.payload_params).execute()
+        result = self.create_query(Methods.POST).set_params(self.payload_params).execute()
+        return TruStarResponse(
+            status_code=result.status_code,
+            data=(WorkflowModel.from_dict(result.json()) 
+                if result.status_code == 200
+                else result.json()
+            )
+        )
 
 
     def get(self):
@@ -124,11 +133,20 @@ class Workflow(BaseHandler):
             _ set_updated_from
             - set_updated_to
         """
-        return (
+        result = (
             self.create_query(Methods.GET)
             .set_query_string(self.query_params.serialize())
             .set_params(self.payload_params)
             .execute()
+        )
+        content = (
+            [WorkflowModel.from_dict(w) for w in result.json().get("content")] 
+            if result.status_code == 200 
+            else result.json()
+        )
+        return TruStarResponse(
+            status_code=result.status_code, 
+            data=content
         )
 
 
@@ -137,10 +155,18 @@ class Workflow(BaseHandler):
         You'll need to call to 'set_workflow_id' before calling this method.
         """
         self._raise_if_workflow_id_is_not_set_up()
-        return (
+        result = (
             self.create_query(Methods.GET, "/{}".format(self.workflow_guid))
             .set_params(self.payload_params)
             .execute()
+        )
+        return TruStarResponse(
+            status_code=result.status_code,
+            data=(
+                WorkflowModel.from_dict(result.json())
+                if result.status_code == 200
+                else result.json()
+            )
         )
 
 
@@ -149,10 +175,14 @@ class Workflow(BaseHandler):
         You'll need to call to 'set_workflow_id' before calling this method.
         """
         self._raise_if_workflow_id_is_not_set_up()
-        return (
+        result = (
             self.create_query(Methods.DELETE, "/{}".format(self.workflow_guid))
             .set_params(self.payload_params)
             .execute()
+        )
+        return TruStarResponse(
+            status_code=result.status_code,
+            data="OK" if result.status_code == 200 else "ERROR"
         )
 
 
@@ -167,8 +197,16 @@ class Workflow(BaseHandler):
         """
         self._raise_if_payload_is_not_set_up()
         self._raise_if_workflow_id_is_not_set_up()
-        return (
+        result = (
             self.create_query(Methods.PUT, "/{}".format(self.workflow_guid))
             .set_params(self.payload_params)
             .execute()
+        )
+        return TruStarResponse(
+            status_code=result.status_code,
+            data=(
+                WorkflowModel.from_dict(result.json())
+                if result.status_code == 200
+                else result.json()
+            )
         )

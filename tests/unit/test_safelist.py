@@ -42,13 +42,13 @@ def entities_extraction_json():
 def test_get_safelist_summaries(mocked_request, safelist, safelist_summaries_json):
     mocked_request.get(SAFELIST_SUMMARIES, status_code=200, json=safelist_summaries_json)
     response = safelist.get_safelist_libraries()
-    assert response.json() == safelist_summaries_json
+    assert [s.serialize() for s in response.data] == safelist_summaries_json
 
 
 def test_get_safelist_details_successfully(mocked_request, safelist, safelist_details_json):
     mocked_request.get(SAFELIST_DETAILS, status_code=200, json=safelist_details_json)
     response = safelist.set_library_guid(SAFELIST_LIBRARY).get_safelist_details()
-    assert response.json() == safelist_details_json
+    assert response.data.serialize() == safelist_details_json
 
 
 def test_get_safelist_details_without_library_guid(safelist):
@@ -65,7 +65,7 @@ def test_create_entries_successfully(mocked_request, safelist, safelist_details_
                     "type": "EMAIL_ADDRESS"
                 }).create_entries()
 
-    assert response.json() == safelist_details_json
+    assert response.data.serialize() == safelist_details_json
 
 
 def test_create_entries_without_library_guid(safelist):
@@ -105,9 +105,9 @@ def test_create_entries_without_valid_type(safelist):
 
 
 def test_create_safelist_library_successfully(mocked_request, safelist, safelist_summaries_json):
-    mocked_request.post(SAFELIST_SUMMARIES, status_code=200, json=safelist_summaries_json)
+    mocked_request.post(SAFELIST_SUMMARIES, status_code=200, json=safelist_summaries_json[0])
     response = safelist.set_library_name("test-library-name-1").create_safelist()
-    assert response.json() == safelist_summaries_json
+    assert response.data.serialize() == safelist_summaries_json[0]
 
 
 def test_create_safelist_library_without_name(safelist):
@@ -144,7 +144,7 @@ def test_extract_terms_successfully(mocked_request, safelist, entities_extractio
     mocked_request.post(url, json=entities_extraction_json)
     text_blob = "IP: 8.8.8.8\nUnstructured text extraction\ngood-email@test-domain.com"
     response = safelist.set_text_to_be_extracted(text_blob).extract_terms()
-    assert response.json() == entities_extraction_json
+    assert response.data == entities_extraction_json
 
 
 def test_extract_terms_without_setting_text(safelist):

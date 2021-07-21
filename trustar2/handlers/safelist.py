@@ -1,9 +1,11 @@
 from __future__ import unicode_literals
 
-from trustar2.base import fluent, Methods, ParamsSerializer, Param, get_timestamp
-from trustar2.handlers.base_handler import BaseHandler
 from trustar2.query import Query
 from trustar2.trustar_enums import ObservableTypes
+from trustar2.handlers.base_handler import BaseHandler
+from trustar2.models.trustar_response import TruStarResponse
+from trustar2.models.safelists import SafelistLibrary, SafelistEntry
+from trustar2.base import fluent, Methods, ParamsSerializer, Param, get_timestamp
 
 
 @fluent
@@ -88,8 +90,16 @@ class Safelist(BaseHandler):
 
         :returns: HTTP response with safelist library summaries in it's content.
         """
-        return Query(self.config, self.summaries_endpoint, Methods.GET).set_params(self.payload_params).execute()
-    
+        result = Query(self.config, self.summaries_endpoint, Methods.GET).set_params(self.payload_params).execute()
+        return TruStarResponse(
+            status_code=result.status_code,
+            data=(
+                [SafelistLibrary.from_dict(s) for s in result.json()]
+                if result.status_code == 200
+                else result.json()
+            )
+        )
+
 
     def get_safelist_details(self):
         """Retrieves safelist details given a library guid. 
@@ -99,7 +109,15 @@ class Safelist(BaseHandler):
         :returns: HTTP response with Safelist Library Details in it's content.
         """
         self._validate_library_guid_is_present()
-        return Query(self.config, self.details_endpoint, Methods.GET).set_params(self.payload_params).execute()
+        result = Query(self.config, self.details_endpoint, Methods.GET).set_params(self.payload_params).execute()
+        return TruStarResponse(
+            status_code=result.status_code,
+            data=(
+                SafelistLibrary.from_dict(result.json()) 
+                if result.status_code == 200
+                else result.json()
+            )
+        )
 
 
     def create_entries(self):
@@ -116,7 +134,15 @@ class Safelist(BaseHandler):
                 "You must call the 'set_safelist_entries' method before calling this method."
             )
 
-        return Query(self.config, self.details_endpoint, Methods.PATCH).set_params(self.payload_params).execute()
+        result = Query(self.config, self.details_endpoint, Methods.PATCH).set_params(self.payload_params).execute()
+        return TruStarResponse(
+            status_code=result.status_code,
+            data=(
+                SafelistLibrary.from_dict(result.json()) 
+                if result.status_code == 200
+                else result.json()
+            )
+        )
 
 
     def create_safelist(self):
@@ -131,7 +157,15 @@ class Safelist(BaseHandler):
                 "You must provide a name for the new library. Call the 'set_library_name' method before."
             )
 
-        return Query(self.config, self.summaries_endpoint, Methods.POST).set_params(self.payload_params).execute()
+        result = Query(self.config, self.summaries_endpoint, Methods.POST).set_params(self.payload_params).execute()
+        return TruStarResponse(
+            status_code=result.status_code,
+            data=(
+                SafelistLibrary.from_dict(result.json()) 
+                if result.status_code == 200
+                else result.json()
+            )
+        )
 
 
     def delete_entry(self, entry_guid):
@@ -143,14 +177,16 @@ class Safelist(BaseHandler):
         """
         self._validate_library_guid_is_present()
         endpoint = self.details_endpoint + "/" + entry_guid
-        return Query(self.config, endpoint, Methods.DELETE).set_params(self.payload_params).execute()
+        result = Query(self.config, endpoint, Methods.DELETE).set_params(self.payload_params).execute()
+        return TruStarResponse(status_code=result.status_code, data="OK" if result.status_code < 300 else "ERROR")
     
 
     def delete_safelist(self):
         """Deletes a safelist library. You have to call 'set_library_guid' before
         calling this method."""
         self._validate_library_guid_is_present()
-        return Query(self.config, self.details_endpoint, Methods.DELETE).set_params(self.payload_params).execute()
+        result = Query(self.config, self.details_endpoint, Methods.DELETE).set_params(self.payload_params).execute()
+        return TruStarResponse(status_code=result.status_code, data="OK" if result.status_code < 300 else "ERROR")
 
 
     def extract_terms(self):
@@ -165,4 +201,5 @@ class Safelist(BaseHandler):
                 "You did not set any text for entities extraction. Call 'set_text_to_be_extracted' before."
             )
 
-        return Query(self.config, self.extract_endpoint, Methods.POST).set_params(self.payload_params).execute()
+        result = Query(self.config, self.extract_endpoint, Methods.POST).set_params(self.payload_params).execute()
+        return TruStarResponse(status_code=result.status_code, data=result.json())

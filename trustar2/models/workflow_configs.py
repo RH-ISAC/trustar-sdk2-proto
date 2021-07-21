@@ -148,9 +148,12 @@ class WorkflowConfig(Base):
     def from_dict(cls, config_dict):
         obj = cls(workflow_type=config_dict.get("type"))
         source_configs = config_dict.get("workflowSource", {}).get("enclaveSourceConfig", [])
-        obj.set_source_configs([(conf.get("enclaveGuid"), conf.get("weight")) for conf in source_configs])
+        obj.set_source_configs([
+            (str(conf.get("enclaveGuid")), conf.get("weight")) 
+            for conf in source_configs]
+        )
         dest_config = config_dict.get("workflowDestination", {}).get("enclaveDestinationConfigs")[0]
-        obj.set_destination_configs((dest_config.get("enclaveGuid"), dest_config.get("destinationType")))
+        obj.set_destination_configs((str(dest_config.get("enclaveGuid")), dest_config.get("destinationType")))
         obj.set_observable_types(config_dict.get("observableTypes", []))
         obj.set_priority_scores(config_dict.get("priorityScores", []))
         return obj
