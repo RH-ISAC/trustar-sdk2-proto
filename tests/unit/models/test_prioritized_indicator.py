@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from .resources import prioritized_indicator
+from tests.unit.resources import prioritized_indicator
 from trustar2.models.entity import Entity
 from trustar2.models.score_context import ScoreContext
 from trustar2.models.prioritized_indicator import PrioritizedIndicator

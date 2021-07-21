@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from .resources import enclave
+from tests.unit.resources import enclave
 from trustar2.models.enclave import Enclave
 
 

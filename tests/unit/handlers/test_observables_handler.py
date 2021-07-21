@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 import json
-from .resources import observables_search_example_request
+from tests.unit.resources import observables_search_example_request
 from trustar2.handlers.observables import Observables
 from trustar2.handlers.tags import TagObservable
 from trustar2.trustar_enums import MaxValues

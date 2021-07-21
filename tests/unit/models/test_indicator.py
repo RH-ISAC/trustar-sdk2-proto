@@ -5,7 +5,7 @@ import json
 import pytest
 
 from trustar2.models import Indicator, Entity
-from .resources import indicators_submission_example_request
+from tests.unit.resources import indicators_submission_example_request
 from trustar2.trustar_enums import (
     ObservableTypes, AttributeTypes, 
     ConfidenceScore, MaliciousScore

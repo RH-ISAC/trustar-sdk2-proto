@@ -4,7 +4,7 @@ import json
 import pytest
 
 from trustar2 import Safelist, TruStar
-from .resources import safelist_summaries, safelist_details, entities_extraction
+from tests.unit.resources import safelist_summaries, safelist_details, entities_extraction
 
 TRUSTAR_API = "https://test.trustar.co/api/2.0"
 SAFELIST_SUMMARIES = TRUSTAR_API + "/safelist-libraries"

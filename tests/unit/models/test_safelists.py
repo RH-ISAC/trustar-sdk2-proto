@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from .resources import safelist_details
+from tests.unit.resources import safelist_details
 from trustar2.models.safelists import SafelistLibrary, SafelistEntry
 from trustar2.trustar_enums import ObservableTypes
 

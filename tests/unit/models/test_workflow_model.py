@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from .resources import serialized_workflow
+from tests.unit.resources import serialized_workflow
 from trustar2.models.workflow import Workflow
 from trustar2.models.workflow_configs import WorkflowConfig
 from trustar2.trustar_enums import ObservableTypes, MaliciousScore, WorkflowDestinations
