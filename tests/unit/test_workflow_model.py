@@ -5,6 +5,7 @@ import pytest
 from .resources import serialized_workflow
 from trustar2.models.workflow import Workflow
 from trustar2.models.workflow_configs import WorkflowConfig
+from trustar2.trustar_enums import ObservableTypes, MaliciousScore, WorkflowDestinations
 
 
 GUID = "test-guid"
@@ -15,9 +16,12 @@ SAFELIST_GUIDS = ["test-safelist-id"]
 SOURCE_ENCLAVE_ID = "test-source-id"
 WEIGHT = 1
 DEST_ENCLAVE_ID = "test-destination-id"
-DEST_TYPE = "ENCLAVE"
-TYPES = ["IP4", "IP6", "EMAIL_ADDRESS", "URL", "MD5", "SHA256"]
-SCORES = ["MEDIUM", "HIGH"]
+DEST_TYPE = WorkflowDestinations.ENCLAVE.value
+
+TYPES = [ObservableTypes.IP4.value, ObservableTypes.IP6.value, ObservableTypes.EMAIL_ADDRESS.value, 
+         ObservableTypes.URL.value, ObservableTypes.MD5.value, ObservableTypes.SHA256.value]
+
+SCORES = [MaliciousScore.MEDIUM.value, MaliciousScore.HIGH.value]
 
 
 
