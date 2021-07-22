@@ -1,8 +1,8 @@
 from trustar2.query import Query
 from trustar2.handlers.base_handler import BaseHandler
-from trustar2.base import fluent, Methods, get_timestamp
 from trustar2.models.trustar_response import TruStarResponse
 from trustar2.models.workflow import Workflow as WorkflowModel
+from trustar2.base import fluent, Methods, get_timestamp, STATUS_OK
 
 
 MIN_NAME_LEN = 3
@@ -116,7 +116,7 @@ class Workflow(BaseHandler):
         return TruStarResponse(
             status_code=result.status_code,
             data=(WorkflowModel.from_dict(result.json()) 
-                if result.status_code == 200
+                if result.status_code == STATUS_OK
                 else result.json()
             )
         )
@@ -141,7 +141,7 @@ class Workflow(BaseHandler):
         )
         content = (
             [WorkflowModel.from_dict(w) for w in result.json().get("content")] 
-            if result.status_code == 200 
+            if result.status_code == STATUS_OK 
             else result.json()
         )
         return TruStarResponse(
@@ -164,7 +164,7 @@ class Workflow(BaseHandler):
             status_code=result.status_code,
             data=(
                 WorkflowModel.from_dict(result.json())
-                if result.status_code == 200
+                if result.status_code == STATUS_OK
                 else result.json()
             )
         )
@@ -182,7 +182,7 @@ class Workflow(BaseHandler):
         )
         return TruStarResponse(
             status_code=result.status_code,
-            data="OK" if result.status_code == 200 else "ERROR"
+            data="OK" if result.status_code == STATUS_OK else "ERROR"
         )
 
 
@@ -206,7 +206,7 @@ class Workflow(BaseHandler):
             status_code=result.status_code,
             data=(
                 WorkflowModel.from_dict(result.json())
-                if result.status_code == 200
+                if result.status_code == STATUS_OK
                 else result.json()
             )
         )

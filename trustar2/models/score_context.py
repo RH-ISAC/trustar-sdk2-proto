@@ -1,3 +1,4 @@
+from trustar2.base import typename
 from trustar2.models.base import Base
 
 
@@ -10,6 +11,10 @@ class ScoreContext(Base):
         self.weight = weight
         self.properties = properties
         self.enclave_name = enclave_name
+
+
+    def __repr__(self):
+        return "{}(name={}, weight={})".format(typename(self), self.source_name, self.weight)
 
 
     @classmethod

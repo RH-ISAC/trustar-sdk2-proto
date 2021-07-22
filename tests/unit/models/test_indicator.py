@@ -133,3 +133,7 @@ def test_indicator_deserialization(indicator_json):
     assert indicator.related_observables[1].confidence_score == HIGH_CONFIDENCE
 
     assert indicator.tags == ["importantTag", "anotherTag"]
+
+
+def test_indicator_repr(indicator):
+    assert indicator.__repr__() == "Indicator(value=www.badurl.com, type=URL)"

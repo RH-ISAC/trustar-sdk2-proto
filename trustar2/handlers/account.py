@@ -1,5 +1,5 @@
 from trustar2.query import Query
-from trustar2.base import fluent, Methods
+from trustar2.base import fluent, Methods, STATUS_OK
 from trustar2.models.enclave import Enclave
 from trustar2.handlers.base_handler import BaseHandler
 from trustar2.models.trustar_response import TruStarResponse
@@ -37,7 +37,7 @@ class Account(BaseHandler):
             status_code=result.status_code, 
             data=(
                 [Enclave.from_dict(e) for e in result.json()]
-                if result.status_code == 200
+                if result.status_code == STATUS_OK
                 else result.json()
             )
         )

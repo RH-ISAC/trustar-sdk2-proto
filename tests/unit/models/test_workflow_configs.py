@@ -96,3 +96,15 @@ def test_workflow_config_with_missing_properties_in_dst_config(wf_config):
 
     with pytest.raises(AttributeError):
         wf_config.set_destination_configs({"destination_type": "QRADAR"}) # missing enclave_guid
+
+
+def test_wf_config_repr(wf_config):
+    assert wf_config.__repr__() == "WorkflowConfig(type=INDICATOR_PRIORITIZATION)"
+
+
+def test_wf_src_config_repr(wf_src_config):
+    assert wf_src_config.__repr__() == "WorkflowSourceConfig(enclave=test-enclave-id, weight=3)"
+
+
+def test_wf_dst_config_repr(wf_dst_config):
+    assert wf_dst_config.__repr__() == "WorkflowDestinationConfig(enclave=test-enclave-id, destination_type=ENCLAVE)"

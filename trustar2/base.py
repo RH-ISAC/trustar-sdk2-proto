@@ -8,6 +8,8 @@ from datetime import datetime
 from collections import namedtuple
 
 
+STATUS_OK = 200
+
 
 def get_timestamp(date):
     if isinstance(date, int):

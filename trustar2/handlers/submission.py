@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from trustar2.query import Query
 from trustar2.trustar_enums import MaxValues
 from trustar2.handlers.tags import TagSubmission
-from trustar2.base import fluent, Methods, get_timestamp
+from trustar2.base import fluent, Methods, get_timestamp, typename
 from trustar2.handlers.search_handler import SearchHandler
 from trustar2.models.trustar_response import TruStarResponse
 from trustar2.models.submission_details import (
@@ -24,8 +24,9 @@ class Submission(SearchHandler):
         self.set_tags()
         self.set_include_content()
 
-    def __str__(self):
-        return "Submission <{}> with external Id <{}>".format(
+    def __repr__(self):
+        return "{}(title={}, external_id={})".format(
+            typename(self),
             self.payload_params.get("title"), 
             self.payload_params.get("externalId")
         )

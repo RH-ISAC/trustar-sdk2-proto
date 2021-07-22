@@ -1,5 +1,5 @@
 from .base import Base
-from trustar2.base import fluent
+from trustar2.base import fluent, typename
 from trustar2.trustar_enums import WorkflowDestinations, ObservableTypes
 
 MIN_WEIGHT = 1
@@ -15,6 +15,10 @@ class WorkflowConfig(Base):
         self.workflow_destination = []
         self.priority_scores = []
         self.observable_types = []
+
+    
+    def __repr__(self):
+        return "{}(type={})".format(typename(self), self.workflow_type)
 
 
     def _get_source_config_obj_from_tuple(self, source_config):
@@ -168,6 +172,10 @@ class WorkflowSourceConfig(Base):
         self.enclave_guid = enclave_guid
         self.weight = weight
 
+    
+    def __repr__(self):
+        return "{}(enclave={}, weight={})".format(typename(self), self.enclave_guid, self.weight)
+
 
     def _validate_weight(self, weight):
         if weight > MAX_WEIGHT or weight < MIN_WEIGHT:
@@ -189,6 +197,10 @@ class WorkflowDestinationConfig(Base):
         self._validate_enclave_guid(enclave_guid)
         self.enclave_guid = enclave_guid
         self.destination_type = destination_type
+
+
+    def __repr__(self):
+        return "{}(enclave={}, destination_type={})".format(typename(self), self.enclave_guid, self.destination_type)
 
     
     def _validate_enclave_guid(self, enclave_guid):

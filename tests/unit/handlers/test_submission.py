@@ -291,3 +291,7 @@ def test_set_sort_order_not_implemented(submission):
     with pytest.raises(NotImplementedError):
         submission.set_sort_order("ASC")
     assert len(submission.payload_params) == TOTAL_DEFAULT_PARAMS
+
+
+def test_full_submission_repr(full_submission):
+    assert full_submission.__repr__() == "Submission(title=Report, complex test, external_id=external-1234)"
