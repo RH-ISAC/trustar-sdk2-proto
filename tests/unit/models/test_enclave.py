@@ -4,7 +4,7 @@ import pytest
 
 from tests.unit.resources import enclave
 from trustar2.models.enclave import Enclave
-
+from trustar2.trustar_enums import ID_Types
 
 NAME = "TestEnclave"
 TEMPLATE_NAME = "Private Enclave"
@@ -13,7 +13,6 @@ READ = True
 CREATE = True
 UPDATE = True
 ID = "test-id"
-TYPE = "INTERNAL"
 
 
 @pytest.fixture
@@ -31,7 +30,7 @@ def enclave_obj():
         create=CREATE,
         update=UPDATE,
         id=ID,
-        type=TYPE
+        type=ID_Types.INTERNAL.value
     )
 
 
@@ -45,7 +44,7 @@ def test_enclave_deserialization(enclave_json):
     assert enclave.create == CREATE
     assert enclave.update == UPDATE
     assert enclave.id == ID
-    assert enclave.type == TYPE
+    assert enclave.type == ID_Types.INTERNAL.value
 
 
 def test_enclave_serialization(enclave_obj, enclave_json):

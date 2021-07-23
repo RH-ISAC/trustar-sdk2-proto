@@ -33,11 +33,11 @@ class Account(BaseHandler):
     def get_enclaves(self):
         """Returns all user enclaves with according permissions."""
         result = self.create_query(Methods.GET, specific_endpoint="/enclaves").execute()
+        data = result.json()
+        if result.status_code == STATUS_OK:
+            data = [Enclave.from_dict(e) for e in data]
+        
         return TruStarResponse(
             status_code=result.status_code, 
-            data=(
-                [Enclave.from_dict(e) for e in result.json()]
-                if result.status_code == STATUS_OK
-                else result.json()
-            )
+            data=data
         )

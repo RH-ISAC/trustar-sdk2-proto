@@ -5,7 +5,7 @@ from trustar2.trustar_enums import ObservableTypes
 from trustar2.handlers.base_handler import BaseHandler
 from trustar2.models.trustar_response import TruStarResponse
 from trustar2.models.safelists import SafelistLibrary, SafelistEntry
-from trustar2.base import fluent, Methods, ParamsSerializer, Param, get_timestamp
+from trustar2.base import fluent, Methods, ParamsSerializer, Param, get_timestamp, STATUS_OK
 
 
 @fluent
@@ -91,13 +91,13 @@ class Safelist(BaseHandler):
         :returns: HTTP response with safelist library summaries in it's content.
         """
         result = Query(self.config, self.summaries_endpoint, Methods.GET).set_params(self.payload_params).execute()
+        data = result.json()
+        if result.status_code == STATUS_OK:
+            data = [SafelistLibrary.from_dict(s) for s in data]
+
         return TruStarResponse(
             status_code=result.status_code,
-            data=(
-                [SafelistLibrary.from_dict(s) for s in result.json()]
-                if result.status_code == 200
-                else result.json()
-            )
+            data=data
         )
 
 
@@ -110,13 +110,13 @@ class Safelist(BaseHandler):
         """
         self._validate_library_guid_is_present()
         result = Query(self.config, self.details_endpoint, Methods.GET).set_params(self.payload_params).execute()
+        data = result.json()
+        if result.status_code == STATUS_OK:
+            data = SafelistLibrary.from_dict(data)
+
         return TruStarResponse(
             status_code=result.status_code,
-            data=(
-                SafelistLibrary.from_dict(result.json()) 
-                if result.status_code == 200
-                else result.json()
-            )
+            data=data
         )
 
 
@@ -135,13 +135,13 @@ class Safelist(BaseHandler):
             )
 
         result = Query(self.config, self.details_endpoint, Methods.PATCH).set_params(self.payload_params).execute()
+        data = result.json()
+        if result.status_code == STATUS_OK:
+            data = SafelistLibrary.from_dict(data)
+            
         return TruStarResponse(
             status_code=result.status_code,
-            data=(
-                SafelistLibrary.from_dict(result.json()) 
-                if result.status_code == 200
-                else result.json()
-            )
+            data=data
         )
 
 
@@ -158,13 +158,13 @@ class Safelist(BaseHandler):
             )
 
         result = Query(self.config, self.summaries_endpoint, Methods.POST).set_params(self.payload_params).execute()
+        data = result.json()
+        if result.status_code == STATUS_OK:
+            data = SafelistLibrary.from_dict(data)
+
         return TruStarResponse(
             status_code=result.status_code,
-            data=(
-                SafelistLibrary.from_dict(result.json()) 
-                if result.status_code == 200
-                else result.json()
-            )
+            data=data
         )
 
 
