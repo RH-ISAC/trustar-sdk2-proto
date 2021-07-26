@@ -301,3 +301,61 @@ searched_submission = """
   "tags": []
 }
 """
+
+
+enclave = """
+{
+  "name": "TestEnclave",
+  "templateName": "Private Enclave",
+  "workflowSupported": false,
+  "read": true,
+  "create": true,
+  "update": true,
+  "id": "test-id",
+  "type": "INTERNAL"
+}
+"""
+
+
+serialized_workflow = """
+{
+  "guid": "test-guid",
+  "name": "Test Workflow",
+  "created": 1616706603077,
+  "updated": 1621540733425,
+  "workflowConfig": {
+    "type": "INDICATOR_PRIORITIZATION",
+    "workflowSource": {
+      "enclaveSourceConfig": [
+        {
+            "enclaveGuid": "test-source-id",
+            "weight": 1
+        }
+      ]
+    },
+    "workflowDestination": {
+      "enclaveDestinationConfigs": [
+        {
+            "enclaveGuid": "test-destination-id",
+            "destinationType": "ENCLAVE"
+        }
+      ]
+    },
+    "observableTypes": [
+      "IP4",
+      "IP6",
+      "EMAIL_ADDRESS",
+      "URL",
+      "MD5",
+      "SHA256"
+    ],
+    "priorityScores": [
+      "MEDIUM",
+      "HIGH"
+    ]
+  },
+  "safelistGuids": [
+    "test-safelist-id"
+  ]
+}
+"""

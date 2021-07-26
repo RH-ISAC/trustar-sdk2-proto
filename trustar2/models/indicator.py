@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 from .base import Base
 from .entity import Entity
-from trustar2.base import fluent
+from trustar2.base import fluent, typename
 from trustar2.trustar_enums import ObservableTypes, MaxValues
 
 
@@ -25,6 +25,11 @@ class Indicator(Base):
         self.attributes = []
         self.related_observables = []
         self.tags = []
+
+
+    def __repr__(self):
+        return "{}(value={}, type={})".format(typename(self), self.observable.value, self.observable.type)
+    
 
     def set_related_observables(self, related_obs):
         if isinstance(related_obs, list):

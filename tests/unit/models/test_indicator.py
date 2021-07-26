@@ -5,7 +5,7 @@ import json
 import pytest
 
 from trustar2.models import Indicator, Entity
-from .resources import indicators_submission_example_request
+from tests.unit.resources import indicators_submission_example_request
 from trustar2.trustar_enums import (
     ObservableTypes, AttributeTypes, 
     ConfidenceScore, MaliciousScore
@@ -133,3 +133,7 @@ def test_indicator_deserialization(indicator_json):
     assert indicator.related_observables[1].confidence_score == HIGH_CONFIDENCE
 
     assert indicator.tags == ["importantTag", "anotherTag"]
+
+
+def test_indicator_repr(indicator):
+    assert indicator.__repr__() == "Indicator(value=www.badurl.com, type=URL)"

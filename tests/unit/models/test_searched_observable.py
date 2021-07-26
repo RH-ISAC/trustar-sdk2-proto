@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from .resources import searched_observable
+from tests.unit.resources import searched_observable
 from trustar2.models.searched_observable import SearchedObservable
 from trustar2.trustar_enums import ObservableTypes
 
