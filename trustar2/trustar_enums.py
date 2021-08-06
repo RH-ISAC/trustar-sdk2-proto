@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from enum import Enum
 
 
@@ -93,3 +95,21 @@ class ConfidenceScore(TSEnum):
     LOW = "LOW"
     MEDIUM = "MEDIUM"
     HIGH = "HIGH"
+
+
+class SubmissionEnum(TSEnum):
+    ID = "id"
+    TITLE = "title"
+    CONTENT = "content"
+    ENCLAVE_GUID = "enclaveGuid"
+    EXTERNAL_ID = "externalId"
+    EXTERNAL_URL = "externalUrl"
+    TAGS = "tags"
+    ID_TYPE = "idType"
+    INCLUDE_CONTENT = "includeContent"
+    TIMESTAMP = "timestamp"
+    RAW_CONTENT = "rawContent"
+    SUBMISSION_VERSION = "submissionVersion"
+    GUID = "guid"
+    CREATED = "created"
+    UPDATED = "updated"

@@ -1,6 +1,7 @@
 from trustar2.base import typename
 from trustar2.models.base import Base
 from trustar2.models.indicator import Indicator
+from trustar2.trustar_enums import SubmissionEnum
 
 
 class SubmissionDetails(Base):
@@ -44,25 +45,25 @@ class StructuredSubmissionDetails(SubmissionDetails):
     @classmethod
     def from_dict(cls, sub_dict):
         return cls(
-            id=sub_dict.get("id"),
-            title=sub_dict.get("title"),
-            content=sub_dict.get("content"),
-            enclave_guid=sub_dict.get("enclaveGuid"),
-            external_id=sub_dict.get("externalId"),
-            external_url=sub_dict.get("externalUrl"),
-            timestamp=sub_dict.get("timestamp"),
-            created=sub_dict.get("created"),
-            updated=sub_dict.get("updated"),
-            tags=sub_dict.get("tags"),
-            submission_version=sub_dict.get("submissionVersion"),
-            raw_content=sub_dict.get("rawContent")
+            id=sub_dict.get(SubmissionEnum.ID.value),
+            title=sub_dict.get(SubmissionEnum.TITLE.value),
+            content=sub_dict.get(SubmissionEnum.CONTENT.value),
+            enclave_guid=sub_dict.get(SubmissionEnum.ENCLAVE_GUID.value),
+            external_id=sub_dict.get(SubmissionEnum.EXTERNAL_ID.value),
+            external_url=sub_dict.get(SubmissionEnum.EXTERNAL_URL.value),
+            timestamp=sub_dict.get(SubmissionEnum.TIMESTAMP.value),
+            created=sub_dict.get(SubmissionEnum.CREATED.value),
+            updated=sub_dict.get(SubmissionEnum.UPDATED.value),
+            tags=sub_dict.get(SubmissionEnum.TAGS.value),
+            submission_version=sub_dict.get(SubmissionEnum.SUBMISSION_VERSION.value),
+            raw_content=sub_dict.get(SubmissionEnum.RAW_CONTENT.value)
         )
 
 
     def serialize(self):
         serialized = super(StructuredSubmissionDetails, self).serialize()
-        content_indicators = [i.serialize() for i in serialized.get("content").get("indicators")]
-        serialized.update({"content": {"indicators": content_indicators}})
+        content_indicators = [i.serialize() for i in serialized.get(SubmissionEnum.CONTENT.value).get("indicators")]
+        serialized.update({SubmissionEnum.CONTENT.value: {"indicators": content_indicators}})
         return serialized
 
 
@@ -82,15 +83,15 @@ class UnstructuredSubmissionDetails(SubmissionDetails):
     @classmethod
     def from_dict(cls, sub_dict):
         return cls(
-            id=sub_dict.get("id"),
-            title=sub_dict.get("title"),
-            content=sub_dict.get("content"),
-            enclave_guid=sub_dict.get("enclaveGuid"),
-            external_id=sub_dict.get("externalId"),
-            external_url=sub_dict.get("externalUrl"),
-            timestamp=sub_dict.get("timestamp"),
-            created=sub_dict.get("created"),
-            updated=sub_dict.get("updated"),
-            tags=sub_dict.get("tags"),
-            submission_version=sub_dict.get("submissionVersion")
+            id=sub_dict.get(SubmissionEnum.ID.value),
+            title=sub_dict.get(SubmissionEnum.TITLE.value),
+            content=sub_dict.get(SubmissionEnum.CONTENT.value),
+            enclave_guid=sub_dict.get(SubmissionEnum.ENCLAVE_GUID.value),
+            external_id=sub_dict.get(SubmissionEnum.EXTERNAL_ID.value),
+            external_url=sub_dict.get(SubmissionEnum.EXTERNAL_URL.value),
+            timestamp=sub_dict.get(SubmissionEnum.TIMESTAMP.value),
+            created=sub_dict.get(SubmissionEnum.CREATED.value),
+            updated=sub_dict.get(SubmissionEnum.UPDATED.value),
+            tags=sub_dict.get(SubmissionEnum.TAGS.value),
+            submission_version=sub_dict.get(SubmissionEnum.SUBMISSION_VERSION.value)
         )
