@@ -236,7 +236,7 @@ class Submission(SearchHandler):
             status_code=result.status_code, 
             data=(
                 Submission.from_dict(result.json()) 
-                if result.status_code < 400 and self.query_params.get("includeContent") 
+                if result.status_code < 400 and self.query_params.get(SubmissionEnum.INCLUDE_CONTENT.value) 
                 else result.json()
             )
         )
