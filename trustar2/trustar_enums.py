@@ -179,3 +179,4 @@ class IndicatorEnum(TSEnum):
     OBSERVABLE = "observable"
     TYPE = "type"
     VALUE = "value"
+    TAGS = "tags"
