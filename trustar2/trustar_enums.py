@@ -158,3 +158,10 @@ class TagsEnum(TSEnum):
     REMOVED_TAGS = "removedTags"
     ENCLAVE_ID = "enclaveId" # Used for submissions
     ENCLAVE_GUID = "enclaveGuid" # Used almost in every other place
+
+
+class IndicatorEnum(TSEnum):
+    TYPES = "types"
+    ATTRIBUTES = "attributes"
+    RELATED_OBSERVABLES = "relatedObservables"
+    INCLUDE_SAFELISTED = "includeSafelisted"

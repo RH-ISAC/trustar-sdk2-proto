@@ -5,9 +5,13 @@ from trustar2.models import Entity
 from trustar2.base import fluent, Methods
 from trustar2.handlers.tags import TagIndicator
 from trustar2.handlers.search_handler import SearchHandler
-from trustar2.trustar_enums import ObservableTypes, SortOrder, AttributeTypes
+from trustar2.trustar_enums import (
+    ObservableTypes, 
+    SortOrder, 
+    AttributeTypes,
+    IndicatorEnum
+)
 
- 
 
 @fluent
 class SearchIndicator(SearchHandler):
@@ -55,7 +59,7 @@ class SearchIndicator(SearchHandler):
             raise AttributeError("types should be a list")
 
         types = [self._get_value(t, ObservableTypes) for t in types]
-        self.set_payload_param("types", types)
+        self.set_payload_param(IndicatorEnum.TYPES.value, types)
 
 
     def set_attributes(self, attributes):
@@ -63,7 +67,7 @@ class SearchIndicator(SearchHandler):
             raise AttributeError("attributes should be a list")
 
         attributes = [self._get_entity(e, AttributeTypes) for e in attributes]
-        self.set_payload_param("attributes", attributes)
+        self.set_payload_param(IndicatorEnum.ATTRIBUTES.value, attributes)
 
 
     def set_related_observables(self, observables):
@@ -71,11 +75,11 @@ class SearchIndicator(SearchHandler):
             raise AttributeError("observables should be a list")
 
         observables = [self._get_entity(o, ObservableTypes) for o in observables]
-        self.set_payload_param("relatedObservables", observables)
+        self.set_payload_param(IndicatorEnum.RELATED_OBSERVABLES.value, observables)
 
 
     def set_include_safelisted(self, include_safelisted):
-        self.set_payload_param("includeSafelisted", include_safelisted)
+        self.set_payload_param(IndicatorEnum.INCLUDE_SAFELISTED.value, include_safelisted)
 
 
     def create_query(self, method):
