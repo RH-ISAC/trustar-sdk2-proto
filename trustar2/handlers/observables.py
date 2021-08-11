@@ -6,7 +6,8 @@ from trustar2.handlers.tags import TagObservable
 from trustar2.handlers.search_handler import SearchHandler
 from trustar2.trustar_enums import (
     ID_Types, ObservableSortColumns, ObservableTypes, 
-    MaxValues, ObservablesEnum)
+    MaxValues, ObservablesEnum, SearchEnum
+)
 
 
 MAX_TAGS = MaxValues.TAGS.value 
@@ -49,8 +50,8 @@ class Observables(SearchHandler):
         :returns: Query Object.
         """
         url = "{}{}".format(self.base_url, self._get_from_submission_endpoint)
-        self.set_query_param("submissionId", submission_id)
-        self.set_query_param("idType", id_type)
+        self.set_query_param(ObservablesEnum.SUBMISSION_ID.value, submission_id)
+        self.set_query_param(ObservablesEnum.ID_TYPE.value, id_type)
         query = Query(self.config, url, Methods.GET)
         return query.set_query_string(self.query_params)
 
@@ -87,8 +88,8 @@ class Observables(SearchHandler):
 
 
     def _validate_tags_length(self):
-        included_tags = self.payload_params.get("includedTags", [])
-        excluded_tags = self.payload_params.get("excludedTags", [])
+        included_tags = self.payload_params.get(SearchEnum.INCLUDED_TAGS.value, [])
+        excluded_tags = self.payload_params.get(SearchEnum.EXCLUDED_TAGS.value, [])
         are_too_may_tags = (len(included_tags) > MAX_TAGS) or (len(excluded_tags) > MAX_TAGS)
         if are_too_may_tags:
             raise AttributeError("Tags are limited to {} per observable".format(MAX_TAGS))

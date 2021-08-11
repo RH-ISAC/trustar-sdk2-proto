@@ -26,7 +26,7 @@ class SafelistLibrary(Base):
 
     @classmethod
     def from_dict(cls, safelist_dict): 
-        entries = safelist_dict.get("entries")
+        entries = safelist_dict.get(SafelistEnum.ENTRIES.value)
         return cls(
             guid=safelist_dict.get(SafelistEnum.GUID.value),
             name=safelist_dict.get(SafelistEnum.NAME.value),

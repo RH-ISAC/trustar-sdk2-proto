@@ -1,9 +1,21 @@
 from .base import Base
 from trustar2.base import fluent, typename
-from trustar2.trustar_enums import WorkflowDestinations, ObservableTypes
+from trustar2.trustar_enums import (
+    WorkflowDestinations, 
+    ObservableTypes,
+    WorkflowEnum
+)
 
 MIN_WEIGHT = 1
 MAX_WEIGHT = 5
+
+ENCLAVE_GUID = WorkflowEnum.ENCLAVE_GUID.value
+DEST_TYPE = WorkflowEnum.DESTINATION_TYPE.value
+WORKFLOW_SOURCE = WorkflowEnum.WORKFLOW_SOURCE.value
+WORKFLOW_DEST = WorkflowEnum.WORKFLOW_DEST.value
+ENCLAVE_SOURCE_CONFIG = WorkflowEnum.ENCLAVE_SOURCE_CONFIG.value
+ENCLAVE_DEST_CONFIG = WorkflowEnum.ENCLAVE_DEST_CONFIG.value
+
 
 
 @fluent
@@ -27,7 +39,7 @@ class WorkflowConfig(Base):
 
     def _get_source_config_obj_from_dict(self, source_config):
         enclave_guid = source_config.get("enclave_guid")
-        weight = source_config.get("weight")
+        weight = source_config.get(WorkflowEnum.WEIGHT.value)
         if not enclave_guid or not weight:
             raise AttributeError("'enclave_guid' or 'weight' fields were not provided in dict.")
 
@@ -141,25 +153,27 @@ class WorkflowConfig(Base):
 
     def serialize(self):
         serialized = super(WorkflowConfig, self).serialize()
-        workflow_source = serialized.get("workflowSource")
-        workflow_destination = serialized.get("workflowDestination")
-        serialized.update({"workflowSource": {"enclaveSourceConfig": workflow_source},
-                           "workflowDestination": {"enclaveDestinationConfigs": workflow_destination}})
+        workflow_source = serialized.get(WORKFLOW_SOURCE)
+        workflow_destination = serialized.get(WORKFLOW_DEST)
+        serialized.update({WORKFLOW_SOURCE: {ENCLAVE_SOURCE_CONFIG: workflow_source},
+                           WORKFLOW_DEST: {ENCLAVE_DEST_CONFIG: workflow_destination}})
         return serialized
 
 
     @classmethod
     def from_dict(cls, config_dict):
-        obj = cls(workflow_type=config_dict.get("type"))
-        source_configs = config_dict.get("workflowSource", {}).get("enclaveSourceConfig", [])
+        obj = cls(workflow_type=config_dict.get(WorkflowEnum.TYPE.value))
+        source_configs = config_dict.get(WORKFLOW_SOURCE, {}).get(ENCLAVE_SOURCE_CONFIG, [])
         obj.set_source_configs([
-            (str(conf.get("enclaveGuid")), conf.get("weight")) 
-            for conf in source_configs]
-        )
-        dest_config = config_dict.get("workflowDestination", {}).get("enclaveDestinationConfigs")[0]
-        obj.set_destination_configs((str(dest_config.get("enclaveGuid")), dest_config.get("destinationType")))
-        obj.set_observable_types(config_dict.get("observableTypes", []))
-        obj.set_priority_scores(config_dict.get("priorityScores", []))
+            (str(conf.get(ENCLAVE_GUID)), 
+             conf.get(WorkflowEnum.WEIGHT.value)) 
+            for conf in source_configs
+        ])
+
+        dest_config = config_dict.get(WORKFLOW_DEST, {}).get(ENCLAVE_DEST_CONFIG)[0]
+        obj.set_destination_configs((str(dest_config.get(ENCLAVE_GUID)), dest_config.get(DEST_TYPE)))
+        obj.set_observable_types(config_dict.get(WorkflowEnum.OBSERVABLE_TYPES.value, []))
+        obj.set_priority_scores(config_dict.get(WorkflowEnum.PRIORITY_SCORES.value, []))
         return obj
 
 

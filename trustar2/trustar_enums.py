@@ -124,6 +124,8 @@ class ObservablesEnum(TSEnum):
     ENCLAVE_GUIDS = "enclaveGuids"
     TAGS = "tags"
     OBSERVABLE_VALUE = "observableValue"
+    SUBMISSION_ID = "submissionId"
+    ID_TYPE = "idType"
 
 
 class SafelistEnum(TSEnum):
@@ -180,3 +182,43 @@ class IndicatorEnum(TSEnum):
     TYPE = "type"
     VALUE = "value"
     TAGS = "tags"
+
+
+class WorkflowEnum(TSEnum):
+    NAME = "name"
+    TYPE = "type"
+    CREATED_FROM = "createdFrom"
+    CREATED_TO = "createdTo"
+    UPDATED_FROM = "updatedFrom"
+    UPDATED_TO = "updatedTo"
+    WORKFLOW_CONFIG = "workflowConfig"
+    SAFELIST_GUIDS = "safelistGuids"
+    ENCLAVE_GUID = "enclaveGuid"
+    DESTINATION_TYPE = "destinationType"
+    WEIGHT = "weight"
+    WORKFLOW_SOURCE = "workflowSource"
+    WORKFLOW_DEST = "workflowDestination"
+    ENCLAVE_SOURCE_CONFIG = "enclaveSourceConfig"
+    ENCLAVE_DEST_CONFIG = "enclaveDestinationConfigs"
+    OBSERVABLE_TYPES = "observableTypes"
+    PRIORITY_SCORES = "priorityScores"
+
+
+class EnclaveEnum(TSEnum):
+    NAME = "name"
+    TEMPLATE_NAME = "templateName"
+    WORKFLOW_SUPPORTED = "workflowSupported"
+    READ = "read"
+    CREATE = "create"
+    UPDATE = "update"
+    ID = "id"
+    TYPE = "type"
+
+
+class ScoreContextEnum(TSEnum):
+    ENCLAVE_GUID = "enclaveGuid"
+    SOURCE_NAME = "sourceName"
+    NORMALIZED_SCORE = "normalizedScore"
+    WEIGHT = "weight"
+    PROPERTIES = "properties"
+    ENCLAVE_NAME = "enclaveName"
