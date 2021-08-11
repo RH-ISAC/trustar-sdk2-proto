@@ -1,15 +1,17 @@
 from __future__ import unicode_literals
 
 from trustar2.query import Query
-from trustar2.trustar_enums import MaxValues, SubmissionEnum
 from trustar2.handlers.tags import TagSubmission
-from trustar2.base import fluent, Methods, get_timestamp, typename
 from trustar2.handlers.search_handler import SearchHandler
 from trustar2.models.trustar_response import TruStarResponse
+from trustar2.base import fluent, Methods, get_timestamp, typename
+from trustar2.trustar_enums import MaxValues, SubmissionEnum, SearchEnum
 from trustar2.models.submission_details import (
     StructuredSubmissionDetails, 
     UnstructuredSubmissionDetails
 )
+
+PAGE_SIZE = SearchEnum.PAGE_SIZE.value
 
 
 @fluent
@@ -266,7 +268,7 @@ class Submission(SearchHandler):
         return (
             self.create_query(Methods.POST, specific_endpoint=endpoint)
             .set_params(self.payload_params)
-            .set_query_string({"pageSize": self.query_params.get("pageSize", 25)})
+            .set_query_string({PAGE_SIZE: self.query_params.get(PAGE_SIZE, 25)})
         )
 
 

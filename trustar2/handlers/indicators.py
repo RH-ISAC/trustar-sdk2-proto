@@ -9,8 +9,13 @@ from trustar2.trustar_enums import (
     ObservableTypes, 
     SortOrder, 
     AttributeTypes,
-    IndicatorEnum
+    IndicatorEnum,
+    SearchEnum
 )
+
+TYPE = IndicatorEnum.TYPE.value
+VALUE = IndicatorEnum.VALUE.value
+PAGE_SIZE = SearchEnum.PAGE_SIZE.value
 
 
 @fluent
@@ -39,8 +44,8 @@ class SearchIndicator(SearchHandler):
                 else ObservableTypes
             )
             return {
-                "type": SearchIndicator._get_value(entity.get("type"), entity_type),
-                "value": entity.get("value"),
+                TYPE: SearchIndicator._get_value(entity.get(TYPE), entity_type),
+                VALUE: entity.get(VALUE),
             }
 
         raise AttributeError(
@@ -51,7 +56,7 @@ class SearchIndicator(SearchHandler):
     def set_priority_scores(self, scores):
         if not isinstance(scores, list) or any([s for s in scores if s > 3 or s < -1]):
             raise AttributeError("scores should be a list of integers between -1 and 3")
-        self.set_payload_param("priorityScores", scores)
+        self.set_payload_param(IndicatorEnum.PRIORITY_SCORES.value, scores)
 
 
     def set_observable_types(self, types):
@@ -92,7 +97,7 @@ class SearchIndicator(SearchHandler):
         return (
             self.create_query(Methods.POST)
             .set_params(self.payload_params)
-            .set_query_string({"pageSize": self.query_params.get("pageSize", 25)})
+            .set_query_string({PAGE_SIZE: self.query_params.get(PAGE_SIZE, 25)})
         )
 
 

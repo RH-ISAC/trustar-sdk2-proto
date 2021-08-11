@@ -171,6 +171,7 @@ class IndicatorEnum(TSEnum):
     ENCLAVE_GUID = "enclaveGuid"
     WORKFLOW_GUID = "workflowGuid"
     PRIORITY_SCORE = "priorityScore"
+    PRIORITY_SCORES = "priorityScores"
     USER_TAGS = "userTags"
     SUBMISSION_TAGS = "submissionTags"
     CREATED = "created"
