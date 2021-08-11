@@ -113,3 +113,48 @@ class SubmissionEnum(TSEnum):
     GUID = "guid"
     CREATED = "created"
     UPDATED = "updated"
+
+
+class ObservablesEnum(TSEnum):
+    TYPE = "type"
+    TYPES = "types"
+    VALUE = "value"
+    FIRST_SEEN = "firstSeen"
+    LAST_SEEN = "lastSeen"
+    ENCLAVE_GUIDS = "enclaveGuids"
+    TAGS = "tags"
+    OBSERVABLE_VALUE = "observableValue"
+
+
+class SafelistEnum(TSEnum):
+    ENTRIES = "entries"
+    NAME = "name"
+    TEXT = "text"
+    GUID = "guid"
+    COMPANY_GUID = "companyGuid"
+    EXCERPT = "excerpt"
+    CREATED_AT = "createdAt"
+    CREATED_BY = "createdBy"
+    UPDATED_AT = "updatedAt"
+    UPDATED_BY = "updatedBy"
+    TYPE = "type"
+    ENTITY = "entity"
+
+
+class SearchEnum(TSEnum):
+    QUERY_TERM = "queryTerm"
+    FROM = "from"
+    TO = "to"
+    ENCLAVE_GUIDS = "enclaveGuids"
+    SORT_COLUMN = "sortColumn"
+    SORT_ORDER = "sortOrder"
+    PAGE_SIZE = "pageSize"
+    INCLUDED_TAGS = "includedTags"
+    EXCLUDED_TAGS = "excludedTags"
+
+
+class TagsEnum(TSEnum):
+    ADDED_TAGS = "addedTags"
+    REMOVED_TAGS = "removedTags"
+    ENCLAVE_ID = "enclaveId" # Used for submissions
+    ENCLAVE_GUID = "enclaveGuid" # Used almost in every other place

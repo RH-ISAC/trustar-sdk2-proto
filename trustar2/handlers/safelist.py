@@ -1,9 +1,9 @@
 from __future__ import unicode_literals
 
 from trustar2.query import Query
-from trustar2.trustar_enums import ObservableTypes
 from trustar2.handlers.base_handler import BaseHandler
 from trustar2.models.trustar_response import TruStarResponse
+from trustar2.trustar_enums import ObservableTypes, SafelistEnum
 from trustar2.models.safelists import SafelistLibrary, SafelistEntry
 from trustar2.base import fluent, Methods, ParamsSerializer, Param, get_timestamp, STATUS_OK
 
@@ -61,21 +61,21 @@ class Safelist(BaseHandler):
         for entry in entries:
             self._verify_entry(entry)
 
-        self.set_payload_param("entries", entries)
+        self.set_payload_param(SafelistEnum.ENTRIES.value, entries)
 
 
     def set_library_name(self, library_name):
         if not isinstance(library_name, type("")):
             raise AttributeError("Library name must be a string.")
 
-        self.set_payload_param("name", library_name)
+        self.set_payload_param(SafelistEnum.NAME.value, library_name)
 
     
     def set_text_to_be_extracted(self, text):
         if not isinstance(text, type("")):
             raise AttributeError("You can only submit a text for extraction.")
 
-        self.set_payload_param("text", text)
+        self.set_payload_param(SafelistEnum.TEXT.value, text)
 
 
     def _validate_library_guid_is_present(self):
@@ -129,7 +129,7 @@ class Safelist(BaseHandler):
         :returns: HTTP response with Safelist Library Details in it's content.
         """
         self._validate_library_guid_is_present()
-        if not self.payload_params.get("entries"):
+        if not self.payload_params.get(SafelistEnum.ENTRIES.value):
             raise AttributeError(
                 "You must call the 'set_safelist_entries' method before calling this method."
             )

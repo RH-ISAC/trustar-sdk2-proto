@@ -187,7 +187,9 @@ class Submission(SearchHandler):
     def query_string_params(self):
         query_params = self.query_params.serialize()
         if self.should_use_external_id():
-            query_params["id"] = self.payload_params.get(SubmissionEnum.EXTERNAL_ID.value)
+            query_params[
+                SubmissionEnum.ID.value
+            ] = self.payload_params.get(SubmissionEnum.EXTERNAL_ID.value)
 
         return query_params
 
@@ -205,7 +207,7 @@ class Submission(SearchHandler):
 
 
     def _raise_without_id(self):
-        if not "id" in self.query_string_params:
+        if not SubmissionEnum.ID.value in self.query_string_params:
             raise AttributeError(
                 "You need to set an id, or an external id marking the id type as external"
             )

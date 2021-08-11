@@ -4,6 +4,12 @@ from trustar2.query import Query
 from trustar2.handlers.base_handler import BaseHandler
 from trustar2.base import Methods, fluent
 from trustar2.models.trustar_response import TruStarResponse
+from trustar2.trustar_enums import TagsEnum, ObservablesEnum, SubmissionEnum
+
+ADDED_TAGS = TagsEnum.ADDED_TAGS.value
+REMOVED_TAGS = TagsEnum.REMOVED_TAGS.value
+ENCLAVE_ID = TagsEnum.ENCLAVE_ID.value
+ENCLAVE_GUID = TagsEnum.ENCLAVE_GUID.value
 
 
 @fluent
@@ -24,8 +30,8 @@ class TagBase(BaseHandler):
                 "Id value is required for altering tags of {}".format(self._url)
             )
         
-        added_tags = self.payload_params.get("addedTags", [])
-        removed_tags = self.payload_params.get("removedTags", [])
+        added_tags = self.payload_params.get(ADDED_TAGS, [])
+        removed_tags = self.payload_params.get(REMOVED_TAGS, [])
 
         if len(added_tags) == 0 and len(removed_tags) == 0:
             raise AttributeError(
@@ -50,19 +56,19 @@ class TagBase(BaseHandler):
 
     def set_added_tags(self, added_tags):
         self._validate_tags(added_tags)
-        self.set_payload_param("addedTags", added_tags)
+        self.set_payload_param(ADDED_TAGS, added_tags)
 
 
     def set_removed_tags(self, removed_tags):
         self._validate_tags(removed_tags)
-        self.set_payload_param("removedTags", removed_tags)
+        self.set_payload_param(REMOVED_TAGS, removed_tags)
 
 
     def set_enclave_id(self, enclave_guid):
         if self._url == "submissions":
-            self.set_payload_param("enclaveId", enclave_guid)
+            self.set_payload_param(ENCLAVE_ID, enclave_guid)
         else:
-            self.set_payload_param("enclaveGuid", enclave_guid)
+            self.set_payload_param(ENCLAVE_GUID, enclave_guid)
 
     def alter_tags(self):
         result = (
@@ -96,7 +102,7 @@ class TagSubmission(TagBase):
 
 
     def set_id_type_as_external(self, external):
-        self.set_payload_param("idType", "EXTERNAL" if external else "INTERNAL")
+        self.set_payload_param(SubmissionEnum.ID_TYPE.value, "EXTERNAL" if external else "INTERNAL")
 
 
 @fluent
@@ -108,7 +114,7 @@ class TagObservable(TagBase):
 
     def set_observable_value(self, value):
         self.guid = value
-        self.set_payload_param("observableValue", value)
+        self.set_payload_param(ObservablesEnum.OBSERVABLE_VALUE.value, value)
 
     @property
     def tag_endpoint(self):
