@@ -1,5 +1,6 @@
 from trustar2.base import typename
 from trustar2.models.base import Base
+from trustar2.trustar_enums import ScoreContextEnum
 
 
 class ScoreContext(Base):
@@ -20,10 +21,10 @@ class ScoreContext(Base):
     @classmethod
     def from_dict(cls, score_dict):
         return cls(
-            enclave_guid=score_dict.get("enclaveGuid"),
-            source_name=score_dict.get("sourceName"),
-            normalized_score=score_dict.get("normalizedScore"),
-            weight=score_dict.get("weight"),
-            properties=score_dict.get("properties"),
-            enclave_name=score_dict.get("enclaveName")
+            enclave_guid=score_dict.get(ScoreContextEnum.ENCLAVE_GUID.value),
+            source_name=score_dict.get(ScoreContextEnum.SOURCE_NAME.value),
+            normalized_score=score_dict.get(ScoreContextEnum.NORMALIZED_SCORE.value),
+            weight=score_dict.get(ScoreContextEnum.WEIGHT.value),
+            properties=score_dict.get(ScoreContextEnum.PROPERTIES.value),
+            enclave_name=score_dict.get(ScoreContextEnum.ENCLAVE_NAME.value)
         )

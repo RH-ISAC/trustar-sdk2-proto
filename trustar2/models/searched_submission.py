@@ -1,5 +1,6 @@
 from trustar2.base import typename
 from trustar2.models.base import Base
+from trustar2.trustar_enums import SubmissionEnum
 
 class SearchedSubmission(Base):
 
@@ -19,10 +20,10 @@ class SearchedSubmission(Base):
     @classmethod
     def from_dict(cls, sub_dict):
         return cls(
-            guid=sub_dict.get("guid"),
-            enclave_guid=sub_dict.get("enclaveGuid"),
-            title = sub_dict.get("title"),
-            created=sub_dict.get("created"),
-            updated=sub_dict.get("updated"),
-            tags=sub_dict.get("tags")
+            guid=sub_dict.get(SubmissionEnum.GUID.value),
+            enclave_guid=sub_dict.get(SubmissionEnum.ENCLAVE_GUID.value),
+            title = sub_dict.get(SubmissionEnum.TITLE.value),
+            created=sub_dict.get(SubmissionEnum.CREATED.value),
+            updated=sub_dict.get(SubmissionEnum.UPDATED.value),
+            tags=sub_dict.get(SubmissionEnum.TAGS.value)
         )

@@ -3,10 +3,15 @@ from trustar2.handlers.base_handler import BaseHandler
 from trustar2.models.trustar_response import TruStarResponse
 from trustar2.models.workflow import Workflow as WorkflowModel
 from trustar2.base import fluent, Methods, get_timestamp, STATUS_OK
+from trustar2.trustar_enums import WorkflowEnum
 
 
 MIN_NAME_LEN = 3
 MAX_NAME_LEN = 120
+
+
+SAFELIST_GUIDS = WorkflowEnum.SAFELIST_GUIDS.value
+NAME = WorkflowEnum.NAME.value
 
 
 @fluent
@@ -26,7 +31,7 @@ class Workflow(BaseHandler):
 
 
     def set_type(self, type):
-        self.set_query_param("type", type)
+        self.set_query_param(WorkflowEnum.TYPE.value, type)
 
 
     def set_name(self, name):
@@ -35,36 +40,36 @@ class Workflow(BaseHandler):
                 MIN_NAME_LEN, MAX_NAME_LEN
             ))
 
-        self.set_query_param("name", name)
-        self.set_payload_param("name", name)
+        self.set_query_param(NAME, name)
+        self.set_payload_param(NAME, name)
 
 
     def set_created_from(self, created_from):
         if not isinstance(created_from, int):
             created_from = get_timestamp(created_from)
 
-        self.set_query_param("createdFrom", created_from)
+        self.set_query_param(WorkflowEnum.CREATED_FROM.value, created_from)
 
 
     def set_created_to(self, created_to):
         if not isinstance(created_to, int):
             created_to = get_timestamp(created_to)
 
-        self.set_query_param("createdTo", created_to)
+        self.set_query_param(WorkflowEnum.CREATED_TO.value, created_to)
 
     
     def set_updated_from(self, updated_from):
         if not isinstance(updated_from, int):
             updated_from = get_timestamp(updated_from)
 
-        self.set_query_param("updatedFrom", updated_from)
+        self.set_query_param(WorkflowEnum.UPDATED_FROM.value, updated_from)
 
     
     def set_updated_to(self, updated_to):
         if not isinstance(updated_to, int):
             updated_to = get_timestamp(updated_to)
 
-        self.set_query_param("updatedTo", updated_to)
+        self.set_query_param(WorkflowEnum.UPDATED_TO.value, updated_to)
 
 
     def set_workflow_id(self, workflow_id):
@@ -82,7 +87,7 @@ class Workflow(BaseHandler):
         if not isinstance(safelist_ids, list):
             raise AttributeError("'safelist_ids' must be a list of safelist_guids (strings).")
 
-        self.set_payload_param("safelistGuids", safelist_ids)
+        self.set_payload_param(SAFELIST_GUIDS, safelist_ids)
 
 
     def create_query(self, method, specific_endpoint=""):
@@ -92,9 +97,9 @@ class Workflow(BaseHandler):
 
 
     def _raise_if_payload_is_not_set_up(self):
-        name = self.payload_params.get("name")
-        workflow_config = self.payload_params.get("workflowConfig")
-        safelist = self.payload_params.get("safelistGuids")
+        name = self.payload_params.get(NAME)
+        workflow_config = self.payload_params.get(WorkflowEnum.WORKFLOW_CONFIG.value)
+        safelist = self.payload_params.get(SAFELIST_GUIDS)
         if name is None or workflow_config is None or safelist is None:
             raise AttributeError("You have to set the name, workflow_config and safelist_ids for the workflow.")
 

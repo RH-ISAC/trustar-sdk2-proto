@@ -1,5 +1,7 @@
 from trustar2.base import typename
 from trustar2.models.base import Base
+from trustar2.trustar_enums import ObservablesEnum
+
 
 class SearchedObservable(Base):
 
@@ -19,10 +21,10 @@ class SearchedObservable(Base):
     @classmethod
     def from_dict(cls, obs_dict):
         return cls(
-            type=obs_dict.get("type"),
-            value=obs_dict.get("value"),
-            first_seen=obs_dict.get("firstSeen"),
-            last_seen=obs_dict.get("lastSeen"),
-            enclave_guids=obs_dict.get("enclaveGuids"),
-            tags=obs_dict.get("tags")
+            type=obs_dict.get(ObservablesEnum.TYPE.value),
+            value=obs_dict.get(ObservablesEnum.VALUE.value),
+            first_seen=obs_dict.get(ObservablesEnum.FIRST_SEEN.value),
+            last_seen=obs_dict.get(ObservablesEnum.LAST_SEEN.value),
+            enclave_guids=obs_dict.get(ObservablesEnum.ENCLAVE_GUIDS.value),
+            tags=obs_dict.get(ObservablesEnum.TAGS.value)
         )

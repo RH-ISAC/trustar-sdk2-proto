@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from .base import Base
 from .entity import Entity
 from trustar2.base import fluent, typename
-from trustar2.trustar_enums import ObservableTypes, MaxValues
+from trustar2.trustar_enums import ObservableTypes, MaxValues, IndicatorEnum
 
 
 @fluent
@@ -101,9 +101,20 @@ class Indicator(Base):
     def serialize(self):
         serialized = {}
         serialized.update(self.observable.serialize())
-        serialized.update({"attributes": [attr.serialize() for attr in self.attributes] if len(self.attributes) else []})
-        serialized.update({"relatedObservables": [attr.serialize() for attr in self.related_observables] if len(self.related_observables) else []})
-        serialized.update({"tags": self.tags})
+
+        serialized.update({
+            IndicatorEnum.ATTRIBUTES.value: [attr.serialize() for attr in self.attributes] 
+            if len(self.attributes) else []
+        })
+
+        serialized.update({
+            IndicatorEnum.RELATED_OBSERVABLES.value: [
+                attr.serialize() 
+                for attr in self.related_observables
+            ] 
+            if len(self.related_observables) else []
+        })
+        serialized.update({IndicatorEnum.TAGS.value: self.tags})
         return serialized
 
 
@@ -119,8 +130,8 @@ class Indicator(Base):
 
     @classmethod
     def from_dict(cls, ioc_dict):
-        observable = ioc_dict.pop("observable")
-        indicator = cls(observable.get("type"), observable.get("value"))
+        observable = ioc_dict.pop(IndicatorEnum.OBSERVABLE.value)
+        indicator = cls(observable.get(IndicatorEnum.TYPE.value), observable.get(IndicatorEnum.VALUE.value))
         
         for field, value in ioc_dict.items():
             method_name = cls.FIELD_METHOD_MAPPING.get(field)

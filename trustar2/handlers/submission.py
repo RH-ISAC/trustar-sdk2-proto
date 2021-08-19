@@ -1,15 +1,17 @@
 from __future__ import unicode_literals
 
 from trustar2.query import Query
-from trustar2.trustar_enums import MaxValues
 from trustar2.handlers.tags import TagSubmission
-from trustar2.base import fluent, Methods, get_timestamp, typename
 from trustar2.handlers.search_handler import SearchHandler
 from trustar2.models.trustar_response import TruStarResponse
+from trustar2.base import fluent, Methods, get_timestamp, typename
+from trustar2.trustar_enums import MaxValues, SubmissionEnum, SearchEnum
 from trustar2.models.submission_details import (
     StructuredSubmissionDetails, 
     UnstructuredSubmissionDetails
 )
+
+PAGE_SIZE = SearchEnum.PAGE_SIZE.value
 
 
 @fluent
@@ -27,8 +29,8 @@ class Submission(SearchHandler):
     def __repr__(self):
         return "{}(title={}, external_id={})".format(
             typename(self),
-            self.payload_params.get("title"), 
-            self.payload_params.get("externalId")
+            self.payload_params.get(SubmissionEnum.TITLE.value), 
+            self.payload_params.get(SubmissionEnum.EXTERNAL_ID.value)
         )
 
     @property
@@ -42,8 +44,8 @@ class Submission(SearchHandler):
         :param submission_id: field value.
         :returns: self.
         """
-        self.set_payload_param("id", submission_id)
-        self.set_query_param("id", submission_id)
+        self.set_payload_param(SubmissionEnum.ID.value, submission_id)
+        self.set_query_param(SubmissionEnum.ID.value, submission_id)
 
 
     def set_title(self, title):
@@ -52,7 +54,7 @@ class Submission(SearchHandler):
         :param title: field value.
         :returns: self.
         """
-        self.set_payload_param("title", title)
+        self.set_payload_param(SubmissionEnum.TITLE.value, title)
 
 
     def set_content_indicators(self, indicators):
@@ -67,7 +69,7 @@ class Submission(SearchHandler):
             indicators = indicators[:MaxValues.INDICATORS.value]
 
         content = {"indicators": indicators}
-        self.set_payload_param("content", content)
+        self.set_payload_param(SubmissionEnum.CONTENT.value, content)
 
 
     def set_content_events(self, content):
@@ -77,7 +79,7 @@ class Submission(SearchHandler):
         :returns: self.
         """
         self._submission_category = "/events"
-        self.set_payload_param("content", content)
+        self.set_payload_param(SubmissionEnum.CONTENT.value, content)
 
 
     def set_content_intelligence(self, content):
@@ -87,7 +89,7 @@ class Submission(SearchHandler):
         :returns: self.
         """
         self._submission_category = "/intelligence"
-        self.set_payload_param("content", content)
+        self.set_payload_param(SubmissionEnum.CONTENT.value, content)
 
 
     def set_enclave_id(self, enclave_id):
@@ -96,8 +98,8 @@ class Submission(SearchHandler):
         :param enclave_id: field value.
         :returns: self.
         """
-        self.set_payload_param("enclaveGuid", enclave_id)
-        self.set_query_param("enclaveGuid", enclave_id)
+        self.set_payload_param(SubmissionEnum.ENCLAVE_GUID.value, enclave_id)
+        self.set_query_param(SubmissionEnum.ENCLAVE_GUID.value, enclave_id)
 
 
     def set_external_id(self, external_id):
@@ -106,7 +108,7 @@ class Submission(SearchHandler):
         :param external_id: field value.
         :returns: self.
         """
-        self.set_payload_param("externalId", external_id)
+        self.set_payload_param(SubmissionEnum.EXTERNAL_ID.value, external_id)
 
 
     def set_external_url(self, external_url):
@@ -115,7 +117,7 @@ class Submission(SearchHandler):
         :param external_url: field value.
         :returns: self.
         """
-        self.set_payload_param("externalUrl", external_url)
+        self.set_payload_param(SubmissionEnum.EXTERNAL_URL.value, external_url)
 
 
     def set_tags(self, tags=None):
@@ -130,7 +132,7 @@ class Submission(SearchHandler):
         if len(tags) > MaxValues.TAGS.value:
             tags = tags[:MaxValues.TAGS.value]
 
-        self.set_payload_param("tags", tags)
+        self.set_payload_param(SubmissionEnum.TAGS.value, tags)
 
 
     def set_id_type_as_external(self, external=False):
@@ -140,7 +142,7 @@ class Submission(SearchHandler):
         :returns: self.
         """
         if external:
-            self.set_query_param("idType", "EXTERNAL")
+            self.set_query_param(SubmissionEnum.ID_TYPE.value, "EXTERNAL")
 
 
     def set_include_content(self, content=True):
@@ -150,7 +152,7 @@ class Submission(SearchHandler):
         :param content: field value.
         :returns: self.
         """
-        self.set_query_param("includeContent", content)
+        self.set_query_param(SubmissionEnum.INCLUDE_CONTENT.value, content)
 
 
     def set_timestamp(self, timestamp):
@@ -162,7 +164,7 @@ class Submission(SearchHandler):
         if not isinstance(timestamp, int):
             timestamp = get_timestamp(timestamp)
 
-        self.set_payload_param("timestamp", timestamp)
+        self.set_payload_param(SubmissionEnum.TIMESTAMP.value, timestamp)
 
 
     def set_raw_content(self, raw_content):
@@ -171,7 +173,7 @@ class Submission(SearchHandler):
         :param raw_content: field value.
         :returns: self.
         """
-        self.set_payload_param("rawContent", raw_content)
+        self.set_payload_param(SubmissionEnum.RAW_CONTENT.value, raw_content)
 
 
     def set_submission_version(self, version):
@@ -180,21 +182,24 @@ class Submission(SearchHandler):
         :param version: field value.
         :returns: self.
         """
-        self.set_payload_param("submissionVersion", version)
+        self.set_payload_param(SubmissionEnum.SUBMISSION_VERSION.value, version)
 
 
     @property
     def query_string_params(self):
         query_params = self.query_params.serialize()
         if self.should_use_external_id():
-            query_params["id"] = self.payload_params.get("externalId")
+            query_params[
+                SubmissionEnum.ID.value
+            ] = self.payload_params.get(SubmissionEnum.EXTERNAL_ID.value)
 
         return query_params
 
 
     def should_use_external_id(self):
         """Returns True if params are set to retrieve a submission by external id"""
-        return "idType" in self.query_params and "externalId" in self.payload_params
+        return (SubmissionEnum.ID_TYPE.value in self.query_params and 
+                SubmissionEnum.EXTERNAL_ID.value in self.payload_params)
 
 
     def create_query(self, method, specific_endpoint=""):
@@ -204,7 +209,7 @@ class Submission(SearchHandler):
 
 
     def _raise_without_id(self):
-        if not "id" in self.query_string_params:
+        if not SubmissionEnum.ID.value in self.query_string_params:
             raise AttributeError(
                 "You need to set an id, or an external id marking the id type as external"
             )
@@ -235,7 +240,7 @@ class Submission(SearchHandler):
             status_code=result.status_code, 
             data=(
                 Submission.from_dict(result.json()) 
-                if result.status_code < 400 and self.query_params.get("includeContent") 
+                if result.status_code < 400 and self.query_params.get(SubmissionEnum.INCLUDE_CONTENT.value) 
                 else result.json()
             )
         )
@@ -263,7 +268,7 @@ class Submission(SearchHandler):
         return (
             self.create_query(Methods.POST, specific_endpoint=endpoint)
             .set_params(self.payload_params)
-            .set_query_string({"pageSize": self.query_params.get("pageSize", 25)})
+            .set_query_string({PAGE_SIZE: self.query_params.get(PAGE_SIZE, 25)})
         )
 
 

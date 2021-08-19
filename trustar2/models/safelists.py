@@ -1,5 +1,6 @@
 from trustar2.base import typename
 from trustar2.models.base import Base
+from trustar2.trustar_enums import SafelistEnum
 
 
 
@@ -25,16 +26,16 @@ class SafelistLibrary(Base):
 
     @classmethod
     def from_dict(cls, safelist_dict): 
-        entries = safelist_dict.get("entries")
+        entries = safelist_dict.get(SafelistEnum.ENTRIES.value)
         return cls(
-            guid=safelist_dict.get("guid"),
-            name=safelist_dict.get("name"),
-            company_guid=safelist_dict.get("companyGuid"),
-            excerpt=safelist_dict.get("excerpt"),
-            created_at=safelist_dict.get("createdAt"),
-            updated_at=safelist_dict.get("updatedAt"),
-            created_by=safelist_dict.get("createdBy"),
-            updated_by=safelist_dict.get("updatedBy"),
+            guid=safelist_dict.get(SafelistEnum.GUID.value),
+            name=safelist_dict.get(SafelistEnum.NAME.value),
+            company_guid=safelist_dict.get(SafelistEnum.COMPANY_GUID.value),
+            excerpt=safelist_dict.get(SafelistEnum.EXCERPT.value),
+            created_at=safelist_dict.get(SafelistEnum.CREATED_AT.value),
+            updated_at=safelist_dict.get(SafelistEnum.UPDATED_AT.value),
+            created_by=safelist_dict.get(SafelistEnum.CREATED_BY.value),
+            updated_by=safelist_dict.get(SafelistEnum.UPDATED_BY.value),
             entries=[SafelistEntry.from_dict(e) for e in entries] if entries is not None else None,
         )
 
@@ -58,9 +59,9 @@ class SafelistEntry(Base):
     @classmethod
     def from_dict(cls, entry_dict): 
         return cls(
-            guid=entry_dict.get("guid"),
-            entity=entry_dict.get("entity"),
-            type=entry_dict.get("type"),
-            created_by=entry_dict.get("createdBy"),
-            created_at=entry_dict.get("createdAt"),
+            guid=entry_dict.get(SafelistEnum.GUID.value),
+            entity=entry_dict.get(SafelistEnum.ENTITY.value),
+            type=entry_dict.get(SafelistEnum.TYPE.value),
+            created_by=entry_dict.get(SafelistEnum.CREATED_BY.value),
+            created_at=entry_dict.get(SafelistEnum.CREATED_AT.value),
         )

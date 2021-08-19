@@ -1,7 +1,14 @@
 from trustar2.base import typename
 from trustar2.models import Entity
 from trustar2.models.base import Base
+from trustar2.trustar_enums import IndicatorEnum
 from trustar2.models.score_context import ScoreContext
+
+OBSERVABLE = IndicatorEnum.OBSERVABLE.value
+ATTRIBUTES = IndicatorEnum.ATTRIBUTES.value
+TYPE = IndicatorEnum.TYPE.value
+VALUE = IndicatorEnum.VALUE.value
+
 
 class PrioritizedIndicator(Base):
 
@@ -29,42 +36,42 @@ class PrioritizedIndicator(Base):
 
     @classmethod
     def from_dict(cls, ioc_dict):
-        observable = ioc_dict.get("observable")
+        observable = ioc_dict.get(OBSERVABLE)
         observable_obj = Entity.observable(
-            observable.get("type"), 
-            observable.get("value")
+            observable.get(TYPE), 
+            observable.get(VALUE)
         )
 
         attributes = [
-            Entity.attribute(e.get("type"), e.get("value"))
-            for e in ioc_dict.get("attributes")
+            Entity.attribute(e.get(TYPE), e.get(VALUE))
+            for e in ioc_dict.get(ATTRIBUTES)
         ]
 
         score_contexts = [
             ScoreContext.from_dict(sc) 
-            for sc in ioc_dict.get("scoreContexts")
+            for sc in ioc_dict.get(IndicatorEnum.SCORE_CONTEXTS.value)
         ]
 
         return cls(
-            guid=ioc_dict.get("guid"),
-            enclave_guid=ioc_dict.get("enclaveGuid"),
-            workflow_guid=ioc_dict.get("workflowGuid"),
+            guid=ioc_dict.get(IndicatorEnum.GUID.value),
+            enclave_guid=ioc_dict.get(IndicatorEnum.ENCLAVE_GUID.value),
+            workflow_guid=ioc_dict.get(IndicatorEnum.WORKFLOW_GUID.value),
             observable=observable_obj,
-            priority_score=ioc_dict.get("priorityScore"),
+            priority_score=ioc_dict.get(IndicatorEnum.PRIORITY_SCORE.value),
             attributes=attributes,
-            user_tags=ioc_dict.get("userTags"),
-            submission_tags=ioc_dict.get("submissionTags"),
+            user_tags=ioc_dict.get(IndicatorEnum.USER_TAGS.value),
+            submission_tags=ioc_dict.get(IndicatorEnum.SUBMISSION_TAGS.value),
             score_contexts=score_contexts,
-            created=ioc_dict.get("created"),
-            updated=ioc_dict.get("updated"),
-            processed_at=ioc_dict.get("processedAt"),
-            safelisted=ioc_dict.get("safelisted")
+            created=ioc_dict.get(IndicatorEnum.CREATED.value),
+            updated=ioc_dict.get(IndicatorEnum.UPDATED.value),
+            processed_at=ioc_dict.get(IndicatorEnum.PROCESSED_AT.value),
+            safelisted=ioc_dict.get(IndicatorEnum.SAFELISTED.value)
         )
 
 
     def serialize(self):
         serialized = super(PrioritizedIndicator, self).serialize()
-        observable = serialized.get("observable").get("entity")
-        attributes = [a.get("entity") for a in serialized.get("attributes")]
-        serialized.update({"observable": observable, "attributes": attributes})
+        observable = serialized.get(OBSERVABLE).get("entity")
+        attributes = [a.get("entity") for a in serialized.get(ATTRIBUTES)]
+        serialized.update({OBSERVABLE: observable, ATTRIBUTES: attributes})
         return serialized

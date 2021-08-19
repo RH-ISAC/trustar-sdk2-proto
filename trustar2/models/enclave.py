@@ -1,5 +1,6 @@
 from trustar2.base import typename
 from trustar2.models.base import Base
+from trustar2.trustar_enums import EnclaveEnum
 
 
 class Enclave(Base):
@@ -24,12 +25,12 @@ class Enclave(Base):
     @classmethod
     def from_dict(cls, enclave_dict): 
         return cls(
-            name=enclave_dict.get("name"),
-            template_name=enclave_dict.get("templateName"),
-            workflow_supported=enclave_dict.get("workflowSupported"),
-            read=enclave_dict.get("read"),
-            create=enclave_dict.get("create"),
-            update=enclave_dict.get("update"),
-            id=enclave_dict.get("id"),
-            type=enclave_dict.get("type")
+            name=enclave_dict.get(EnclaveEnum.NAME.value),
+            template_name=enclave_dict.get(EnclaveEnum.TEMPLATE_NAME.value),
+            workflow_supported=enclave_dict.get(EnclaveEnum.WORKFLOW_SUPPORTED.value),
+            read=enclave_dict.get(EnclaveEnum.READ.value),
+            create=enclave_dict.get(EnclaveEnum.CREATE.value),
+            update=enclave_dict.get(EnclaveEnum.UPDATE.value),
+            id=enclave_dict.get(EnclaveEnum.ID.value),
+            type=enclave_dict.get(EnclaveEnum.TYPE.value)
         )
