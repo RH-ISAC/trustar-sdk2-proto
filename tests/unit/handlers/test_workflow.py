@@ -148,7 +148,7 @@ def test_workflow_get_by_id_fails_with_missing_id(workflow, wf_response):
 
 
 def test_workflow_get_all_workflows(workflow, mocked_request, wf_response):
-    mocked_request.get(URL, json={"content": [wf_response]})
+    mocked_request.get(URL, json={"items": [wf_response]})
     response = workflow.get()
     assert response.status_code == 200
     assert [wf.serialize() for wf in response.data] == [wf_response]

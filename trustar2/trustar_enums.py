@@ -68,6 +68,8 @@ class WorkflowDestinations(TSEnum):
 
     QRADAR = "QRADAR"
     ENCLAVE = "ENCLAVE"
+    SPLUNK = "SPLUNK"
+    SPLUNK_ES = "SPLUNK_ES"
     UNKNOWN = "UNKNOWN"
 
 

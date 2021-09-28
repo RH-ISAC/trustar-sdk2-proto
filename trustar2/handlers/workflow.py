@@ -145,7 +145,7 @@ class Workflow(BaseHandler):
             .execute()
         )
         content = (
-            [WorkflowModel.from_dict(w) for w in result.json().get("content")] 
+            [WorkflowModel.from_dict(w) for w in result.json().get("items")] 
             if result.status_code == STATUS_OK 
             else result.json()
         )
