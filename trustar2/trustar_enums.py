@@ -66,8 +66,8 @@ class MaxValues(TSEnum):
 
 class WorkflowDestinations(TSEnum):
 
-    QRADAR = "QRADAR"
     ENCLAVE = "ENCLAVE"
+    SPLUNK_SOAR = "SPLUNK_SOAR"
     SPLUNK = "SPLUNK"
     SPLUNK_ES = "SPLUNK_ES"
     UNKNOWN = "UNKNOWN"
