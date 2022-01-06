@@ -42,7 +42,7 @@ class ObservableTypes(TSEnum):
 
 class AttributeTypes(TSEnum):
     
-    CORA_MALWARE = "CORA_MALWARE"
+    CARO_MALWARE = "CARO_MALWARE"
     CVE = "CVE"
     MALWARE = "MALWARE"
     MITRE_TACTIC = "MITRE_TACTIC"
